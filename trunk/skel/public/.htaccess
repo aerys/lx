@@ -1,0 +1,8 @@
+Options +FollowSymLinks +ExecCGI
+AddHandler fcgid-script .fcgi
+AddHandler cgi-script .cgi
+
+RewriteEngine On
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^(.*)$ lx-dispatch.php [QSA,L]
+

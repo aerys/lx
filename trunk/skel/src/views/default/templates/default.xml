@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<lx:view xmlns:lx="http://lx.promethe.net">
+  <head>
+
+  </head>
+  <body>
+
+    <lx:insert-controler-here />
+
+  </body>
+</lx:view>
