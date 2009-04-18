@@ -8,7 +8,7 @@
   <xsl:include href="/views/lx-xhtml.xsl"/>
 
   <!-- BEGIN VIEW -->
-  <xsl:template match="lx:controler">
+  <xsl:template match="lx:controller">
     <p>
       It Works!
     </p>

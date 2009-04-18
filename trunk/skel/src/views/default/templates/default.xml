@@ -6,7 +6,7 @@
   </head>
   <body>
 
-    <lx:insert-controler-here />
+    <lx:insert-controller-here />
 
   </body>
 </lx:view>
