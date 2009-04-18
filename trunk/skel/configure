@@ -1,6 +1,6 @@
 #! /bin/sh
 
-LX_ROOT="/var/www/lx/core"
+LX_ROOT="/var/www/lx"
 LX_APPLICATION="${PWD}"
 
 LX_MODELS=""

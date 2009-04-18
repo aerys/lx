@@ -1,6 +1,6 @@
 <?php
 
-class HomeControler extends AbstractControler
+class HomeController extends AbstractController
 {
   public function defaultAction()
   {
