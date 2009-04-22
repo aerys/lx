@@ -28,12 +28,13 @@ class LX
   }
 
   static public function redirect($my_module,
-				  $my_controler,
-				  $my_action	= NULL,
-				  $my_arguments	= NULL)
+				  $my_controller	= NULL,
+				  $my_action		= NULL,
+				  $my_arguments		= NULL)
   {
-    $url = $my_module ? '/' . $my_module . '/' : '/';
-    $url .= $my_controler . ($my_action ? '/' . $my_action : '');
+    $url = $my_module ? '/' . $my_module : '/';
+    $url .= $my_controller ? '/' . $my_controller : '/';
+    $url .= $my_action ? '/' . $my_action : '';
 
     if ($my_arguments != NULL && count($my_arguments))
     {
