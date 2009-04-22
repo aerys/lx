@@ -27,9 +27,27 @@ class LX
     set_error_handler('lx_error_handler');
   }
 
-  static public function redirect($my_controler, $my_action = NULL)
+  static public function redirect($my_module,
+				  $my_controler,
+				  $my_action	= NULL,
+				  $my_arguments	= NULL)
   {
-    header('Location: /' . $my_controler . ($my_action ? '/' . $my_action : ''));
+    $url = $my_module ? '/' . $my_module . '/' : '/';
+    $url .= $my_controler . ($my_action ? '/' . $my_action : '');
+
+    if ($my_arguments != NULL && count($my_arguments))
+    {
+      $url .= '/';
+
+      foreach ($my_arguments as $value)
+      {
+	$url .= $value;
+	if ($value != end($my_arguments))
+	  $url .= '/';
+      }
+    }
+
+    header('Location: ' . $url);
   }
 
   static public function setView($my_view)

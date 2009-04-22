@@ -5,14 +5,9 @@
 		xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
 		xmlns:lx="http://lx.promethe.net">
 
-  <xsl:include href="/views/lx-xhtml.xsl"/>
+  <xsl:include href="../lx-view.xsl"/>
 
   <!-- BEGIN VIEW -->
-  <xsl:template match="lx:controller">
-    <p>
-      It Works!
-    </p>
-  </xsl:template>
   <!-- END VIEW -->
 
 </xsl:stylesheet>

@@ -77,16 +77,16 @@ URLRequest.prototype._onReadyStateChange = function()
 	if (xml.getElementsByTagNameNS)
 	{
 	   exceptions = xml.getElementsByTagNameNS("http://lx.promethe.net",
-	                                           "exception");
+	                                           "error");
 	}
 	else
 	{
-	    exceptions = xml.getElementsByTagName("lx:exception");
+	    exceptions = xml.getElementsByTagName("lx:error");
 	}
 
 	if (exceptions.length)
 	{
-	    alert(this.getResponseText());
+	    //alert(this.getResponseText());
 	    this.dispatchEvent(new Event(Event.ERROR, this));
 	}
 	else
@@ -124,7 +124,7 @@ URLRequest.prototype.send = function(my_async)
 	netscape.security.PrivilegeManager.enablePrivilege("UniversalBrowserRead");
     /* END FIREFOX ONLY */
 
-    if (this._xmlHttpRequest)
+    if (this._xmlHttpRequest && this._xmlHttpRequest.readyState)
     {
 	// stop the request
 	this._xmlHttpRequest.onreadystatechange = null;

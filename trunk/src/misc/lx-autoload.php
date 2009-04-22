@@ -7,11 +7,13 @@ function __autoload($class_name)
 		       LX_SRC . '/exceptions',
 		       LX_SRC . '/database',
 		       LX_SRC . '/database/mysql');
-
   if (defined('LX_APPLICATION'))
   {
     $directories[] = LX_APPLICATION . '/src/models';
-    $directories[] = LX_APPLICATION . '/src/controllers';
+    if (defined('LX_MODULE') && LX_MODULE)
+      $directories[] = LX_APPLICATION . '/src/controllers/' . LX_MODULE;
+    else
+      $directories[] = LX_APPLICATION . '/src/controllers';
     $directories[] = LX_APPLICATION . '/src/filters';
     $directories[] = LX_APPLICATION . '/tmp';
   }

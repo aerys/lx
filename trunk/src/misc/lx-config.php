@@ -5,7 +5,7 @@ if (!defined('LX_ROOT'))
 
 define('LX_SRC',	LX_ROOT . '/src');
 define('LX_SCRIPTS',	LX_ROOT . '/scripts');
-define('LX_XSL',	LX_SCRIPTS . '/xsl');
+define('LX_XSL',	LX_ROOT . '/xsl');
 
 require_once (LX_SRC . '/misc/lx-header.php');
 require_once (LX_SRC . '/misc/lx-autoload.php');

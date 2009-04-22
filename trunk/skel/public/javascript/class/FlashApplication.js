@@ -51,6 +51,7 @@ FlashApplication.prototype.application			= null;
 FlashApplication.prototype.bgcolor			= FlashApplication.DEFAULT_BGCOLOR;
 FlashApplication.prototype.useFABridge			= FlashApplication.DEFAULT_USEFABRIDGE;
 FlashApplication.prototype.mergeMode			= FlashApplication.DEFAULT_MERGEMODE;
+FlashApplication.prototype.flashvars			= "";
 
 FlashApplication.prototype.requiredMajorVersion		= FlashApplication.DEFAULT_REQUIRED_MAJOR_VERSION;
 FlashApplication.prototype.requiredMinorVersion		= FlashApplication.DEFAULT_REQUIRED_MINOR_VERSION;
@@ -180,7 +181,7 @@ FlashApplication.prototype.updateFlashPlayer = function(myParent)
     var flashvars = "MMredirectURL=" + MMredirectURL + '&MMplayerType='
 	+ MMPlayerType + '&MMdoctitle=' + MMdoctitle;
 
-	var params = ["src", 			"flash/playerProductInstall",
+	var params = ["src", 			"/flash/playerProductInstall",
 		      "flashvars", 		flashvars,
 		      "width", 			this.width,
 		      "height", 		this.height,

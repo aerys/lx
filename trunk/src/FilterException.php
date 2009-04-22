@@ -7,6 +7,7 @@ class FilterException extends Exception
   private $layout	= NULL;
   private $mMedia	= NULL;
 
+  public function getFilter()	{return ($this->filter);}
   public function getView()	{return ($this->view);}
   public function getLayout()	{return ($this->layout);}
   public function getMedia()	{return ($this->media);}

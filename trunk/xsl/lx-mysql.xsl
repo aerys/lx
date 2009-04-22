@@ -4,6 +4,8 @@
 		xmlns:lx="http://lx.promethe.net"
                 version="1.0">
 
+  <xsl:variable name="LX_PREFIX" select="'lx'"/>
+
   <xsl:variable name="LX_TABLE">
     <xsl:value-of select="concat($LX_PREFIX, /lx:model/@name)"/>
   </xsl:variable>
@@ -20,14 +22,14 @@
     <!-- TABLE -->
     <xsl:value-of select="$LX_TABLE"/>
     <!-- WHERE -->
-    <xsl:call-template name="lx:iterate">
-      <xsl:with-param name="prologue" select="' WHERE '"/>
+    <xsl:call-template name="lx:foreach">
+      <xsl:with-param name="begin" select="' WHERE '"/>
       <xsl:with-param name="collection" select="lx:condition"/>
       <xsl:with-param name="delimiter" select="' AND '"/>
     </xsl:call-template>
     <!-- SORT -->
-    <xsl:call-template name="lx:iterate">
-      <xsl:with-param name="prologue" select="' ORDER BY '"/>
+    <xsl:call-template name="lx:foreach">
+      <xsl:with-param name="begin" select="' ORDER BY '"/>
       <xsl:with-param name="collection" select="lx:sort"/>
       <xsl:with-param name="delimiter" select="', '"/>
     </xsl:call-template>
@@ -42,11 +44,11 @@
   </xsl:template>
 
   <xsl:template match="lx:delete" mode="echo">
-    <![CDATA[DELETE * FROM ]]>
+    <![CDATA[DELETE FROM ]]>
     <xsl:value-of select="$LX_TABLE"/>
     <!-- WHERE -->
-    <xsl:call-template name="lx:iterate">
-      <xsl:with-param name="prologue" select="' WHERE '"/>
+    <xsl:call-template name="lx:foreach">
+      <xsl:with-param name="begin" select="' WHERE '"/>
       <xsl:with-param name="collection" select="lx:condition"/>
       <xsl:with-param name="delimiter" select="' AND '"/>
     </xsl:call-template>
@@ -57,13 +59,13 @@
     <xsl:value-of select="$LX_TABLE"/>
     <!-- SET -->
     SET
-    <xsl:call-template name="lx:iterate">
+    <xsl:call-template name="lx:foreach">
       <xsl:with-param name="collection" select="lx:value"/>
       <xsl:with-param name="delimiter" select="', '"/>
     </xsl:call-template>
     <!-- WHERE -->
-    <xsl:call-template name="lx:iterate">
-      <xsl:with-param name="prologue" select="' WHERE '"/>
+    <xsl:call-template name="lx:foreach">
+      <xsl:with-param name="begin" select="' WHERE '"/>
       <xsl:with-param name="collection" select="lx:condition"/>
       <xsl:with-param name="delimiter" select="' AND '"/>
     </xsl:call-template>
@@ -94,14 +96,14 @@
   <xsl:template match="lx:insert" mode="echo">
     INSERT INTO
     <xsl:value-of select="$LX_TABLE"/>
-    <xsl:call-template name="lx:iterate">
-      <xsl:with-param name="prologue" select="' ('"/>
+    <xsl:call-template name="lx:foreach">
+      <xsl:with-param name="begin" select="' ('"/>
       <xsl:with-param name="collection" select="lx:value/@property"/>
       <xsl:with-param name="delimiter" select="', '"/>
     </xsl:call-template>)
       VALUES
-    <xsl:call-template name="lx:iterate">
-      <xsl:with-param name="prologue" select="'(:'"/>
+    <xsl:call-template name="lx:foreach">
+      <xsl:with-param name="begin" select="'(:'"/>
       <xsl:with-param name="collection" select="lx:value/@property"/>
       <xsl:with-param name="delimiter" select="', :'"/>
     </xsl:call-template>)

@@ -2,9 +2,30 @@
 
 class XHTMLResponse extends XMLResponse
 {
-  public function save($my_filename)
+  public function XHTMLResponse()
   {
-    parent::save($my_filename);
+    parent::XMLResponse();
+
+    header('Content-type: text/html; charset="utf-8"');
+  }
+
+  public function save($my_filename	 = NULL)
+  {
+    $xml_text = parent::save($my_filename);
+
+    $xml = new DOMDocument();
+    $xml->loadXML($xml_text);
+
+    $xsl = new DOMDocument();
+    $xsl->load(LX_APPLICATION . '/src/views/' . $this->media
+	       . '/templates/' . $this->view . '.xsl');
+
+    $processor = new XSLTProcessor();
+    $processor->importStyleSheet($xsl);
+
+    $result = $processor->transformToDoc($xml);
+
+    return ($result->saveHTML());
   }
 }
 

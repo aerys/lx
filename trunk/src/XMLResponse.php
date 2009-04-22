@@ -23,6 +23,8 @@ class XMLResponse
 
   public function XMLResponse()
   {
+    header('Content-type: text/xml; charset="utf-8"');
+
     $this->document = new DOMDocument('1.0', 'utf-8');
     $this->rootNode = $this->document->createElement('lx:response');
     $this->rootNode->setAttribute('xmlns:lx', 'http://lx.promethe.net');
@@ -36,6 +38,9 @@ class XMLResponse
 
     $node->setAttribute('name', $my_name);
     $node->setAttribute('action', $my_action);
+
+    if (LX_MODULE)
+      $node->setAttribute('module', LX_MODULE);
 
     if ($fragment->hasAttributes() || $fragment->hasChildNodes())
       $node->appendChild($fragment);
@@ -82,7 +87,7 @@ class XMLResponse
     $this->rootNode->appendChild($node);
   }
 
-  public function save($my_filename	= NULL)
+  protected function prepareSave()
   {
     $pAttr = 'type="text/xsl" href="/views/default/templates/' . $this->view . '.xsl"';
     $xslNode = $this->document->createProcessingInstruction('xml-stylesheet',
@@ -95,6 +100,11 @@ class XMLResponse
     $this->rootNode->setAttribute('layout', $this->layout);
     $this->rootNode->setAttribute('view', $this->view);
     $this->rootNode->setAttribute('time', $this->time);
+  }
+
+  public function save($my_filename	= NULL)
+  {
+    $this->prepareSave();
 
     if ($my_filename != NULL)
       return ($this->document->saveXML($my_filename));

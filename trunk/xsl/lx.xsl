@@ -109,4 +109,68 @@
     <xsl:value-of select="translate($string, $upper, $lower)"/>
   </xsl:template>
 
+  <!--
+      @template lx:is_string
+      Return true if the input string starts and ends with '.
+    -->
+  <xsl:template name="lx:is_string">
+    <!-- @param the string to test -->
+    <xsl:param name="string"/>
+
+    <xsl:value-of select="starts-with($string, $LX_QUOTE) and not(substring-after($string, $LX_QUOTE))"/>
+  </xsl:template>
+
+  <!--
+      @template lx:is_number
+      Return true if the input object is a number.
+    -->
+  <xsl:template name="lx:is_number">
+    <!-- @param the input object to test -->
+    <xsl:param name="input"/>
+
+    <xsl:value-of select="$input = number($input)"/>
+  </xsl:template>
+
+  <!--
+      @template lx:is_integer
+      Return true if the input object is an interger.
+    -->
+  <xsl:template name="lx:is_integer">
+    <xsl:param name="input"/>
+
+    <xsl:value-of select="ceiling(number($input)) = $input"/>
+  </xsl:template>
+
+  <!--
+      @template lx:is_boolean
+      Return true if the input object is a boolean.
+    -->
+  <xsl:template name="lx:is_boolean">
+    <xsl:param name="input"/>
+
+    <xsl:value-of select="$input = 'true' or $input = 'false'"/>
+  </xsl:template>
+
+  <xsl:template name="lx:typeof">
+    <xsl:param name="input"/>
+
+    <xsl:variable name="isInteger">
+      <xsl:call-template name="lx:is_integer">
+	<xsl:with-param name="input" select="$input"/>
+      </xsl:call-template>
+    </xsl:variable>
+
+    <xsl:variable name="isBoolean">
+      <xsl:call-template name="lx:is_boolean">
+	<xsl:with-param name="input" select="$input"/>
+      </xsl:call-template>
+    </xsl:variable>
+
+    <xsl:choose>
+      <xsl:when test="$isInteger = 'true'">integer</xsl:when>
+      <xsl:when test="$isBoolean = 'true'">boolean</xsl:when>
+      <xsl:otherwise>string</xsl:otherwise>
+    </xsl:choose>
+  </xsl:template>
+
 </xsl:stylesheet>

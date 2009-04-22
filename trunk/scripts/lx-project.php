@@ -1,10 +1,12 @@
 <?php
 
+require_once ('../src/misc/lx-config.php');
+
 $xml = new DOMDocument();
 $xml->load($argv[1]);
 
 $xsl = new DOMDocument();
-$xsl->load('./xsl/lx-project.xsl');
+$xsl->load(LX_XSL . '/lx-project.xsl');
 
 $processor = new XSLTProcessor();
 $processor->importStyleSheet($xsl);

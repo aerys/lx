@@ -1,4 +1,4 @@
-function FlashDectecton()
+function FlashDetection()
 {
 }
 
