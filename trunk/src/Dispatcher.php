@@ -12,12 +12,12 @@ class Dispatcher
     $this->testXSL = empty($_SESSION['LX_OUTPUT']);
 
     if (isset($_GET['LX_OUTPUT']))
-      $_SESSION['LX_OUTPUT'] = $_GET['LX_OUTPUT'] == 'xml' ? 'xml' : 'xhtml';
+      $_SESSION['LX_OUTPUT'] = $_GET['LX_OUTPUT'] == 'xhtml' ? 'xhtml' : 'xml';
 
-    if (isset($_SESSION['LX_OUTPUT']) && $_SESSION['LX_OUTPUT'] == 'xml')
-      $this->response = new XMLResponse();
-    else
+    if (isset($_SESSION['LX_OUTPUT']) && $_SESSION['LX_OUTPUT'] == 'xhtml')
       $this->response = new XHTMLResponse();
+    else
+      $this->response = new XMLResponse();
 
     LX::setResponse($this->response);
   }

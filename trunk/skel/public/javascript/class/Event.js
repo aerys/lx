@@ -10,6 +10,7 @@ Event.RESIZE    = "resize";
 Event.SHOW      = "show";
 Event.HIDE      = "hide";
 Event.ERROR	= "error";
+Event.COMPLETE	= "complete";
 /* ! STATIC */
 
 /* VARS */

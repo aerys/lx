@@ -91,8 +91,7 @@ URLRequest.prototype._onReadyStateChange = function()
 	}
 	else
 	{
-	    this.dispatchEvent(new ProgressEvent(ProgressEvent.COMPLETE,
-						 this));
+	    this.dispatchEvent(new Event(Event.COMPLETE, this));
 	}
     }
     else

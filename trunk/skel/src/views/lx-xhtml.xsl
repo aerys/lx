@@ -266,8 +266,10 @@
     <xsl:param name="height" select="@height"/>
     <!-- @param ommit the default .swf extension -->
     <xsl:param name="ommit-extension" select="@ommit-extension"/>
+    <!-- @param flashvars -->
+    <xsl:param name="flashvars" select="@flashvars"/>
 
-    <xsl:variable name="id" select="concat('flash_', translate($name, '/?', '_'))"/>
+    <xsl:variable name="id" select="concat('flash_', generate-id())"/>
     <xsl:variable name="url">
       <xsl:if test="not(starts-with($name, '/'))">
 	<xsl:text>/flash/</xsl:text>
@@ -278,27 +280,34 @@
     <span id="{$id}">
     <xsl:call-template name="lx:javascript">
       <xsl:with-param name="script">
-	var flashApplication = new FlashApplication('<xsl:value-of select="$url"/>');
+	<xsl:text>var flashApplication=new FlashApplication('</xsl:text>
+	<xsl:value-of select="$url"/>
+	<xsl:text>');</xsl:text>
+
+	<!-- BEGIN FLASHVARS -->
+	<xsl:if test="$flashvars">
+	  <xsl:text>flashApplication.flashvars=</xsl:text>
+	  <xsl:value-of select="concat($LX_DQUOTE, $flashvars, $LX_DQUOTE, ';')"/>
+	</xsl:if>
+	<!-- END FLASHVARS -->
 
 	<xsl:if test="$ommit-extension = 'true'">
-	  flashApplication.ommitExtension = true;
+	  <xsl:text>flashApplication.ommitExtension=true;</xsl:text>
 	</xsl:if>
 
-	flashApplication.width = '<xsl:value-of select="$width"/>';
-	flashApplication.height = '<xsl:value-of select="$height"/>';
+	<xsl:text>flashApplication.width=</xsl:text>
+	<xsl:value-of select="concat($LX_DQUOTE, $width, $LX_DQUOTE, ';')"/>
+	<xsl:text>flashApplication.height=</xsl:text>
+	<xsl:value-of select="concat($LX_DQUOTE, $height, $LX_DQUOTE, ';')"/>
 	<xsl:if test="$script">
-	  flashApplication.useFABridge = true;
-
-	  flashApplication.addEventListener(Event.COMPLETE, function(e)
-	  {
+	  <xsl:text>flashApplication.useFABridge=true;</xsl:text>
+	  <xsl:text>flashApplication.addEventListener(Event.COMPLETE,function(e){</xsl:text>
 	  <xsl:value-of select="$script"/>
-	  });
+	  <xsl:text>});</xsl:text>
 	</xsl:if>
-
-	window.onload = function()
-	{
-  	  flashApplication.run(document.getElementById('<xsl:value-of select="$id"/>'));
-	}
+	<xsl:text>flashApplication.run(document.getElementById(</xsl:text>
+	<xsl:value-of select="concat($LX_DQUOTE, $id, $LX_DQUOTE)"/>
+	<xsl:text>));</xsl:text>
       </xsl:with-param>
     </xsl:call-template>
     </span>

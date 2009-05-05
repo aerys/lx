@@ -32,9 +32,14 @@ class LX
 				  $my_action		= NULL,
 				  $my_arguments		= NULL)
   {
-    $url = $my_module ? '/' . $my_module : '/';
-    $url .= $my_controller ? '/' . $my_controller : '/';
-    $url .= $my_action ? '/' . $my_action : '';
+    $url = '';
+
+    if ($my_module)
+      $url .= '/' . $my_module;
+    if ($my_controller)
+      $url .= '/' . $my_controller;
+    if ($my_action)
+      $url .= '/' . $my_action;
 
     if ($my_arguments != NULL && count($my_arguments))
     {
