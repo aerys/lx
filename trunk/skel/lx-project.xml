@@ -2,14 +2,14 @@
 
 <lx:project xmlns:lx="http://lx.promethe.net">
 
-  <lx:const name="LX_ROOT" value="'/var/www/lx/'"/>
-  <lx:const name="LX_APPLICATION" value="'/path/to/application/'"/>
+  <lx:const name="LX_ROOT" value="'/var/www/lx'"/>
+  <lx:const name="LX_APPLICATION" value="'/path/to/application'"/>
   <lx:const name="LX_DEBUG" value="true"/>
 
   <lx:database name="name" type="mysql"
 	       user="username" password="password"
 	       host="localhost"/>
 
-  <lx:controler name="home"/>
+  <lx:controller name="home"/>
 
 </lx:project>
