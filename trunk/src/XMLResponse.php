@@ -89,7 +89,9 @@ class XMLResponse
 
   protected function prepareSave()
   {
-    $pAttr = 'type="text/xsl" href="views/default/templates/' . $this->view . '.xsl"';
+    $xsl = (defined('LX_DOCUMENT_ROOT') ? '/' . LX_DOCUMENT_ROOT . '/' : '/')
+      . 'views/' . $this->media . '/templates/' . $this->view . '.xsl';
+    $pAttr = 'type="text/xsl" href="' . $xsl . '"';
     $xslNode = $this->document->createProcessingInstruction('xml-stylesheet',
 							    $pAttr);
 

@@ -33,9 +33,19 @@ class Dispatcher
       $controller	= 'home';
       $action		= 'defaultAction';
       $filters		= array();
+      $request		= $_SERVER['REDIRECT_URL'];
+
+      if (defined('LX_DOCUMENT_ROOT'))
+	$request = str_replace('/' . LX_DOCUMENT_ROOT, '', $request);
+
+
+      //echo $request;
+
       //$params		= explode('/', substr($_SERVER['REDIRECT_URL'], 1));
 
-      preg_match_all("/\/(\w+)/", $_SERVER['REDIRECT_URL'], $params);
+      //var_dump($_SERVER);
+
+      preg_match_all("/\/(\w+)/", $request, $params);
       $params = $params[1];
 
       // module
