@@ -17,7 +17,7 @@ class XHTMLResponse extends XMLResponse
     $xml->loadXML($xml_text);
 
     $xsl = new DOMDocument();
-    $xsl->load(LX_APPLICATION . '/src/views/' . $this->media
+    $xsl->load(LX_APPLICATION_ROOT . '/src/views/' . $this->media
 	       . '/templates/' . $this->view . '.xsl');
 
     $processor = new XSLTProcessor();
