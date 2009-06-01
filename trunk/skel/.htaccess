@@ -2,7 +2,7 @@ Options +FollowSymLinks
 
 RewriteEngine On
 
-RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_URI} !^/public.*
 RewriteCond %{REQUEST_URI} ^(.*)\.(js|css|xml|xsl|png|jpg|gif|ico|swf)
 RewriteRule (.*)\.(js|css|xml|xsl|png|jpg|gif|ico|swf) public/$1\.$2 [L]
 
