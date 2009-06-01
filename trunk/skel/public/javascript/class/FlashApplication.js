@@ -21,7 +21,7 @@ FlashApplication.DEFAULT_ID				= 'flashApplication';
 FlashApplication.DEFAULT_WIDTH				= '100%';
 FlashApplication.DEFAULT_HEIGHT				= '100%';
 FlashApplication.DEFAULT_ALTERNATE_CONTENT		= 'This content requires the Adobe Flash Player. <a href=http://www.adobe.com/go/getflash/>Get Flash</a>';
-FlashApplication.DEFAULT_WMODE				= 'opaque';
+FlashApplication.DEFAULT_WMODE				= '';
 FlashApplication.DEFAULT_QUALITY			= 'high';
 FlashApplication.DEFAULT_ALLOW_SCRIPT_ACCESS		= 'sameDomain';
 FlashApplication.DEFAULT_ALLOW_FULLSCREEN		= 'true';
@@ -95,7 +95,8 @@ FlashApplication.prototype.createHTML = function(objAttrs,
 	html += '<object ';
 
   	for (var i in objAttrs)
-  	    html += i + '="' + objAttrs[i] + '" ';
+	    if (objAttrs[i])
+  		html += i + '="' + objAttrs[i] + '" ';
 	html += '>';
 
   	for (var i in params)
@@ -107,7 +108,8 @@ FlashApplication.prototype.createHTML = function(objAttrs,
 	html = '<embed ';
 
   	for (var i in embedAttrs)
-  	    html += i + '="' + embedAttrs[i] + '" ';
+	    if (embedAttrs[i])
+  		html += i + '="' + embedAttrs[i] + '" ';
 
 	html += '/>';
     }
