@@ -1,6 +1,6 @@
 <?php
 
-class UnknownControllerException extends Exception
+class UnknownControllerException extends ErrorException
 {
 
   public function UnknownControllerException($my_controler)

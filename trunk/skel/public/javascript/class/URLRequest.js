@@ -29,6 +29,7 @@ URLRequest.prototype.getUrl		= function()		{return (this._url);}
 URLRequest.prototype.getMethod		= function()		{return (this._method);}
 URLRequest.prototype.getResponseText	= function()		{return (this._xmlHttpRequest.responseText);}
 URLRequest.prototype.getResponseXML	= function()		{return (this._xmlHttpRequest.responseXML);}
+URLRequest.prototype.getData = function()		{return (this._data);}
 
 URLRequest.prototype.setUrl		= function(my_url)	{this._url = my_url;}
 URLRequest.prototype.setMethod		= function(my_met)	{this._method = my_met;}
@@ -71,34 +72,37 @@ URLRequest.prototype._onReadyStateChange = function()
 
     if (ready == URLRequest.READYSTATE_COMPLETE)
     {
-	var xml = this.getResponseXML();
-	var exceptions = null;
+    	var xml = this.getResponseXML();
+    	var exceptions = null;
 
-	if (xml.getElementsByTagNameNS)
-	{
-	   exceptions = xml.getElementsByTagNameNS("http://lx.promethe.net",
-	                                           "error");
-	}
-	else
-	{
-	    exceptions = xml.getElementsByTagName("lx:error");
-	}
-
-	if (exceptions.length)
-	{
-	    //alert(this.getResponseText());
-	    this.dispatchEvent(new Event(Event.ERROR, this));
-	}
-	else
-	{
-	    this.dispatchEvent(new Event(Event.COMPLETE, this));
-	}
+		if (xml)
+		{
+			if (xml.getElementsByTagNameNS)
+			{
+			   exceptions = xml.getElementsByTagNameNS("http://lx.promethe.net",
+			                                           "error");
+			}
+			else
+			{
+			    exceptions = xml.getElementsByTagName("lx:error");
+			}
+	
+			if (exceptions.length)
+			{
+			    //alert(this.getResponseText());
+			    this.dispatchEvent(new Event(Event.ERROR, this));
+			}
+			else
+				this.dispatchEvent(new Event(Event.COMPLETE, this));
+		}
+		else
+			this.dispatchEvent(new Event(Event.COMPLETE, this));
     }
     else
     {
         this.dispatchEvent(new ProgressEvent(ProgressEvent.PROGRESS,
 					     this,
-					     ready));
+					     ready / URLRequest.READYSTATE_COMPLETE));
     }
 }
 
@@ -111,11 +115,12 @@ URLRequest.prototype.send = function(my_async)
 
     for (var param in this._data)
 	if (this._data[param] != "")
-	    params += (params ? "&" : "") + param + "=" + this._data[param];
+		if (this._data[param])
+			params += (params ? "&" : "") + param + "=" + this._data[param];
 
     if (this._method == URLRequest.METHOD_GET && params != "")
 	url += "?" + params;
-
+    
     /* BEGIN FIREFOX ONLY */
     // Enable security privileges for filesystem ('file://...') requests
     if (window.location.href.substring(0, 5) == "file:"

@@ -1,6 +1,6 @@
 <?php
 
-class UnknownMethodException extends Exception
+class UnknownMethodException extends ErrorException
 {
 
   public function UnknownMethodException($my_method, $my_arguments)

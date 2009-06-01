@@ -1,5 +1,7 @@
 lx = {};
 
+lx._parameters = null;
+
 $ = function(myId)
 {
     return (document.getElementById(myId));
@@ -16,3 +18,24 @@ $ = function(myId)
 
     head.appendChild(script);
 }*/
+
+lx.getParameter = function(myName)
+{
+	if (lx._parameters == null)
+	{
+		var params = window.location.href.split("?");
+		
+		if (params.length == 2)
+			params = params[1].split("&");
+		
+		lx._parameters = {};
+		for (var i in params)
+		{
+			var value = params[i].split("="); 
+			
+			lx._parameters[value[0]] = value[1];
+		}
+	}
+	
+	return (lx._parameters[myName]);
+}

@@ -268,6 +268,8 @@
     <xsl:param name="ommit-extension" select="@ommit-extension"/>
     <!-- @param flashvars -->
     <xsl:param name="flashvars" select="@flashvars"/>
+    <!-- @param wmode -->
+    <xsl:param name="wmode" select="@wmode"/>
 
     <xsl:variable name="id" select="concat('flash_', generate-id())"/>
     <xsl:variable name="url">
@@ -280,32 +282,37 @@
     <span id="{$id}">
     <xsl:call-template name="lx:javascript">
       <xsl:with-param name="script">
-	<xsl:text>var flashApplication=new FlashApplication('</xsl:text>
+	<xsl:text>var app=new FlashApplication('</xsl:text>
 	<xsl:value-of select="$url"/>
 	<xsl:text>');</xsl:text>
 
 	<!-- BEGIN FLASHVARS -->
 	<xsl:if test="$flashvars">
-	  <xsl:text>flashApplication.flashvars=</xsl:text>
+	  <xsl:text>app.flashvars=</xsl:text>
 	  <xsl:value-of select="concat($LX_DQUOTE, $flashvars, $LX_DQUOTE, ';')"/>
 	</xsl:if>
 	<!-- END FLASHVARS -->
 
-	<xsl:if test="$ommit-extension = 'true'">
-	  <xsl:text>flashApplication.ommitExtension=true;</xsl:text>
+	<xsl:if test="$wmode">
+	  <xsl:text>app.wmode=</xsl:text>
+	  <xsl:value-of select="concat($LX_DQUOTE, $wmode, $LX_DQUOTE, ';')"/>
 	</xsl:if>
 
-	<xsl:text>flashApplication.width=</xsl:text>
+	<xsl:if test="$ommit-extension = 'true'">
+	  <xsl:text>app.ommitExtension=true;</xsl:text>
+	</xsl:if>
+
+	<xsl:text>app.width=</xsl:text>
 	<xsl:value-of select="concat($LX_DQUOTE, $width, $LX_DQUOTE, ';')"/>
-	<xsl:text>flashApplication.height=</xsl:text>
+	<xsl:text>app.height=</xsl:text>
 	<xsl:value-of select="concat($LX_DQUOTE, $height, $LX_DQUOTE, ';')"/>
 	<xsl:if test="$script">
-	  <xsl:text>flashApplication.useFABridge=true;</xsl:text>
-	  <xsl:text>flashApplication.addEventListener(Event.COMPLETE,function(e){</xsl:text>
+	  <xsl:text>app.useFABridge=true;</xsl:text>
+	  <xsl:text>app.addEventListener(Event.COMPLETE,function(e){</xsl:text>
 	  <xsl:value-of select="$script"/>
 	  <xsl:text>});</xsl:text>
 	</xsl:if>
-	<xsl:text>flashApplication.run(document.getElementById(</xsl:text>
+	<xsl:text>app.run(document.getElementById(</xsl:text>
 	<xsl:value-of select="concat($LX_DQUOTE, $id, $LX_DQUOTE)"/>
 	<xsl:text>));</xsl:text>
       </xsl:with-param>

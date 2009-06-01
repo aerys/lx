@@ -6,7 +6,7 @@
 		xmlns:lx="http://lx.promethe.net">
 
   <!-- XHTML STYLESHEET -->
-  <xsl:include href="/views/lx-xhtml.xsl"/>
+  <xsl:include href="../lx-xhtml.xsl"/>
 
   <!-- BEGIN TAGS -->
   <!-- END TAGS -->
