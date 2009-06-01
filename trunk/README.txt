@@ -57,5 +57,5 @@ VIRTUALHOST CONFIGURATION
 
 <VirtualHost *:80>
         ServerName my.servername.com
-        DocumentRoot /var/www/servername.com/public
+        DocumentRoot /var/www/servername.com/
 </VirtualHost>
