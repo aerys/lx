@@ -94,9 +94,9 @@
 	    <xsl:with-param name="input" select="@value"/>
 	  </xsl:call-template>
 	</xsl:when>
-	<xsl:when test="$isArgument">
+	<!--<xsl:when test="$isArgument">
 	  <xsl:value-of select="ancestor::*/lx:argument[@name = $name]/@type"/>
-	</xsl:when>
+	</xsl:when>-->
 	<xsl:otherwise>
 	  <xsl:value-of select="/lx:model/lx:property[@name = $name]/@type"/>
 	</xsl:otherwise>
