@@ -2,9 +2,9 @@
 
 <xsl:stylesheet version="1.0"
 		xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-		xmlns:lx="http://lx.promethe.net">
+		xmlns:lx="http://lx.aerys.in">
 
-  <xsl:include href="lx.xsl"/>
+  <xsl:include href="lx-std.xsl"/>
 
   <xsl:output method="html"
 	      omit-xml-declaration="yes"

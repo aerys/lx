@@ -1,5 +1,7 @@
 <?php
 
+define('LX_NAMESPACE', 'http://lx.aerys.in');
+
 if (!defined('LX_ROOT'))
   define('LX_ROOT', realpath('..'));
 

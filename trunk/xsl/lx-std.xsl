@@ -1,31 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--<?xml-stylesheet type="text/xsl" href="lx-doc.xsl"?>-->
+
+<?xml-stylesheet type="text/xsl" href="lx-doc.xsl"?>
 
 <xsl:stylesheet version="1.0"
 		xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-		xmlns:lx="http://lx.promethe.net"
+		xmlns:lx="http://lx.aerys.in"
 		id="LX Standard Library">
 
   <xsl:variable name="LX_QUOTE">'</xsl:variable>
   <xsl:variable name="LX_DQUOTE">&#34;</xsl:variable>
-  <xsl:variable name="LX_LF">&#10;</xsl:variable>
+  <xsl:variable name="LX_LF"><xsl:text>
+</xsl:text></xsl:variable>
   <xsl:variable name="LX_LT">&#60;</xsl:variable>
   <xsl:variable name="LX_GT">&#62;</xsl:variable>
-
-  <xsl:param name="LX_RESPONSE" select="/lx:response"/>
-  <xsl:param name="LX_MEDIA" select="/lx:response/@media"/>
-
-  <xsl:param name="LX_LAYOUT_NAME" select="/lx:response/@layout"/>
-  <xsl:param name="LX_LAYOUT_FILE" select="concat($LX_MEDIA, '/layouts/', $LX_LAYOUT_NAME, '.xml')"/>
-  <xsl:param name="LX_LAYOUT" select="document($LX_LAYOUT_FILE)/lx:layout"/>
-
-  <xsl:param name="LX_CONTROLLER" select="/lx:response/lx:controller"/>
-
-  <xsl:param name="LX_VIEW_NAME" select="/lx:response/@view"/>
-  <xsl:param name="LX_VIEW_FILE" select="concat($LX_MEDIA, '/templates/', $LX_VIEW_NAME, '.xml')"/>
-  <xsl:param name="LX_VIEW" select="document($LX_VIEW_FILE)/lx:view"/>
-
-  <xsl:variable name="LX_FILTERS" select="$LX_RESPONSE/lx:filter"/>
 
   <!--
       @template lx:foreach
@@ -121,6 +108,70 @@
     <xsl:variable name="upper" select="'ABCDEFGHIJKLMNOPQRSTUVWXYZ'"/>
 
     <xsl:value-of select="translate($string, $upper, $lower)"/>
+  </xsl:template>
+
+  <!--
+      @template lx:is_string
+      Return true if the input string starts and ends with '.
+    -->
+  <xsl:template name="lx:is_string">
+    <!-- @param the string to test -->
+    <xsl:param name="string"/>
+
+    <xsl:value-of select="starts-with($string, $LX_QUOTE) and not(substring-after($string, $LX_QUOTE))"/>
+  </xsl:template>
+
+  <!--
+      @template lx:is_number
+      Return true if the input object is a number.
+    -->
+  <xsl:template name="lx:is_number">
+    <!-- @param the input object to test -->
+    <xsl:param name="input"/>
+
+    <xsl:value-of select="$input = number($input)"/>
+  </xsl:template>
+
+  <!--
+      @template lx:is_integer
+      Return true if the input object is an interger.
+    -->
+  <xsl:template name="lx:is_integer">
+    <xsl:param name="input"/>
+
+    <xsl:value-of select="ceiling(number($input)) = $input"/>
+  </xsl:template>
+
+  <!--
+      @template lx:is_boolean
+      Return true if the input object is a boolean.
+    -->
+  <xsl:template name="lx:is_boolean">
+    <xsl:param name="input"/>
+
+    <xsl:value-of select="$input = 'true' or $input = 'false'"/>
+  </xsl:template>
+
+  <xsl:template name="lx:typeof">
+    <xsl:param name="input"/>
+
+    <xsl:variable name="isInteger">
+      <xsl:call-template name="lx:is_integer">
+	<xsl:with-param name="input" select="$input"/>
+      </xsl:call-template>
+    </xsl:variable>
+
+    <xsl:variable name="isBoolean">
+      <xsl:call-template name="lx:is_boolean">
+	<xsl:with-param name="input" select="$input"/>
+      </xsl:call-template>
+    </xsl:variable>
+
+    <xsl:choose>
+      <xsl:when test="$isInteger = 'true'">integer</xsl:when>
+      <xsl:when test="$isBoolean = 'true'">boolean</xsl:when>
+      <xsl:otherwise>string</xsl:otherwise>
+    </xsl:choose>
   </xsl:template>
 
 </xsl:stylesheet>

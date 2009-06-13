@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="/views/lx-doc.xsl"?>
 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-		xmlns:lx="http://lx.promethe.net"
+		xmlns:lx="http://lx.aerys.in"
                 version="1.0">
 
   <xsl:output omit-xml-declaration="yes"
@@ -13,7 +13,7 @@
   <xsl:strip-space elements="*"/>
 
   <xsl:include href="lx-mysql.xsl"/>
-  <xsl:include href="lx.xsl"/>
+  <xsl:include href="lx-std.xsl"/>
 
   <xsl:template match="/">
     <xsl:value-of select="concat($LX_LT, '?php', $LX_LF, ' ')"/>

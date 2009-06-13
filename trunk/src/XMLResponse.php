@@ -27,7 +27,7 @@ class XMLResponse
 
     $this->document = new DOMDocument('1.0', 'utf-8');
     $this->rootNode = $this->document->createElement('lx:response');
-    $this->rootNode->setAttribute('xmlns:lx', 'http://lx.promethe.net');
+    $this->rootNode->setAttribute('xmlns:lx', LX_NAMESPACE);
     $this->document->appendChild($this->rootNode);
   }
 

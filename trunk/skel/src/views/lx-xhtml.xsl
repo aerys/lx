@@ -3,7 +3,7 @@
 
 <xsl:stylesheet version="1.0"
 		xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-		xmlns:lx="http://lx.promethe.net"
+		xmlns:lx="http://lx.aerys.in"
 		id="LX XHTML Library">
 
   <xsl:output method="html"
@@ -13,7 +13,8 @@
 	      indent="yes"
 	      encoding="unicode"/>
 
-  <xsl:include href="lx.xsl"/>
+  <xsl:include href="lx-std.xsl"/>
+  <xsl:include href="lx-response.xsl"/>
 
   <xsl:template match="/">
     <html>
@@ -29,21 +30,19 @@
     </html>
   </xsl:template>
 
-  <xsl:template match="@* | node()">
-    <xsl:choose>
-      <xsl:when test="ancestor::lx:response">
-	<xsl:copy>
-	  <xsl:apply-templates select="@*"/>
-	</xsl:copy>
-	<xsl:apply-templates select="node()"/>
-      </xsl:when>
-      <xsl:otherwise>
-	<xsl:copy>
-	  <xsl:apply-templates select="@* | node()"/>
-	</xsl:copy>
-      </xsl:otherwise>
-    </xsl:choose>
+  <!-- BEGIN IDENTITY -->
+  <xsl:template match="*">
+    <xsl:element name="{name()}">
+      <xsl:apply-templates select="@*|node()"/>
+    </xsl:element>
   </xsl:template>
+
+  <xsl:template match="@*|text()|comment()|processing-instruction()">
+    <xsl:copy>
+      <xsl:apply-templates select="@*|node()"/>
+    </xsl:copy>
+  </xsl:template>
+  <!-- END IDENTITY -->
 
   <xsl:template match="lx:controller">
     <xsl:apply-templates select="node()"/>
@@ -70,6 +69,7 @@
 
     <script language="javascript" type="text/javascript"
 	    src="/javascript/class/{$name}.js"></script>
+    <xsl:value-of select="$LX_LF"/>
   </xsl:template>
 
   <!--
@@ -83,6 +83,7 @@
 
     <script language="javascript" type="text/javascript"
 	    src="/javascript/libs/{$name}.js"></script>
+    <xsl:value-of select="$LX_LF"/>
   </xsl:template>
 
   <!--
@@ -95,8 +96,9 @@
     <xsl:param name="script" select="."/>
 
     <script language="javascript" type="text/javascript">
-      <xsl:value-of select="$script"/>
+      <xsl:value-of select="normalize-space($script)"/>
     </script>
+    <xsl:value-of select="$LX_LF"/>
   </xsl:template>
 
   <!--
@@ -109,6 +111,7 @@
     <xsl:param name="name" select="@name"/>
 
     <link rel="stylesheet" type="text/css" href="/styles/default/{$name}.css"/>
+    <xsl:value-of select="$LX_LF"/>
   </xsl:template>
 
   <!--

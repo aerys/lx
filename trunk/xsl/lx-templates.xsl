@@ -1,7 +1,7 @@
-<?xml version='1.0' encoding='UTF-8'?>
+<?xml version="1.0" encoding="utf-8"?>
 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-		xmlns:lx="http://lx.promethe.net"
+		xmlns:lx="http://lx.aerys.in"
                 version="1.0">
 
   <xsl:variable name="LX_QUOTE">'</xsl:variable>

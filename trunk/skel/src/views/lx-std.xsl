@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <?xml-stylesheet type="text/xsl" href="lx-doc.xsl"?>
 
 <xsl:stylesheet version="1.0"
 		xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-		xmlns:lx="http://lx.promethe.net"
+		xmlns:lx="http://lx.aerys.in"
 		id="LX Standard Library">
 
   <xsl:variable name="LX_QUOTE">'</xsl:variable>
