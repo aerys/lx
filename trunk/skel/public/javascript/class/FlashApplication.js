@@ -32,7 +32,7 @@ FlashApplication.DEFAULT_MERGEMODE			= FlashApplication.MERGEMODE_FULL;
 
 FlashApplication.DEFAULT_REQUIRED_MAJOR_VERSION		= 10;
 FlashApplication.DEFAULT_REQUIRED_MINOR_VERSION		= 0;
-FlashApplication.DEFAULT_REQUIRED_REVISION		= 0;
+FlashApplication.DEFAULT_REQUIRED_REVISION		= 22;
 /* ! STATIC */
 
 /* VARS */
