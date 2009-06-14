@@ -34,12 +34,13 @@ class LX
   {
     $url = 'http://' . $_SERVER['HTTP_HOST'];
 
-    $url .= LX_DOCUMENT_ROOT;
+    if (LX_DOCUMENT_ROOT != '/')
+      $url .= LX_DOCUMENT_ROOT . '/';
 
     if ($my_module)
-      $url .= '/' . $my_module;
+      $url .= $my_module . '/';
     if ($my_controller)
-      $url .= '/' . $my_controller;
+      $url .= $my_controller;
     if ($my_action)
       $url .= '/' . $my_action;
 
