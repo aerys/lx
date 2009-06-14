@@ -33,7 +33,7 @@ class Dispatcher
       $filters		= array();
       $request		= $_SERVER['REDIRECT_URL'];
 
-      if (defined('LX_DOCUMENT_ROOT'))
+      if (LX_DOCUMENT_ROOT != '/')
 	$request = str_replace(LX_DOCUMENT_ROOT, '', $request);
 
       preg_match_all("/\/(\w+)/", $request, $params);

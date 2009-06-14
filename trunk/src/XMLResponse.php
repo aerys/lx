@@ -99,7 +99,7 @@ class XMLResponse
   {
     $time = (microtime() - $this->start_time) * 1000000;
 
-    $xsl = LX_DOCUMENT_ROOT . '/views/' . $this->media . '/templates/' . $this->view . '.xsl';
+    $xsl = LX_DOCUMENT_ROOT . 'views/' . $this->media . '/templates/' . $this->view . '.xsl';
     $pAttr = 'type="text/xsl" href="' . $xsl . '"';
     $xslNode = $this->document->createProcessingInstruction('xml-stylesheet',
 							    $pAttr);

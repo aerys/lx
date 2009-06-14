@@ -19,7 +19,15 @@
   <xsl:template match="/">
     <html>
       <head>
-	<base href="http://{$LX_RESPONSE/@host}/{$LX_RESPONSE/@document-root}/"/>
+	<base>
+	  <xsl:attribute name="href">
+	    <xsl:text>http://</xsl:text>
+	    <xsl:value-of select="$LX_RESPONSE/@host"/>
+	    <xsl:if test="$LX_RESPONSE/@document-root != '/'">
+	      <xsl:value-of select="$LX_RESPONSE/@document-root"/>
+	    </xsl:if>
+	  </xsl:attribute>
+	</base>
 	<xsl:apply-templates select="$LX_LAYOUT/head/*"/>
 	<xsl:apply-templates select="$LX_VIEW/head/*"/>
       </head>
