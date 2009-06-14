@@ -32,7 +32,7 @@ class LX
 				  $my_action		= NULL,
 				  $my_arguments		= NULL)
   {
-    $url = '/';
+    $url = 'http://' . $_SERVER['HTTP_HOST'];
 
     if (defined('LX_DOCUMENT_ROOT'))
       $url .= LX_DOCUMENT_ROOT . '/';
