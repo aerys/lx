@@ -8,6 +8,9 @@ if (!defined('LX_ROOT'))
 if (!defined('LX_TIMEZONE'))
   define('LX_TIMEZONE', 'Europe/Paris');
 
+if (!defined('LX_DOCUMENT_ROOT'))
+  define('LX_DOCUMENT_ROOT', '/');
+
 date_default_timezone_set(LX_TIMEZONE);
 
 define('LX_SRC',	LX_ROOT . '/src');

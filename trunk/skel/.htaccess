@@ -2,9 +2,9 @@ Options +FollowSymLinks
 
 RewriteEngine On
 
-RewriteCond %{REQUEST_URI} !^/public.*
+RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_URI} ^(.*)\.(js|css|xml|xsl|png|jpg|gif|ico|swf|3ds)
-RewriteRule ^.*$ public/%1\.%2 [L]
+RewriteRule ^(.*)\.([A-Za-z0-9]{0,3})$ public/$1\.$2 [L]
 
-RewriteCond %{REQUEST_URI} !^/public.*
+RewriteCond %{REQUEST_FILENAME} !-f
 RewriteRule ^.*$ public/lx-dispatch.php [QSA,L]

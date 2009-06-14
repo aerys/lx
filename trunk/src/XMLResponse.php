@@ -9,12 +9,11 @@ class XMLResponse
   protected $layout	= 'index';
   protected $view	= 'default';
 
-  protected $time	= 0;
+  protected $start_time	= 0;
 
   public function setView($my_view)	{$this->view = $my_view;}
   public function setLayout($my_layout)	{$this->layout = $my_layout;}
   public function setMedia($my_media)	{$this->media = $my_media;}
-  public function setTime($my_time)	{$this->time = $my_time;}
 
   public function getDocument()		{return ($this->document);}
   public function getView()		{return ($this->view);}
@@ -25,9 +24,18 @@ class XMLResponse
   {
     header('Content-type: text/xml; charset="utf-8"');
 
+    $this->start_time = microtime();
+
     $this->document = new DOMDocument('1.0', 'utf-8');
+
     $this->rootNode = $this->document->createElement('lx:response');
     $this->rootNode->setAttribute('xmlns:lx', LX_NAMESPACE);
+    $this->rootNode->setAttribute('host', $_SERVER['HTTP_HOST']);
+    $this->rootNode->setAttribute('date', time());
+
+    if (defined('LX_DOCUMENT_ROOT'))
+    $this->rootNode->setAttribute('document-root', LX_DOCUMENT_ROOT);
+
     $this->document->appendChild($this->rootNode);
   }
 
@@ -87,10 +95,11 @@ class XMLResponse
     $this->rootNode->appendChild($node);
   }
 
-  protected function prepareSave()
+  protected function finalize()
   {
-    $xsl = (defined('LX_DOCUMENT_ROOT') ? '/' . LX_DOCUMENT_ROOT . '/' : '/')
-      . 'views/' . $this->media . '/templates/' . $this->view . '.xsl';
+    $time = (microtime() - $this->start_time) * 1000000;
+
+    $xsl = LX_DOCUMENT_ROOT . '/views/' . $this->media . '/templates/' . $this->view . '.xsl';
     $pAttr = 'type="text/xsl" href="' . $xsl . '"';
     $xslNode = $this->document->createProcessingInstruction('xml-stylesheet',
 							    $pAttr);
@@ -101,12 +110,12 @@ class XMLResponse
     $this->rootNode->setAttribute('media', $this->media);
     $this->rootNode->setAttribute('layout', $this->layout);
     $this->rootNode->setAttribute('view', $this->view);
-    $this->rootNode->setAttribute('time', $this->time);
+    $this->rootNode->setAttribute('time', $time);
   }
 
   public function save($my_filename	= NULL)
   {
-    $this->prepareSave();
+    $this->finalize();
 
     if ($my_filename != NULL)
       return ($this->document->saveXML($my_filename));

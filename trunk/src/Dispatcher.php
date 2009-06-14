@@ -2,13 +2,11 @@
 
 class Dispatcher
 {
-  protected $start_time	= 0;
   protected $response	= NULL;
   protected $testXSL	= false;
 
   public function Dispatcher()
   {
-    $this->start_time = microtime();
     $this->testXSL = empty($_SESSION['LX_OUTPUT']);
 
     if (isset($_GET['LX_OUTPUT']))
@@ -36,14 +34,7 @@ class Dispatcher
       $request		= $_SERVER['REDIRECT_URL'];
 
       if (defined('LX_DOCUMENT_ROOT'))
-	$request = str_replace('/' . LX_DOCUMENT_ROOT, '', $request);
-
-
-      //echo $request;
-
-      //$params		= explode('/', substr($_SERVER['REDIRECT_URL'], 1));
-
-      //var_dump($_SERVER);
+	$request = str_replace(LX_DOCUMENT_ROOT, '', $request);
 
       preg_match_all("/\/(\w+)/", $request, $params);
       $params = $params[1];
@@ -112,7 +103,7 @@ class Dispatcher
       LX::getResponse()->appendException($e);
     }
 
-    $this->response->setTime((microtime() - $this->start_time) * 1000);
+
     // send response
     echo LX::getResponse()->save();
   }

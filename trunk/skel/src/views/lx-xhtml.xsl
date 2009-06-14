@@ -19,6 +19,7 @@
   <xsl:template match="/">
     <html>
       <head>
+	<base href="http://{$LX_RESPONSE/@host}/{$LX_RESPONSE/@document-root}/"/>
 	<xsl:apply-templates select="$LX_LAYOUT/head/*"/>
 	<xsl:apply-templates select="$LX_VIEW/head/*"/>
       </head>
@@ -70,7 +71,7 @@
     <xsl:param name="name" select="@name"/>
 
     <script language="javascript" type="text/javascript"
-	    src="/javascript/class/{$name}.js"></script>
+	    src="javascript/class/{$name}.js"></script>
     <xsl:value-of select="$LX_LF"/>
   </xsl:template>
 
@@ -84,7 +85,7 @@
     <xsl:param name="name" select="@name"/>
 
     <script language="javascript" type="text/javascript"
-	    src="/javascript/libs/{$name}.js"></script>
+	    src="javascript/libs/{$name}.js"></script>
     <xsl:value-of select="$LX_LF"/>
   </xsl:template>
 
@@ -112,7 +113,7 @@
     <!-- @param name of the CSS stylesheet -->
     <xsl:param name="name" select="@name"/>
 
-    <link rel="stylesheet" type="text/css" href="/styles/default/{$name}.css"/>
+    <link rel="stylesheet" type="text/css" href="styles/default/{$name}.css"/>
     <xsl:value-of select="$LX_LF"/>
   </xsl:template>
 
@@ -149,11 +150,12 @@
 
     <xsl:variable name="url">
       <xsl:if test="$module">
-	<xsl:text>/</xsl:text>
 	<xsl:value-of select="$module"/>
+	<xsl:if test="$controller">
+	  <xsl:text>/</xsl:text>
+	</xsl:if>
       </xsl:if>
       <xsl:if test="$controller">
-	<xsl:text>/</xsl:text>
 	<xsl:value-of select="$controller"/>
       </xsl:if>
       <xsl:if test="$action">
@@ -271,9 +273,7 @@
 
     <xsl:variable name="id" select="concat('flash_', generate-id())"/>
     <xsl:variable name="url">
-      <xsl:if test="not(starts-with($name, '/'))">
-        <xsl:text>/flash/</xsl:text>
-      </xsl:if>
+      <xsl:text>flash/</xsl:text>
       <xsl:value-of select="$name"/>
     </xsl:variable>
 
