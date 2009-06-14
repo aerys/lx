@@ -34,8 +34,7 @@ class LX
   {
     $url = 'http://' . $_SERVER['HTTP_HOST'];
 
-    if (defined('LX_DOCUMENT_ROOT'))
-      $url .= LX_DOCUMENT_ROOT . '/';
+    $url .= LX_DOCUMENT_ROOT . '/';
 
     if ($my_module)
       $url .= $my_module . '/';
