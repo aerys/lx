@@ -79,14 +79,14 @@ URLRequest.prototype._onReadyStateChange = function()
 		{
 			if (xml.getElementsByTagNameNS)
 			{
-			   exceptions = xml.getElementsByTagNameNS("http://lx.promethe.net",
+			   exceptions = xml.getElementsByTagNameNS("http://lx.aerys.in",
 			                                           "error");
 			}
 			else
 			{
 			    exceptions = xml.getElementsByTagName("lx:error");
 			}
-	
+
 			if (exceptions.length)
 			{
 			    //alert(this.getResponseText());
@@ -115,12 +115,12 @@ URLRequest.prototype.send = function(my_async)
 
     for (var param in this._data)
 	if (this._data[param] != "")
-		if (this._data[param])
-			params += (params ? "&" : "") + param + "=" + this._data[param];
+	    if (this._data[param] != null)
+		params += (params ? "&" : "") + param + "=" + this._data[param];
 
     if (this._method == URLRequest.METHOD_GET && params != "")
 	url += "?" + params;
-    
+
     /* BEGIN FIREFOX ONLY */
     // Enable security privileges for filesystem ('file://...') requests
     if (window.location.href.substring(0, 5) == "file:"

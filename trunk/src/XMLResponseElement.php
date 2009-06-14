@@ -17,6 +17,10 @@ class XMLResponseElement
     $this->fragment->appendXML($my_data);
   }
 
+  protected function appendChild($my_child)
+  {
+    $this->fragment->appendChild($my_child);
+  }
 
 }
 

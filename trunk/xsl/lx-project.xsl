@@ -8,7 +8,7 @@
 	      method="text"
 	      encoding="utf-8"/>
 
-  <xsl:include href="lx.xsl"/>
+  <xsl:include href="lx-std.xsl"/>
 
   <xsl:template match="lx:project">
     <!-- <?php -->

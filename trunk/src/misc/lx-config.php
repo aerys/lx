@@ -5,6 +5,11 @@ define('LX_NAMESPACE', 'http://lx.aerys.in');
 if (!defined('LX_ROOT'))
   define('LX_ROOT', realpath('..'));
 
+if (!defined('LX_TIMEZONE'))
+  define('LX_TIMEZONE', 'Europe/Paris');
+
+date_default_timezone_set(LX_TIMEZONE);
+
 define('LX_SRC',	LX_ROOT . '/src');
 define('LX_SCRIPTS',	LX_ROOT . '/scripts');
 define('LX_XSL',	LX_ROOT . '/xsl');

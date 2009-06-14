@@ -32,9 +32,11 @@
 
   <!-- BEGIN IDENTITY -->
   <xsl:template match="*">
-    <xsl:element name="{name()}">
-      <xsl:apply-templates select="@*|node()"/>
-    </xsl:element>
+    <xsl:if test="not(ancestor::lx:response)">
+      <xsl:element name="{name()}">
+	<xsl:apply-templates select="@*|node()"/>
+      </xsl:element>
+    </xsl:if>
   </xsl:template>
 
   <xsl:template match="@*|text()|comment()|processing-instruction()">
@@ -96,7 +98,7 @@
     <xsl:param name="script" select="."/>
 
     <script language="javascript" type="text/javascript">
-      <xsl:value-of select="normalize-space($script)"/>
+      <xsl:value-of select="$script"/>
     </script>
     <xsl:value-of select="$LX_LF"/>
   </xsl:template>
