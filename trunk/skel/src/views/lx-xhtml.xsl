@@ -25,8 +25,8 @@
 	    <xsl:value-of select="$LX_RESPONSE/@host"/>
 	    <xsl:if test="$LX_RESPONSE/@document-root != '/'">
 	      <xsl:value-of select="$LX_RESPONSE/@document-root"/>
-	      <xsl:text>/</xsl:text>
 	    </xsl:if>
+	    <xsl:text>/</xsl:text>
 	  </xsl:attribute>
 	</base>
 	<xsl:apply-templates select="$LX_LAYOUT/head/*"/>
