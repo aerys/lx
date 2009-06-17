@@ -9,10 +9,9 @@ class Dispatcher
   {
     $this->testXSL = empty($_SESSION['LX_OUTPUT']);
 
-    if (isset($_GET['LX_OUTPUT']))
-      $_SESSION['LX_OUTPUT'] = $_GET['LX_OUTPUT'] == 'xhtml' ? 'xhtml' : 'xml';
+    $_SESSION['LX_OUTPUT'] = isset($_GET['LX_OUTPUT']) ? $_GET['LX_OUTPUT'] : 'xsl';
 
-    if (isset($_SESSION['LX_OUTPUT']) && $_SESSION['LX_OUTPUT'] == 'xhtml')
+    if ($_SESSION['LX_OUTPUT'] == 'xhtml')
       $this->response = new XHTMLResponse();
     else
       $this->response = new XMLResponse();

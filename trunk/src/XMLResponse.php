@@ -99,13 +99,17 @@ class XMLResponse
   {
     $time = (microtime() - $this->start_time) * 1000000;
 
-    $xsl = (LX_DOCUMENT_ROOT != '/' ? LX_DOCUMENT_ROOT . '/' : '/')
-      . 'views/' . $this->media . '/templates/' . $this->view . '.xsl';
-    $pAttr = 'type="text/xsl" href="' . $xsl . '"';
-    $xslNode = $this->document->createProcessingInstruction('xml-stylesheet',
-							    $pAttr);
+    if ($_SESSION['LX_OUTPUT'] == 'xsl')
+    {
+      $xsl = (LX_DOCUMENT_ROOT != '/' ? LX_DOCUMENT_ROOT . '/' : '/')
+	. 'views/' . $this->media . '/templates/' . $this->view . '.xsl';
+      $pAttr = 'type="text/xsl" href="' . $xsl . '"';
+      $xslNode = $this->document->createProcessingInstruction('xml-stylesheet',
+							      $pAttr);
 
-    $this->document->insertBefore($xslNode, $this->rootNode);
+
+      $this->document->insertBefore($xslNode, $this->rootNode);
+    }
 
     // update the root node
     $this->rootNode->setAttribute('media', $this->media);
