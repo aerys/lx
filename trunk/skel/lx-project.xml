@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<lx:project xmlns:lx="http://lx.promethe.net">
+<lx:project xmlns:lx="http://lx.aerys.in">
 
   <lx:const name="LX_ROOT" value="'/var/www/lx'"/>
   <lx:const name="LX_APPLICATION_ROOT" value="'/path/to/application'"/>
