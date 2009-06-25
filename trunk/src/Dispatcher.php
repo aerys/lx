@@ -9,7 +9,7 @@ class Dispatcher
   {
     $this->testXSL = empty($_SESSION['LX_OUTPUT']);
 
-    $_SESSION['LX_OUTPUT'] = isset($_GET['LX_OUTPUT']) ? $_GET['LX_OUTPUT'] : 'xsl';
+    $_SESSION['LX_OUTPUT'] = isset($_GET['LX_OUTPUT']) ? $_GET['LX_OUTPUT'] : LX_DEFAULT_OUTPUT;
 
     if ($_SESSION['LX_OUTPUT'] == 'xhtml')
       $this->response = new XHTMLResponse();
@@ -35,7 +35,7 @@ class Dispatcher
       if (LX_DOCUMENT_ROOT != '/')
 	$request = str_replace(LX_DOCUMENT_ROOT, '', $request);
 
-      preg_match_all("/\/(\w+)/", $request, $params);
+      preg_match_all("/\/([^\/]+)/", $request, $params);
       $params = $params[1];
 
       // module

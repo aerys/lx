@@ -11,6 +11,9 @@ if (!defined('LX_TIMEZONE'))
 if (!defined('LX_DOCUMENT_ROOT'))
   define('LX_DOCUMENT_ROOT', '/');
 
+if (!defined('LX_DEFAULT_OUTPUT'))
+  define('LX_DEFAULT_OUTPUT', 'xsl');
+
 date_default_timezone_set(LX_TIMEZONE);
 
 define('LX_SRC',	LX_ROOT . '/src');
