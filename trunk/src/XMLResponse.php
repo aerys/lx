@@ -32,6 +32,7 @@ class XMLResponse
     $this->rootNode->setAttribute('xmlns:lx', LX_NAMESPACE);
     $this->rootNode->setAttribute('host', $_SERVER['HTTP_HOST']);
     $this->rootNode->setAttribute('date', time());
+    $this->rootNode->setAttribute('output', $_SESSION['LX_OUTPUT']);
 
     if (defined('LX_DOCUMENT_ROOT'))
     $this->rootNode->setAttribute('document-root', LX_DOCUMENT_ROOT);

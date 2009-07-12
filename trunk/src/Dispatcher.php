@@ -3,13 +3,18 @@
 class Dispatcher
 {
   protected $response	= NULL;
-  protected $testXSL	= false;
 
   public function Dispatcher()
   {
-    $this->testXSL = empty($_SESSION['LX_OUTPUT']);
-
-    $_SESSION['LX_OUTPUT'] = isset($_GET['LX_OUTPUT']) ? $_GET['LX_OUTPUT'] : LX_DEFAULT_OUTPUT;
+    if (isset($_GET['LX_OUTPUT']))
+    {
+      $_SESSION['LX_OUTPUT'] = $_GET['LX_OUTPUT'];
+      exit ;
+    }
+    else
+    {
+      $_SESSION['LX_OUTPUT'] = LX_DEFAULT_OUTPUT;
+    }
 
     if ($_SESSION['LX_OUTPUT'] == 'xhtml')
       $this->response = new XHTMLResponse();

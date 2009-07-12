@@ -29,8 +29,14 @@
 	    <xsl:text>/</xsl:text>
 	  </xsl:attribute>
 	</base>
-	<xsl:apply-templates select="$LX_LAYOUT/head/*"/>
-	<xsl:apply-templates select="$LX_VIEW/head/*"/>
+
+	<title>
+	  <xsl:apply-templates select="$LX_LAYOUT/head/lx:title | $LX_VIEW/head/lx:title"/>
+	</title>
+
+	<xsl:apply-templates select="$LX_LAYOUT/head/*[name() != 'lx:title']"/>
+	<xsl:apply-templates select="$LX_VIEW/head/*[name() != 'lx:title']"/>
+
       </head>
       <body>
 	<xsl:copy-of select="$LX_LAYOUT/body/@* | $LX_VIEW/body/@*"/>
@@ -56,10 +62,29 @@
   </xsl:template>
   <!-- END IDENTITY -->
 
+  <!--
+      @template lx:controller
+      Default controller pattern.
+    -->
   <xsl:template match="lx:controller">
     <xsl:apply-templates select="node()"/>
   </xsl:template>
 
+  <!--
+      @template lx:title
+      Set/concatenate the <title> value.
+    -->
+  <xsl:template match="lx:title"
+		name="lx:title">
+    <!-- @param the title to set/concatenate -->
+    <xsl:param name="content" select="node()"/>
+
+    <xsl:apply-templates select="$content" />
+  </xsl:template>
+
+  <!--
+      @template lx:error
+    -->
   <xsl:template match="lx:error">
     <div class="error">
       <em>ERROR: </em>
@@ -172,19 +197,19 @@
 	<xsl:value-of select="$action"/>
       </xsl:if>
       <xsl:call-template name="lx:foreach">
-	<xsl:with-param name="begin" select="'?'"/>
-	<xsl:with-param name="delimiter" select="','"/>
+	<xsl:with-param name="begin" select="'/'"/>
+	<xsl:with-param name="delimiter" select="'/'"/>
 	<xsl:with-param name="collection" select="$arguments"/>
       </xsl:call-template>
     </xsl:variable>
 
     <a href="{$url}">
       <xsl:choose>
-	<xsl:when test="node()[name() != 'lx:argument']">
-	  <xsl:apply-templates select="node()[name() != 'lx:argument']"/>
+	<xsl:when test="$content = string($content)">
+	  <xsl:value-of select="$content"/>
 	</xsl:when>
 	<xsl:otherwise>
-	  <xsl:value-of select="$content"/>
+	  <xsl:apply-templates select="$content"/>
 	</xsl:otherwise>
       </xsl:choose>
     </a>

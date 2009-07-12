@@ -47,6 +47,17 @@
   </xsl:template>
 
   <!--
+      @template lx:text
+      See <xsl:text>.
+    -->
+  <xsl:template match="lx:text">
+    <!-- @param the output text -->
+    <xsl:param name="content" select="."/>
+
+    <xsl:value-of select="$content"/>
+  </xsl:template>
+
+  <!--
       @template lx:nl2br
       Translate every \n into <br /> tags.
     -->
