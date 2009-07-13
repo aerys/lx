@@ -7,7 +7,7 @@
 		id="LX XHTML Library">
 
   <xsl:output method="html"
-	      version="4.01"
+	      version="4.0"
 	      omit-xml-declaration="yes"
 	      doctype-public="-//W3C//DTD HTML 4.01 Transitional//EN"
 	      doctype-system="http://www.w3.org/TR/html4/loose.dtd"
@@ -32,15 +32,15 @@
 	</base>
 
 	<title>
-	  <xsl:apply-templates select="$LX_LAYOUT/head/lx:title | $LX_VIEW/head/lx:title"/>
+	  <xsl:apply-templates select="$LX_LAYOUT/head/lx:title | $LX_TEMPLATE/head/lx:title"/>
 	</title>
 
 	<xsl:apply-templates select="$LX_LAYOUT/head/*[name() != 'lx:title']"/>
-	<xsl:apply-templates select="$LX_VIEW/head/*[name() != 'lx:title']"/>
+	<xsl:apply-templates select="$LX_TEMPLATE/head/*[name() != 'lx:title']"/>
 
       </head>
       <body>
-	<xsl:copy-of select="$LX_LAYOUT/body/@* | $LX_VIEW/body/@*"/>
+	<xsl:copy-of select="$LX_LAYOUT/body/@* | $LX_TEMPLATE/body/@*"/>
 
 	<xsl:apply-templates select="$LX_LAYOUT/body/node()"/>
       </body>
@@ -267,13 +267,9 @@
 	<xsl:apply-templates select="$LX_RESPONSE/lx:error"/>
       </xsl:when>
       <xsl:otherwise>
-	<xsl:apply-templates select="$LX_VIEW/body"/>
+	<xsl:apply-templates select="$LX_TEMPLATE/body/node()"/>
       </xsl:otherwise>
     </xsl:choose>
-  </xsl:template>
-
-  <xsl:template match="lx:view/body">
-    <xsl:apply-templates select="node()"/>
   </xsl:template>
 
   <!--

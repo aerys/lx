@@ -5,20 +5,20 @@ class XMLResponse
   protected $document	= NULL;
   protected $rootNode	= NULL;
 
-  protected $media	= 'default';
-  protected $layout	= 'index';
   protected $view	= 'default';
+  protected $layout	= 'index';
+  protected $template	= 'default';
 
   protected $start_time	= 0;
 
   public function setView($my_view)	{$this->view = $my_view;}
   public function setLayout($my_layout)	{$this->layout = $my_layout;}
-  public function setMedia($my_media)	{$this->media = $my_media;}
+  public function setTemplate($my_temp)	{$this->template = $my_temp;}
 
   public function getDocument()		{return ($this->document);}
   public function getView()		{return ($this->view);}
   public function getLayout()		{return ($this->layout);}
-  public function getMedia()		{return ($this->media);}
+  public function getTemplate()		{return ($this->template);}
 
   public function XMLResponse()
   {
@@ -103,7 +103,7 @@ class XMLResponse
     if ($_SESSION['LX_OUTPUT'] == 'xsl')
     {
       $xsl = (LX_DOCUMENT_ROOT != '/' ? LX_DOCUMENT_ROOT . '/' : '/')
-	. 'views/' . $this->media . '/templates/' . $this->view . '.xsl';
+	. 'views/' . $this->view . '/templates/' . $this->template . '.xsl';
       $pAttr = 'type="text/xsl" href="' . $xsl . '"';
       $xslNode = $this->document->createProcessingInstruction('xml-stylesheet',
 							      $pAttr);
@@ -113,9 +113,9 @@ class XMLResponse
     }
 
     // update the root node
-    $this->rootNode->setAttribute('media', $this->media);
-    $this->rootNode->setAttribute('layout', $this->layout);
     $this->rootNode->setAttribute('view', $this->view);
+    $this->rootNode->setAttribute('layout', $this->layout);
+    $this->rootNode->setAttribute('template', $this->template);
     $this->rootNode->setAttribute('time', $time);
   }
 

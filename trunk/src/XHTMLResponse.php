@@ -17,13 +17,15 @@ class XHTMLResponse extends XMLResponse
     $xml->loadXML($xml_text);
 
     $xsl = new DOMDocument();
-    $xsl->load(LX_APPLICATION_ROOT . '/src/views/' . $this->media
-	       . '/templates/' . $this->view . '.xsl');
+    $xsl->load(LX_APPLICATION_ROOT . '/src/views/' . $this->view
+	       . '/templates/' . $this->template . '.xsl');
 
     $processor = new XSLTProcessor();
     $processor->importStyleSheet($xsl);
 
     $result = $processor->transformToDoc($xml);
+
+    $result->save(LX_APPLICATION_ROOT . '/tmp/test.html');
 
     return ($result->saveHTML());
   }

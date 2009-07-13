@@ -6,17 +6,17 @@
 		id="LX XML Response Utilities">
 
   <xsl:param name="LX_RESPONSE" select="/lx:response"/>
-  <xsl:param name="LX_MEDIA" select="/lx:response/@media"/>
+  <xsl:param name="LX_VIEW" select="$LX_RESPONSE/@view"/>
 
-  <xsl:param name="LX_LAYOUT_NAME" select="/lx:response/@layout"/>
-  <xsl:param name="LX_LAYOUT_FILE" select="concat($LX_MEDIA, '/layouts/', $LX_LAYOUT_NAME, '.xml')"/>
+  <xsl:param name="LX_LAYOUT_NAME" select="$LX_RESPONSE/@layout"/>
+  <xsl:param name="LX_LAYOUT_FILE" select="concat($LX_VIEW, '/layouts/', $LX_LAYOUT_NAME, '.xml')"/>
   <xsl:param name="LX_LAYOUT" select="document($LX_LAYOUT_FILE)/lx:layout"/>
 
-  <xsl:param name="LX_CONTROLLER" select="/lx:response/lx:controller"/>
+  <xsl:param name="LX_CONTROLLER" select="$LX_RESPONSE/lx:controller"/>
 
-  <xsl:param name="LX_VIEW_NAME" select="/lx:response/@view"/>
-  <xsl:param name="LX_VIEW_FILE" select="concat($LX_MEDIA, '/templates/', $LX_VIEW_NAME, '.xml')"/>
-  <xsl:param name="LX_VIEW" select="document($LX_VIEW_FILE)/lx:view"/>
+  <xsl:param name="LX_TEMPLATE_NAME" select="$LX_RESPONSE/@template"/>
+  <xsl:param name="LX_TEMPLATE_FILE" select="concat($LX_VIEW, '/templates/', $LX_TEMPLATE_NAME, '.xml')"/>
+  <xsl:param name="LX_TEMPLATE" select="document($LX_TEMPLATE_FILE)/lx:template"/>
 
   <xsl:variable name="LX_FILTERS" select="$LX_RESPONSE/lx:filter"/>
 

@@ -91,11 +91,11 @@ class Dispatcher
     catch (FilterException $e)
     {
       if ($e->getView())
-	LX::getResponse()->setView($e->getView());
+	LX::setView($e->getView());
       if ($e->getLayout())
-	LX::getResponse()->setView($e->getLayout());
-      if ($e->getMedia())
-	LX::getResponse()->setView($e->getMedia());
+	LX::setLayout($e->getLayout());
+      if ($e->getTemplate())
+	LX::setTemplate($e->getTemplate());
     }
     catch (ErrorException $e)
     {

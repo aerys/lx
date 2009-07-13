@@ -66,9 +66,9 @@ class LX
     self::$response->setLayout($my_layout);
   }
 
-  static public function setMedia($my_media)
+  static public function setTemplate($my_template)
   {
-    self::$response->setMedia($my_media);
+    self::$response->setTemplate($my_template);
   }
 }
 
