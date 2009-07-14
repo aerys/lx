@@ -7,7 +7,8 @@ function FlashApplication(my_src, my_id)
 	this.id = my_id;
 
     // generating random bridgeName
-    this.bridgeName = this.id + Math.round(Math.random() * 1000000);
+    //this.bridgeName = this.id + Math.round(Math.random() * 1000000);
+    this.bridgeName = 'flash';
 
     window[this.bridgeName] = this;
 }
@@ -92,15 +93,30 @@ FlashApplication.prototype.createHTML = function(objAttrs,
     if (FlashDetection.isIE && FlashDetection.isWin
 	&& !FlashDetection.isOpera)
     {
+	var object = document.createElement('object');
+
 	html += '<object ';
 
   	for (var i in objAttrs)
+	{
 	    if (objAttrs[i])
+	    {
+		object.setAttribute(i, objAttrs[i]);
   		html += i + '="' + objAttrs[i] + '" ';
+	    }
+	}
 	html += '>';
 
   	for (var i in params)
+	{
+	    var param = document.createElement(param);
+
+	    param.setAttribute('name', i);
+	    param.setAttribute('value', params[i]);
+
 	    html += '<param name="' + i + '" value="' + params[i] + '" />';
+	}
+	alert(object.innerHTML);
 	html += '</object>';
     }
     else
@@ -114,6 +130,7 @@ FlashApplication.prototype.createHTML = function(objAttrs,
 	html += '/>';
     }
 
+    alert(html);
     return (html);
 }
 
@@ -121,8 +138,10 @@ FlashApplication.prototype.run = function(myParent)
 {
     /* FABridge */
     if (this.useFABridge)
+    {
 	FABridge.addInitializationCallback(this.bridgeName,
 					   this.onApplicationReady.bind(this));
+    }
     /* ! FABridge */
 
     var hasProductInstall	= FlashDetection.detectFlashVersion(6, 0, 65);
@@ -134,36 +153,7 @@ FlashApplication.prototype.run = function(myParent)
     {
 	this.updateFlashPlayer(myParent);
     }
-    else if (hasRequestedVersion)
-    {
-	// if we've detected an acceptable version
-	// embed the Flash Content SWF when all tests are passed
-	var flashvars = "bridgeName=" + this.bridgeName + (this.flashvars ? "&" + this.flashvars : "");
-	var params = ["src",			this.src,
-		      "width",			this.width,
-		      "height",			this.height,
-		      "align",			this.align,
-		      "id",			this.id,
-		      "quality",		this.quality,
-		      "flashvars",		flashvars,
-		      "name",			this.id,
-		      "allowScriptAccess",	this.allowScriptAccess,
-	              "allowFullscreen",	this.allowFullscreen,
-		      "type", 			"application/x-shockwave-flash",
-		      "pluginspage", 		"http://www.adobe.com/go/getflashplayer",
-		      "wmode", 			this.wmode];
-
-	var ret = this.getArgs(params,
-			       ".swf",
-			       "movie",
-			       "clsid:d27cdb6e-ae6d-11cf-96b8-444553540000",
-			       "application/x-shockwave-flash");
-
-	myParent.innerHTML = this.createHTML(ret.objAttrs,
-					      ret.params,
-					      ret.embedAttrs);
-    }
-    else
+    else if (!hasRequestedVersion)
     {
 	// flash is too old or we can't detect the plugin
 	myParent.innerHTML = this.alternateContent; // insert non-flash content
@@ -183,7 +173,7 @@ FlashApplication.prototype.updateFlashPlayer = function(myParent)
     var flashvars = "MMredirectURL=" + MMredirectURL + '&MMplayerType='
 	+ MMPlayerType + '&MMdoctitle=' + MMdoctitle;
 
-	var params = ["src", 			"/flash/playerProductInstall",
+	var params = ["src", 			"flash/playerProductInstall",
 		      "flashvars", 		flashvars,
 		      "width", 			this.width,
 		      "height", 		this.height,

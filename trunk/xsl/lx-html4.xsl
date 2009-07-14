@@ -287,7 +287,7 @@
     -->
   <xsl:template match="lx:flash"
                 name="lx:flash">
-    <!-- @param ressource name (without '/flash/') of the SWF file -->
+    <!-- @param ressource name (without 'flash/' and '.swf') of the SWF file -->
     <xsl:param name="name" select="@name"/>
     <!-- @param javascript code to execute when the application is ready -->
     <xsl:param name="script" select="text()"/>
@@ -295,54 +295,59 @@
     <xsl:param name="width" select="@width"/>
     <!-- @param height of the application -->
     <xsl:param name="height" select="@height"/>
-    <!-- @param ommit the default .swf extension -->
-    <xsl:param name="ommit-extension" select="@ommit-extension"/>
     <!-- @param flashvars -->
     <xsl:param name="flashvars" select="@flashvars"/>
-    <!-- @param wmode -->
-    <xsl:param name="wmode" select="@wmode"/>
+    <!-- @param [opaque] wmode -->
+    <xsl:param name="wmode">
+      <xsl:value-of select="@wmode"/>
+      <xsl:if test="@wmode = ''">
+	<xsl:text>opaque</xsl:text>
+      </xsl:if>
+    </xsl:param>
 
     <xsl:variable name="id" select="concat('flash_', generate-id())"/>
-    <xsl:variable name="url">
+    <xsl:variable name="swf">
       <xsl:text>flash/</xsl:text>
       <xsl:value-of select="$name"/>
     </xsl:variable>
 
     <span id="{$id}">
+      <object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000"
+	      id="{$name}" width="{$width}" height="{$height}"
+	      codebase="http://fpdownload.macromedia.com/get/flashplayer/current/swflash.cab">
+	<param name="movie" value="{$swf}.swf" />
+	<param name="quality" value="high" />
+	<param name="allowScriptAccess" value="sameDomain" />
+	<param name="flashvars" value="{$flashvars}" />
+	<param name="wmode" value="{$wmode}" />
+	<embed src="{$swf}.swf"
+	       width="{$width}" height="{$height}" name="{$id}" align="middle"
+	       play="true"
+	       loop="false"
+	       flashvars="{$flashvars}"
+	       quality="high"
+	       allowScriptAccess="sameDomain"
+	       type="application/x-shockwave-flash"
+	       pluginspage="http://www.adobe.com/go/getflashplayer"
+               wmode="{$wmode}">
+	</embed>
+      </object>
+
     <xsl:call-template name="lx:javascript">
       <xsl:with-param name="script">
         <xsl:text>var app=new FlashApplication(</xsl:text>
-        <xsl:value-of select="concat($LX_DQUOTE, $url, $LX_DQUOTE)"/>
+        <xsl:value-of select="concat($LX_DQUOTE, $swf, $LX_DQUOTE)"/>
         <xsl:text>,</xsl:text>
         <xsl:value-of select="concat($LX_DQUOTE, $id, $LX_DQUOTE)"/>
         <xsl:text>);</xsl:text>
 
-        <!-- BEGIN FLASHVARS -->
-        <xsl:if test="$flashvars">
-          <xsl:text>app.flashvars=</xsl:text>
-          <xsl:value-of select="concat($LX_DQUOTE, $flashvars, $LX_DQUOTE, ';')"/>
-        </xsl:if>
-        <!-- END FLASHVARS -->
-
-        <xsl:if test="$wmode">
-          <xsl:text>app.wmode=</xsl:text>
-          <xsl:value-of select="concat($LX_DQUOTE, $wmode, $LX_DQUOTE, ';')"/>
-        </xsl:if>
-
-        <xsl:if test="$ommit-extension = 'true'">
-          <xsl:text>app.ommitExtension=true;</xsl:text>
-        </xsl:if>
-
-        <xsl:text>app.width=</xsl:text>
-        <xsl:value-of select="concat($LX_DQUOTE, $width, $LX_DQUOTE, ';')"/>
-        <xsl:text>app.height=</xsl:text>
-        <xsl:value-of select="concat($LX_DQUOTE, $height, $LX_DQUOTE, ';')"/>
         <xsl:if test="$script">
           <xsl:text>app.useFABridge=true;</xsl:text>
           <xsl:text>app.addEventListener(Event.COMPLETE,function(e){</xsl:text>
           <xsl:value-of select="$script"/>
           <xsl:text>});</xsl:text>
         </xsl:if>
+
         <xsl:text>app.run(document.getElementById(</xsl:text>
         <xsl:value-of select="concat($LX_DQUOTE, $id, $LX_DQUOTE)"/>
         <xsl:text>));</xsl:text>
