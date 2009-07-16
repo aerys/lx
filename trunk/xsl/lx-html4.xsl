@@ -32,7 +32,8 @@
 	</base>
 
 	<title>
-	  <xsl:apply-templates select="$LX_LAYOUT/head/lx:title | $LX_TEMPLATE/head/lx:title"/>
+	  <xsl:apply-templates select="$LX_LAYOUT/head/lx:title"/>
+	  <xsl:apply-templates select="$LX_TEMPLATE/head/lx:title"/>
 	</title>
 
 	<xsl:apply-templates select="$LX_LAYOUT/head/*[name() != 'lx:title']"/>
@@ -306,9 +307,21 @@
     </xsl:param>
 
     <xsl:variable name="id" select="concat('flash_', generate-id())"/>
+
     <xsl:variable name="swf">
       <xsl:text>flash/</xsl:text>
       <xsl:value-of select="$name"/>
+    </xsl:variable>
+
+    <xsl:variable name="flashvars_full">
+      <xsl:if test="$script">
+	<xsl:text>bridgeName=</xsl:text>
+	<xsl:value-of select="$id"/>
+	<xsl:if test="$flashvars">
+	  <xsl:text>&amp;</xsl:text>
+	</xsl:if>
+      </xsl:if>
+      <xsl:value-of select="$flashvars"/>
     </xsl:variable>
 
     <span id="{$id}">
@@ -318,13 +331,14 @@
 	<param name="movie" value="{$swf}.swf" />
 	<param name="quality" value="high" />
 	<param name="allowScriptAccess" value="sameDomain" />
-	<param name="flashvars" value="{$flashvars}" />
+	<param name="flashvars" value="{$flashvars_full}" />
 	<param name="wmode" value="{$wmode}" />
+	<param name="name" value="{$id}"/>
 	<embed src="{$swf}.swf"
 	       width="{$width}" height="{$height}" name="{$id}" align="middle"
 	       play="true"
 	       loop="false"
-	       flashvars="{$flashvars}"
+	       flashvars="{$flashvars_full}"
 	       quality="high"
 	       allowScriptAccess="sameDomain"
 	       type="application/x-shockwave-flash"

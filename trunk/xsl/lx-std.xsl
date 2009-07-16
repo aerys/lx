@@ -52,7 +52,7 @@
     -->
   <xsl:template match="lx:text">
     <!-- @param the output text -->
-    <xsl:param name="content" select="."/>
+    <xsl:param name="content" select="normalize-space(.)"/>
 
     <xsl:value-of select="$content"/>
   </xsl:template>
