@@ -75,9 +75,10 @@ class Dispatcher
       foreach ($filters as $filterName => $filterClass)
       {
 	$filter = new $filterClass();
-	$filter->filter();
+	$filter_result = $filter->filter();
 
-	$this->response->appendFilter($filter, $filterName);
+	if (!(false === $filter_result))
+	  $this->response->appendFilter($filter, $filterName);
       }
 
       // create a new controller instance

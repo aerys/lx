@@ -56,11 +56,10 @@ class MySQLDatabase extends AbstractDatabase
     $this->connect();
 
     $sql_str = $my_query->toString();
-    //echo $sql_str;
     $result = mysqli_query($this->cd, $sql_str);
 
     if (!$result)
-      throw new Exception(mysqli_error($this->cd));
+      throw new ErrorException(mysqli_error($this->cd));
 
     if (true === $result)
       return (true);

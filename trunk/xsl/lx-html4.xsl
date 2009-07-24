@@ -207,11 +207,11 @@
 
     <a href="{$url}">
       <xsl:choose>
-	<xsl:when test="$content = string($content)">
-	  <xsl:value-of select="$content"/>
+	<xsl:when test="$content = node()">
+	  <xsl:apply-templates select="$content"/>
 	</xsl:when>
 	<xsl:otherwise>
-	  <xsl:apply-templates select="$content"/>
+	  <xsl:value-of select="$content"/>
 	</xsl:otherwise>
       </xsl:choose>
     </a>

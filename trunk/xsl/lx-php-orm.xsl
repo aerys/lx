@@ -67,6 +67,8 @@
   </xsl:template>
 
   <xsl:template match="node()[@property][@value]" mode="set">
+    <xsl:variable name="property" select="@property"/>
+
     <xsl:variable name="name">
       <xsl:value-of select="translate(@value, '$', '')"/>
     </xsl:variable>
@@ -89,16 +91,16 @@
     <!-- variable type -->
     <xsl:variable name="type">
       <xsl:choose>
+	<!--<xsl:when test="$isArgument">
+	  <xsl:value-of select="ancestor::*/lx:argument[@name = $name]/@type"/>
+	</xsl:when>-->
 	<xsl:when test="not($isVariable)">
 	  <xsl:call-template name="lx:typeof">
 	    <xsl:with-param name="input" select="@value"/>
 	  </xsl:call-template>
 	</xsl:when>
-	<!--<xsl:when test="$isArgument">
-	  <xsl:value-of select="ancestor::*/lx:argument[@name = $name]/@type"/>
-	</xsl:when>-->
 	<xsl:otherwise>
-	  <xsl:value-of select="/lx:model/lx:property[@name = $name]/@type"/>
+	  <xsl:value-of select="/lx:model/lx:property[@name = $property]/@type"/>
 	</xsl:otherwise>
       </xsl:choose>
     </xsl:variable>
