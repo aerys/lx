@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<lx:layout xmlns:lx="http://lx.aerys.in">
+  <head>
+
+    <title>LX - Sample Application</title>
+
+  </head>
+  <body>
+
+      <lx:insert-view-here />
+
+  </body>
+</lx:layout>
