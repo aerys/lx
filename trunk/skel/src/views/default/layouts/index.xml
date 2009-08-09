@@ -3,7 +3,7 @@
 <lx:layout xmlns:lx="http://lx.aerys.in">
   <head>
 
-    <title>LX - Sample Application</title>
+    <lx:title>LX - Sample Application</lx:title>
 
   </head>
   <body>
