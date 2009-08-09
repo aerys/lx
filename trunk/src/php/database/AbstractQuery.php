@@ -9,6 +9,9 @@ abstract class AbstractQuery
   abstract public function setBoolean($my_arg,
 				      $my_value);
 
+  abstract public function setFloat($my_arg,
+				    $my_value);
+
   abstract public function toString();
 }
 

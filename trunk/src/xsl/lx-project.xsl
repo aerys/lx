@@ -97,6 +97,8 @@
     <xsl:text>));</xsl:text>
 
     <xsl:value-of select="$LX_LF"/>
+
+    <xsl:apply-templates select="lx:alias"/>
   </xsl:template>
 
   <xsl:template match="lx:filter">
@@ -130,6 +132,31 @@
     <xsl:text>));</xsl:text>
     <xsl:value-of select="$LX_LF"/>
     <xsl:apply-templates select="lx:controller"/>
+  </xsl:template>
+
+  <xsl:template match="lx:alias">
+    <xsl:variable name="module" select="ancestor::lx:module"/>
+    <xsl:variable name="controller" select="ancestor::lx:controller"/>
+    <xsl:variable name="base">
+      <xsl:text>$_LX['map']['</xsl:text>
+
+      <xsl:if test="$module">
+	<xsl:text>modules']['</xsl:text>
+	<xsl:value-of select="$module/@name"/>
+	<xsl:text>']['</xsl:text>
+      </xsl:if>
+
+      <xsl:text>controllers']['</xsl:text>
+    </xsl:variable>
+
+    <xsl:value-of select="$base"/>
+    <xsl:value-of select="@name"/>
+    <xsl:text>'] = </xsl:text>
+    <xsl:value-of select="$base"/>
+    <xsl:value-of select="$controller/@name"/>
+    <xsl:text>'];</xsl:text>
+
+    <xsl:value-of select="$LX_LF"/>
   </xsl:template>
 
 </xsl:stylesheet>

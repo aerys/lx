@@ -27,6 +27,17 @@ class MySQLQuery extends AbstractQuery
 				 $this->request);
   }
 
+  public function setFloat($my_arg,
+			   $my_value)
+  {
+    // sql injection fix
+    $my_value = (float)$my_value;
+
+    $this->request = str_replace(self::ARGUMENT_PREFIX . $my_arg,
+				 $my_value,
+				 $this->request);
+  }
+
   public function setString($my_arg,
 			    $my_value)
   {

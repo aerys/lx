@@ -110,6 +110,9 @@
 	<xsl:when test="$type = 'integer'">
 	  <xsl:value-of select="'$query->setInteger'"/>
 	</xsl:when>
+	<xsl:when test="$type = 'float'">
+	  <xsl:value-of select="'$query->setFloat'"/>
+	</xsl:when>
 	<xsl:when test="$type = 'boolean'">
 	  <xsl:value-of select="'$query->setBoolean'"/>
 	</xsl:when>
@@ -177,4 +180,3 @@
   </xsl:template>
 
 </xsl:stylesheet>
-
