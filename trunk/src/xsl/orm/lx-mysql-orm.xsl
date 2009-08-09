@@ -10,14 +10,7 @@
     <xsl:value-of select="concat($LX_PREFIX, /lx:model/@name)"/>
   </xsl:variable>
 
-  <xsl:template match="lx:select | lx:delete | lx:update | lx:insert">
-    <!--<xsl:variable name="result">-->
-      <xsl:apply-templates select="." mode="echo"/>
-    <!--</xsl:variable>
-    <xsl:value-of select="normalize-space($result)"/>-->
-  </xsl:template>
-
-  <xsl:template match="lx:select" mode="echo">
+  <xsl:template match="lx:select">
     <xsl:text><![CDATA[SELECT * FROM ]]></xsl:text>
     <!-- TABLE -->
     <xsl:value-of select="$LX_TABLE"/>
@@ -43,7 +36,7 @@
     </xsl:if>
   </xsl:template>
 
-  <xsl:template match="lx:delete" mode="echo">
+  <xsl:template match="lx:delete">
     <xsl:text>DELETE FROM </xsl:text>
     <xsl:value-of select="$LX_TABLE"/>
     <!-- WHERE -->
@@ -54,7 +47,7 @@
     </xsl:call-template>
   </xsl:template>
 
-  <xsl:template match="lx:update" mode="echo">
+  <xsl:template match="lx:update">
     <xsl:text>UPDATE ></xsl:text>
     <xsl:value-of select="$LX_TABLE"/>
     <!-- SET -->
@@ -93,20 +86,22 @@
     <xsl:value-of select="concat($property, $operator, $value)"/>
   </xsl:template>
 
-  <xsl:template match="lx:insert" mode="echo">
-    <xsl:text>INSERT INTO <xsl:text>
+  <xsl:template match="lx:insert">
+    <xsl:text>INSERT INTO </xsl:text>
     <xsl:value-of select="$LX_TABLE"/>
     <xsl:call-template name="lx:foreach">
       <xsl:with-param name="begin" select="' ('"/>
       <xsl:with-param name="collection" select="lx:value/@property"/>
       <xsl:with-param name="delimiter" select="', '"/>
-    </xsl:call-template>)
+    </xsl:call-template>
+    <xsl:text>)</xsl:text>
     <xsl:text> VALUES </xsl:text>
     <xsl:call-template name="lx:foreach">
       <xsl:with-param name="begin" select="'(:'"/>
       <xsl:with-param name="collection" select="lx:value/@property"/>
       <xsl:with-param name="delimiter" select="', :'"/>
-    </xsl:call-template>)
+    </xsl:call-template>
+    <xsl:text>)</xsl:text>
   </xsl:template>
 
   <xsl:template match="lx:sort">

@@ -12,7 +12,7 @@
 
   <xsl:strip-space elements="*"/>
 
-  <xsl:include href="lx-mysql.xsl"/>
+  <xsl:include href="lx-mysql-orm.xsl"/>
   <xsl:include href="../lx-std.xsl"/>
 
   <xsl:template match="/">
