@@ -11,14 +11,14 @@
   </xsl:variable>
 
   <xsl:template match="lx:select | lx:delete | lx:update | lx:insert">
-    <xsl:variable name="result">
+    <!--<xsl:variable name="result">-->
       <xsl:apply-templates select="." mode="echo"/>
-    </xsl:variable>
-    <xsl:value-of select="normalize-space($result)"/>
+    <!--</xsl:variable>
+    <xsl:value-of select="normalize-space($result)"/>-->
   </xsl:template>
 
   <xsl:template match="lx:select" mode="echo">
-    <![CDATA[SELECT * FROM]]>
+    <xsl:text><![CDATA[SELECT * FROM ]]></xsl:text>
     <!-- TABLE -->
     <xsl:value-of select="$LX_TABLE"/>
     <!-- WHERE -->
@@ -35,7 +35,7 @@
     </xsl:call-template>
     <!-- LIMIT -->
     <xsl:if test="@limit">
-      LIMIT
+      <xsl:text> LIMIT </xsl:text>
       <xsl:if test="@offset">
 	<xsl:value-of select="@offset"/>,
       </xsl:if>
@@ -44,7 +44,7 @@
   </xsl:template>
 
   <xsl:template match="lx:delete" mode="echo">
-    <![CDATA[DELETE FROM ]]>
+    <xsl:text>DELETE FROM </xsl:text>
     <xsl:value-of select="$LX_TABLE"/>
     <!-- WHERE -->
     <xsl:call-template name="lx:foreach">
@@ -55,10 +55,10 @@
   </xsl:template>
 
   <xsl:template match="lx:update" mode="echo">
-    <![CDATA[UPDATE ]]>
+    <xsl:text>UPDATE ></xsl:text>
     <xsl:value-of select="$LX_TABLE"/>
     <!-- SET -->
-    SET
+    <xsl:text> SET </xsl:text>
     <xsl:call-template name="lx:foreach">
       <xsl:with-param name="collection" select="lx:value"/>
       <xsl:with-param name="delimiter" select="', '"/>
@@ -82,7 +82,7 @@
     <xsl:variable name="operator">
       <xsl:choose>
 	<xsl:when test="$type = 'string' and @operator = '='">
-	  LIKE
+	  <xsl:text>LIKE</xsl:text>
 	</xsl:when>
 	<xsl:otherwise>
 	  <xsl:value-of select="@operator"/>
@@ -94,14 +94,14 @@
   </xsl:template>
 
   <xsl:template match="lx:insert" mode="echo">
-    INSERT INTO
+    <xsl:text>INSERT INTO <xsl:text>
     <xsl:value-of select="$LX_TABLE"/>
     <xsl:call-template name="lx:foreach">
       <xsl:with-param name="begin" select="' ('"/>
       <xsl:with-param name="collection" select="lx:value/@property"/>
       <xsl:with-param name="delimiter" select="', '"/>
     </xsl:call-template>)
-      VALUES
+    <xsl:text> VALUES </xsl:text>
     <xsl:call-template name="lx:foreach">
       <xsl:with-param name="begin" select="'(:'"/>
       <xsl:with-param name="collection" select="lx:value/@property"/>
@@ -111,7 +111,9 @@
 
   <xsl:template match="lx:sort">
     <xsl:value-of select="@property"/>
-    <xsl:if test="@desc"> DESC</xsl:if>
+    <xsl:if test="@desc">
+      <xsl:text> DESC</xsl:text>
+    </xsl:if>
   </xsl:template>
 
 </xsl:stylesheet>
