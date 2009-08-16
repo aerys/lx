@@ -98,7 +98,7 @@ class XMLResponse
 
   protected function finalize()
   {
-    $time = (microtime() - $this->start_time) * 1000000;
+    $time = abs(microtime() - $this->start_time) * 1000;
 
     if ($_SESSION['LX_OUTPUT'] == 'xsl')
     {

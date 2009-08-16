@@ -6,20 +6,8 @@ class Dispatcher
 
   public function Dispatcher()
   {
-    if (isset($_GET['LX_OUTPUT']))
-    {
-      $_SESSION['LX_OUTPUT'] = $_GET['LX_OUTPUT'];
-      exit ;
-    }
-    else
-    {
-      $_SESSION['LX_OUTPUT'] = LX_DEFAULT_OUTPUT;
-    }
-
-    if ($_SESSION['LX_OUTPUT'] == 'xhtml')
-      $this->response = new XHTMLResponse();
-    else
-      $this->response = new XMLResponse();
+    $_SESSION['LX_OUTPUT'] = isset($_GET['LX_OUTPUT'])? $_GET['LX_OUTPUT'] : LX_DEFAULT_OUTPUT;
+    $this->response = $_SESSION['LX_OUTPUT'] == 'xhtml' ? new XHTMLResponse() : new XMLResponse();
 
     LX::setResponse($this->response);
   }
@@ -32,9 +20,9 @@ class Dispatcher
     {
       $map		= $_LX['map'];
       $module		= '';
-      $controller	= 'home';
+      $controller	= LX_DEFAULT_CONTROLLER;
       $action		= 'defaultAction';
-      $filters		= array();
+      $filters		= $_LX['map']['filters'];
       $request		= $_SERVER['REDIRECT_URL'];
 
       if (LX_DOCUMENT_ROOT != '/')
@@ -48,13 +36,14 @@ class Dispatcher
       {
 	$module = array_shift($params);
 	$map = $map['modules'][$module];
-	$filters = array_merge($map['filters']);
+	$filters = array_merge($filters, $map['filters']);
       }
-      else if (isset($map['modules']['home']))
+      else if (!(count($params) && isset($map['controllers'][$params[0]]))
+	       && isset($map['modules'][LX_DEFAULT_MODULE]))
       {
-	$module = 'home';
+	$module = LX_DEFAULT_MODULE;
 	$map = $map['modules'][$module];
-	$filters = array_merge($map['filters']);
+	$filters = array_merge($filters, $map['filters']);
       }
 
       // controller
@@ -71,6 +60,9 @@ class Dispatcher
       define('LX_CONTROLLER', $controller);
       define('LX_ACTION', $action);
 
+      if (LX_MODULE)
+	LX::addApplicationDirectory('/src/controllers/' . LX_MODULE);
+
       // filters
       foreach ($filters as $filterName => $filterClass)
       {
@@ -85,8 +77,9 @@ class Dispatcher
       $class = $map[LX_CONTROLLER]['class'];
       $cont = new $class();
 
+      // cal the controller's action
       call_user_func_array(array($cont, $action), $params);
-      //$cont->$action();
+
       $this->response->appendController($cont, LX_CONTROLLER, LX_ACTION);
     }
     catch (FilterException $e)
@@ -107,7 +100,6 @@ class Dispatcher
     {
       LX::getResponse()->appendException($e);
     }
-
 
     // send response
     echo LX::getResponse()->save();

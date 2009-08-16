@@ -7,7 +7,8 @@ class MySQLDatabase extends AbstractDatabase
   protected $password		= '';
   protected $database		= '';
   protected $isConnected	= false;
-  protected $cd			= 0;
+
+  protected $mysqli		= NULL;
 
   public function MySQLDatabase($my_cfg)
   {
@@ -21,7 +22,7 @@ class MySQLDatabase extends AbstractDatabase
   {
     $this->connect();
 
-    return (mysqli_insert_id($this->cd));
+    return ($this->mysqli->insert_id($this->cd));
   }
 
   public function connect()
@@ -29,20 +30,18 @@ class MySQLDatabase extends AbstractDatabase
     if ($this->isConnected)
       return ;
 
-    // connect to the mysql server
-    $this->cd = mysqli_connect($this->host,
+    $this->mysqli = new mysqli($this->host,
 			       $this->user,
 			       $this->password,
 			       $this->database);
-
-    //mysqli_select_db($this->cd, $this->database);
 
     $this->isConnected = true;
   }
 
   public function disconnect()
   {
-    mysqli_disconnect($this->cd);
+    $this->mysqli->close();
+
     $this->isConnected = false;
   }
 
@@ -56,16 +55,16 @@ class MySQLDatabase extends AbstractDatabase
     $this->connect();
 
     $sql_str = $my_query->toString();
-    $result = mysqli_query($this->cd, $sql_str);
+    $result = $this->mysqli->query($sql_str);
 
     if (!$result)
-      throw new ErrorException(mysqli_error($this->cd));
+      throw new ErrorException($this->mysqli->error);
 
     if (true === $result)
       return (true);
 
     $response = array();
-    while ($row = mysqli_fetch_assoc($result))
+    while ($row = $result->fetch_assoc())
       $response[] = $row;
 
     return ($response);
@@ -78,8 +77,9 @@ class MySQLDatabase extends AbstractDatabase
     if (get_magic_quotes_gpc())
       $my_str = stripslashes($my_str);
 
-    return (mysqli_real_escape_string($this->cd, $my_str));
+    return ($this->mysqli->real_escape_string($my_str));
   }
+
 }
 
 ?>

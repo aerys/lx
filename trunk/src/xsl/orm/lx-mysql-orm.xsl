@@ -1,19 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?xml-stylesheet type="text/xsl" href="../lx-doc.xsl"?>
+
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
 		xmlns:lx="http://lx.aerys.in"
                 version="1.0">
 
   <xsl:variable name="LX_PREFIX" select="'lx'"/>
 
-  <xsl:variable name="LX_TABLE">
+  <xsl:variable name="LX_TABLE_NAME">
     <xsl:value-of select="concat($LX_PREFIX, /lx:model/@name)"/>
   </xsl:variable>
 
+  <!--
+      @template lx:select
+      SELECT database request template.
+    -->
   <xsl:template match="lx:select">
     <xsl:text><![CDATA[SELECT * FROM ]]></xsl:text>
     <!-- TABLE -->
-    <xsl:value-of select="$LX_TABLE"/>
+    <xsl:value-of select="$LX_TABLE_NAME"/>
     <!-- WHERE -->
     <xsl:call-template name="lx:foreach">
       <xsl:with-param name="begin" select="' WHERE '"/>
@@ -36,9 +42,13 @@
     </xsl:if>
   </xsl:template>
 
+  <!--
+      @template lx:delete
+      DELETE database request template.
+    -->
   <xsl:template match="lx:delete">
     <xsl:text>DELETE FROM </xsl:text>
-    <xsl:value-of select="$LX_TABLE"/>
+    <xsl:value-of select="$LX_TABLE_NAME"/>
     <!-- WHERE -->
     <xsl:call-template name="lx:foreach">
       <xsl:with-param name="begin" select="' WHERE '"/>
@@ -47,9 +57,13 @@
     </xsl:call-template>
   </xsl:template>
 
+  <!--
+      @template lx:update
+      UPDATE database request template.
+    -->
   <xsl:template match="lx:update">
-    <xsl:text>UPDATE ></xsl:text>
-    <xsl:value-of select="$LX_TABLE"/>
+    <xsl:text>UPDATE </xsl:text>
+    <xsl:value-of select="$LX_TABLE_NAME"/>
     <!-- SET -->
     <xsl:text> SET </xsl:text>
     <xsl:call-template name="lx:foreach">
@@ -75,7 +89,7 @@
     <xsl:variable name="operator">
       <xsl:choose>
 	<xsl:when test="$type = 'string' and @operator = '='">
-	  <xsl:text>LIKE</xsl:text>
+	  <xsl:text> LIKE </xsl:text>
 	</xsl:when>
 	<xsl:otherwise>
 	  <xsl:value-of select="@operator"/>
@@ -86,9 +100,13 @@
     <xsl:value-of select="concat($property, $operator, $value)"/>
   </xsl:template>
 
+  <!--
+      @template lx:insert
+      INSERT database request template.
+    -->
   <xsl:template match="lx:insert">
     <xsl:text>INSERT INTO </xsl:text>
-    <xsl:value-of select="$LX_TABLE"/>
+    <xsl:value-of select="$LX_TABLE_NAME"/>
     <xsl:call-template name="lx:foreach">
       <xsl:with-param name="begin" select="' ('"/>
       <xsl:with-param name="collection" select="lx:value/@property"/>

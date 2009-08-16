@@ -13,6 +13,7 @@
 </xsl:text></xsl:variable>
   <xsl:variable name="LX_LT">&#60;</xsl:variable>
   <xsl:variable name="LX_GT">&#62;</xsl:variable>
+  <xsl:variable name="LX_AMP">&#38;</xsl:variable>
 
   <!--
       @template lx:foreach

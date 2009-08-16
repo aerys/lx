@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?xml-stylesheet type="text/xsl" href="/views/lx-doc.xsl"?>
+<?xml-stylesheet type="text/xsl" href="../lx-doc.xsl"?>
 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
 		xmlns:lx="http://lx.aerys.in"
@@ -154,7 +154,12 @@
     <xsl:text>$result=$db->performQuery($query);foreach($result as $i=>$record)</xsl:text>
     <xsl:text>{$model=new </xsl:text>
     <xsl:value-of select="//lx:model/@name"/>
-    <xsl:text>();$model->loadArray($record);$models[]=$model;}return($models);}</xsl:text>
+    <xsl:text>();$model->loadArray($record);$models[]=$model;}</xsl:text>
+
+    <!-- return -->
+    <xsl:call-template name="lx:method-return"/>
+
+    <xsl:text>}</xsl:text>
   </xsl:template>
 
   <xsl:template match="lx:method">
@@ -177,6 +182,19 @@
     <xsl:text>);</xsl:text>
     <xsl:apply-templates select="descendant::node()[@property][@value]" mode="set"/>
     <xsl:text>$db->performQuery($query);return($this);}</xsl:text>
+  </xsl:template>
+
+  <xsl:template name="lx:method-return">
+    <xsl:text>return(</xsl:text>
+    <xsl:choose>
+      <xsl:when test="lx:select/@limit=1">
+	<xsl:text>count($models) ? $models[0] : NULL</xsl:text>
+      </xsl:when>
+      <xsl:otherwise>
+	<xsl:text>$models</xsl:text>
+      </xsl:otherwise>
+    </xsl:choose>
+    <xsl:text>);</xsl:text>
   </xsl:template>
 
 </xsl:stylesheet>

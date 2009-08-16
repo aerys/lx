@@ -50,7 +50,7 @@
 
   <!-- BEGIN IDENTITY -->
   <xsl:template match="*">
-    <xsl:if test="not(ancestor::lx:response)">
+    <xsl:if test="not(ancestor::lx:response) and local-name()=name()">
       <xsl:element name="{name()}">
 	<xsl:apply-templates select="@*|node()"/>
       </xsl:element>
@@ -141,6 +141,16 @@
   </xsl:template>
 
   <!--
+      @template lx:skin
+    -->
+  <xsl:template match="lx:skin"
+		name="lx:skin">
+    <xsl:apply-templates select="lx:css-stylesheet">
+      <xsl:with-param name="skin" select="@name"/>
+    </xsl:apply-templates>
+  </xsl:template>
+
+  <!--
       @template lx:css-stylesheet
       Include a CSS stylesheet.
     -->
@@ -148,8 +158,10 @@
 		match="lx:css-stylesheet">
     <!-- @param name of the CSS stylesheet -->
     <xsl:param name="name" select="@name"/>
+    <!-- @param name of the skin -->
+    <xsl:param name="skin" select="@skin"/>
 
-    <link rel="stylesheet" type="text/css" href="styles/default/{$name}.css"/>
+    <link rel="stylesheet" type="text/css" href="styles/{$skin}/{$name}.css"/>
     <xsl:value-of select="$LX_LF"/>
   </xsl:template>
 

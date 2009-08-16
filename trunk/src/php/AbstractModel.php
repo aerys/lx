@@ -9,6 +9,7 @@ abstract class AbstractModel
   private $flags	= self::FLAG_DEFAULT;
 
   public function getDatabase()		{return ($this->database);}
+
   public function setDatabase($my_db)	{$this->database = $my_db;}
 
   /* CONSTRUCTOR */
@@ -18,7 +19,7 @@ abstract class AbstractModel
   }
 
   /* METHODS */
-  static public function scaffold($my_model,
+  public static function scaffold($my_model,
 				  $my_backend,
 				  $my_output)
   {
@@ -55,24 +56,25 @@ abstract class AbstractModel
 
   public function serialize()
   {
-    $node = LX::getResponse()->getDocument()->createElement(get_class($this));
+    $rClass	= new ReflectionClass(get_class($this));
+    $className  = strtolower($rClass->getName());
+    $xml	= '<' . $className . '>';
+    $properties = $rClass->getProperties();
 
-    foreach ($this as $property => $flags)
+    foreach ($properties as $property)
     {
-      if (is_string($this->$property))
+      if ($property->isProtected())
       {
-	$prop_node = LX::getResponse()->getDocument()->createElement($property);
+	$propertyName = $property->getName();
 
-	$prop_node->nodeValue = $this->$property;
-	$node->appendChild($prop_node);
-      }
-      else
-      {
-	$node->setAttribute($property, $this->$property);
+	$xml .= '<' . $propertyName . '>' . $this->$propertyName
+	  . '</' . $propertyName . '>';
       }
     }
 
-    return ($node);
+    $xml .= '</' . $className . '>';
+
+    return ($xml);
   }
 
 //   abstract public function save();

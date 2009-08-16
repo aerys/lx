@@ -24,8 +24,10 @@
     <xsl:apply-templates select="lx:database"/>
 
     <!-- BEGIN MODULES TEST -->
-    <xsl:text>$_LX['map'] = array('modules' => array(), 'controllers' => array());</xsl:text>
+    <xsl:text>$_LX['map'] = array('filters' => array(), 'modules' => array(), 'controllers' => array());</xsl:text>
     <xsl:value-of select="$LX_LF"/>
+
+    <xsl:apply-templates select="lx:filter"/>
     <!-- set controllers map -->
     <xsl:apply-templates select="lx:controller"/>
     <!-- set modules map -->
@@ -34,6 +36,17 @@
 
     <xsl:value-of select="concat($LX_LF, '?', $LX_GT)"/>
     <!-- ?> -->
+  </xsl:template>
+
+  <xsl:template match="lx:project/lx:filter">
+    <xsl:text>$_LX['map']['filters']['</xsl:text>
+    <xsl:value-of select="@name"/>
+    <xsl:text>'] = '</xsl:text>
+    <xsl:call-template name="lx:ucfirst">
+      <xsl:with-param name="string" select="@name"/>
+    </xsl:call-template>
+    <xsl:text>Filter';</xsl:text>
+    <xsl:value-of select="$LX_LF"/>
   </xsl:template>
 
   <xsl:template match="lx:const[@name][@value]">
