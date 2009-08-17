@@ -7,9 +7,12 @@ class XMLResponseElement
 
   public function getFragment()  {return ($this->fragment);}
 
-  public function XMLResponseElement()
+  public function XMLResponseElement($my_fragment = NULL)
   {
-    $this->fragment = LX::getResponse()->getDocument()->createDocumentFragment();
+    if ($my_fragment)
+      $this->fragment = $my_fragment;
+    else
+      $this->fragment = LX::getResponse()->getDocument()->createDocumentFragment();
   }
 
   protected function appendXML($my_data)

@@ -61,6 +61,28 @@
     <!-- @param a list of markers (see lx:google.maps:marker) -->
     <xsl:param name="markers" select="lx.google.maps:marker"/>
 
+    <xsl:variable name="pic_width">
+      <xsl:choose>
+	<xsl:when test="$width > 640">
+	  <xsl:text>640</xsl:text>
+	</xsl:when>
+	<xsl:otherwise>
+	  <xsl:value-of select="$width"/>
+	</xsl:otherwise>
+      </xsl:choose>
+    </xsl:variable>
+
+    <xsl:variable name="pic_height">
+      <xsl:choose>
+	<xsl:when test="$height > 640">
+	  <xsl:text>640</xsl:text>
+	</xsl:when>
+	<xsl:otherwise>
+	  <xsl:value-of select="$height"/>
+	</xsl:otherwise>
+      </xsl:choose>
+    </xsl:variable>
+
     <xsl:element name="img">
       <xsl:attribute name="src">
 	<xsl:text>http://maps.google.com/staticmap?key=</xsl:text>
@@ -68,7 +90,7 @@
 	<xsl:text>center=</xsl:text>
 	<xsl:value-of select="concat($latitude, ',', $longitude, $LX_AMP)"/>
 	<xsl:text>size=</xsl:text>
-	<xsl:value-of select="concat($width, 'x', $height, $LX_AMP)"/>
+	<xsl:value-of select="concat($pic_width, 'x', $pic_height, $LX_AMP)"/>
 	<xsl:text>zoom=</xsl:text>
 	<xsl:value-of select="concat($zoom, $LX_AMP)"/>
 	<xsl:text>markers=</xsl:text>
@@ -76,6 +98,15 @@
 	  <xsl:with-param name="collection" select="$markers"/>
 	  <xsl:with-param name="delimiter" select="'|'"/>
 	</xsl:call-template>
+	<xsl:text>&amp;format=png</xsl:text>
+      </xsl:attribute>
+
+      <xsl:attribute name="width">
+	<xsl:value-of select="$width"/>
+      </xsl:attribute>
+
+      <xsl:attribute name="height">
+	<xsl:value-of select="$height"/>
       </xsl:attribute>
     </xsl:element>
   </xsl:template>

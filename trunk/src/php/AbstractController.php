@@ -2,9 +2,9 @@
 
 abstract class AbstractController extends XMLResponseElement
 {
-  public function AbstractController()
+  public function AbstractController($my_controller = NULL)
   {
-    parent::XMLResponseElement();
+    parent::XMLResponseElement($my_controller ? $my_controller->getFragment() : NULL);
   }
 
   abstract public function defaultAction();
