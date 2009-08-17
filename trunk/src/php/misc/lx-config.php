@@ -1,6 +1,12 @@
 <?php
 
-define('LX_NAMESPACE', 'http://lx.aerys.in');
+define('LX_NAMESPACE',		'http://lx.aerys.in');
+
+define('LX_OUTPUT_HTML',	'html');
+define('LX_OUTPUT_XML',		'xml');
+define('LX_OUTPUT_XSL',		'xsl');
+
+define('LX_DEFAULT_TIMEZONE',	'Europe/Paris');
 
 if (!defined('LX_ROOT'))
   define('LX_ROOT', realpath(dirname(__FILE__) . '/../../..'));
@@ -18,13 +24,13 @@ if (!defined('LX_DEBUG'))
   define('LX_DEBUG', false);
 
 if (!defined('LX_TIMEZONE'))
-  define('LX_TIMEZONE', 'Europe/Paris');
+  define('LX_TIMEZONE', LX_DEFAULT_TIMEZONE);
 
 if (!defined('LX_DOCUMENT_ROOT'))
   define('LX_DOCUMENT_ROOT', '/');
 
 if (!defined('LX_DEFAULT_OUTPUT'))
-  define('LX_DEFAULT_OUTPUT', 'xsl');
+  define('LX_DEFAULT_OUTPUT', LX_OUTPUT_XSL);
 
 define('LX_SRC',	LX_ROOT . '/src/php');
 define('LX_SCRIPTS',	LX_ROOT . '/scripts');

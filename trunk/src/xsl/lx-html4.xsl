@@ -1,10 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?xml-stylesheet type="text/xsl" href="lx-doc.xsl"?>
 
+<?xml-stylesheet type="text/xsl" href="lx-xsldoc.xsl"?>
+
+<!--
+    @stylesheet LX HTML4
+    HTML4 templates.
+-->
 <xsl:stylesheet version="1.0"
 		xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-		xmlns:lx="http://lx.aerys.in"
-		id="LX XHTML Library">
+		xmlns:lx="http://lx.aerys.in">
 
   <xsl:output method="html"
 	      version="4.0"
@@ -66,7 +70,7 @@
 
   <!--
       @template lx:controller
-      Default controller pattern.
+      Default controller template.
     -->
   <xsl:template match="lx:controller">
     <xsl:apply-templates select="node()"/>
@@ -74,7 +78,7 @@
 
   <!--
       @template lx:title
-      Set/concatenate the <title> value.
+      Set/concatenate the <title> value of the HTML document.
     -->
   <xsl:template match="lx:title"
 		name="lx:title">

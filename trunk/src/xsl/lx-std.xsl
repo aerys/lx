@@ -1,18 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<?xml-stylesheet type="text/xsl" href="lx-doc.xsl"?>
+<?xml-stylesheet type="text/xsl" href="lx-xsldoc.xsl"?>
 
+<!--
+    @stylesheet LX Standard Template Library
+    This stylehsheet implements common and very useful templates to overload
+    basic features of XSLT 1.0.
+-->
 <xsl:stylesheet version="1.0"
 		xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
 		xmlns:lx="http://lx.aerys.in"
 		id="LX Standard Library">
 
+  <!-- @const quote (') character -->
   <xsl:variable name="LX_QUOTE">'</xsl:variable>
+  <!-- @const double-quotes (") character -->
   <xsl:variable name="LX_DQUOTE">&#34;</xsl:variable>
+  <!-- @const line feed (\n) character -->
   <xsl:variable name="LX_LF"><xsl:text>
 </xsl:text></xsl:variable>
+  <!-- @const lesser-than (<) character -->
   <xsl:variable name="LX_LT">&#60;</xsl:variable>
+  <!-- @const greater-then (>) character -->
   <xsl:variable name="LX_GT">&#62;</xsl:variable>
+  <!-- @const amp character character -->
   <xsl:variable name="LX_AMP">&#38;</xsl:variable>
 
   <!--

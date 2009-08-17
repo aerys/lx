@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<?xml-stylesheet type="text/xsl" href="lx-doc.xsl"?>
+<?xml-stylesheet type="text/xsl" href="lx-xsldoc.xsl"?>
 
+<!--
+    @stylesheet LX Google Services
+    Ready to use Google Services such as Maps and Analytics. In order to use Google Maps,
+    you must set the LX_GOOGLE_MAPS_KEY variable in your view file (lx-view.xsl).
+-->
 <xsl:stylesheet version="1.0"
 		xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
 		xmlns:lx="http://lx.aerys.in"

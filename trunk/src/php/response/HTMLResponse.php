@@ -1,8 +1,8 @@
 <?php
 
-class XHTMLResponse extends XMLResponse
+class HTMLResponse extends XMLResponse
 {
-  public function XHTMLResponse()
+  public function HTMLResponse()
   {
     parent::XMLResponse();
 

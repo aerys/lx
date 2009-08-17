@@ -1,7 +1,5 @@
 <?php
 
-
-
 class LX
 {
   static private $response		= NULL;
@@ -9,7 +7,8 @@ class LX
 						'/database',
 						'/database/mysql',
 						'/exception',
-						'/filter');
+						'/filter',
+						'/response');
   static private $app_directories	= array('/src/models',
 						'/src/controllers',
 						'/src/filters',

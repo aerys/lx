@@ -22,8 +22,6 @@ class XMLResponse
 
   public function XMLResponse()
   {
-    header('Content-type: text/xml; charset="utf-8"');
-
     $this->start_time = microtime();
 
     $this->document = new DOMDocument('1.0', 'utf-8');
@@ -32,9 +30,6 @@ class XMLResponse
     $this->rootNode->setAttribute('xmlns:lx', LX_NAMESPACE);
     $this->rootNode->setAttribute('host', $_SERVER['HTTP_HOST']);
     $this->rootNode->setAttribute('date', time());
-    $this->rootNode->setAttribute('output', $_SESSION['LX_OUTPUT']);
-
-    if (defined('LX_DOCUMENT_ROOT'))
     $this->rootNode->setAttribute('document-root', LX_DOCUMENT_ROOT);
 
     $this->document->appendChild($this->rootNode);
@@ -98,25 +93,15 @@ class XMLResponse
 
   protected function finalize()
   {
-    $time = abs(microtime() - $this->start_time) * 1000;
-
-    if ($_SESSION['LX_OUTPUT'] == 'xsl')
-    {
-      $xsl = (LX_DOCUMENT_ROOT != '/' ? LX_DOCUMENT_ROOT . '/' : '/')
-	. 'views/' . $this->view . '/templates/' . $this->template . '.xsl';
-      $pAttr = 'type="text/xsl" href="' . $xsl . '"';
-      $xslNode = $this->document->createProcessingInstruction('xml-stylesheet',
-							      $pAttr);
-
-
-      $this->document->insertBefore($xslNode, $this->rootNode);
-    }
-
     // update the root node
-    $this->rootNode->setAttribute('view', $this->view);
-    $this->rootNode->setAttribute('layout', $this->layout);
-    $this->rootNode->setAttribute('template', $this->template);
-    $this->rootNode->setAttribute('time', $time);
+    $this->rootNode->setAttribute('time', abs(microtime() - $this->start_time) * 1000);
+
+    // insert view node
+    $viewCfg = $this->document->createElement('lx:view');
+    $viewCfg->setAttribute('name', $this->view);
+    $viewCfg->setAttribute('layout', $this->layout);
+    $viewCfg->setAttribute('template', $this->template);
+    $this->rootNode->insertBefore($viewCfg, $this->rootNode->firstChild);
   }
 
   public function save($my_filename	= NULL)
@@ -125,6 +110,8 @@ class XMLResponse
 
     if ($my_filename != NULL)
       return ($this->document->saveXML($my_filename));
+
+    header('Content-type: text/xml; charset="utf-8"');
 
     return ($this->document->saveXML());
   }

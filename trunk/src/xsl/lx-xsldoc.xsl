@@ -13,33 +13,60 @@
 	      indent="yes"
 	      encoding="utf-8"/>
 
-  <xsl:template match="/">
+  <xsl:template match="@* | node()">
+    <xsl:apply-templates select="@* | node()"/>
+  </xsl:template>
+
+  <xsl:template match="xsl:stylesheet">
+    <xsl:variable name="doc" select="preceding-sibling::node()[not(self::text()[not(normalize-space())])][1][self::comment()]"/>
+    <xsl:variable name="name" select="substring-before(substring-after($doc, '@stylesheet '), $LX_LF)"/>
+    <xsl:variable name="description" select="normalize-space(substring-after($doc, $name))"/>
+
     <html>
       <head>
 	<title>
-	  LX - XSL Stylesheet Documentation -
-	  <xsl:value-of select="/xsl:stylesheet/@id"/>
+	  <xsl:value-of select="$name"/>
+	  <xsl:text> - XSLDoc</xsl:text>
 	</title>
       </head>
+
       <body>
 
-	<h1>
-	  <xsl:value-of select="/xsl:stylesheet/@id"/>
-	</h1>
+	<xsl:if test="$doc and contains($doc, '@stylesheet')">
+	  <h1>
+	    <xsl:value-of select="$name"/>
+	  </h1>
+	  <p>
+	    <xsl:value-of select="$description"/>
+	  </p>
+	</xsl:if>
 
 	<ul>
-	  <xsl:apply-templates select="//xsl:template" mode="table"/>
+	  <xsl:apply-templates select="xsl:variable"/>
+	</ul>
+
+	<ul>
+	  <xsl:apply-templates select="xsl:template" mode="table"/>
 	</ul>
 
 	<br />
 
-	<xsl:apply-templates select="//xsl:template"/>
+	<xsl:apply-templates select="xsl:template"/>
+
       </body>
     </html>
   </xsl:template>
 
-  <xsl:template match="@* | node()">
-    <xsl:apply-templates select="@* | node()"/>
+  <xsl:template match="xsl:variable">
+    <xsl:variable name="doc" select="preceding-sibling::node()[not(self::text()[not(normalize-space())])][1][self::comment()]"/>
+
+    <xsl:if test="$doc and contains($doc, '@const')">
+      <li>
+	<xsl:value-of select="@name"/>
+	<xsl:text> : </xsl:text>
+	<xsl:value-of select="substring-after($doc, '@const ')"/>
+      </li>
+    </xsl:if>
   </xsl:template>
 
   <xsl:template match="xsl:template" mode="table">

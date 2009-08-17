@@ -6,8 +6,19 @@ class Dispatcher
 
   public function Dispatcher()
   {
-    $_SESSION['LX_OUTPUT'] = isset($_GET['LX_OUTPUT'])? $_GET['LX_OUTPUT'] : LX_DEFAULT_OUTPUT;
-    $this->response = $_SESSION['LX_OUTPUT'] == 'xhtml' ? new XHTMLResponse() : new XMLResponse();
+    $output = isset($_GET['LX_OUTPUT'])? $_GET['LX_OUTPUT'] : LX_DEFAULT_OUTPUT;
+
+    switch ($output)
+    {
+      case LX_OUTPUT_HTML:
+	$this->response = new HTMLResponse();
+	break;
+      case LX_OUTPUT_XSL:
+	$this->response = new XSLResponse();
+	break ;
+      default:
+	$this->response = new XMLResponse();
+    }
 
     LX::setResponse($this->response);
   }

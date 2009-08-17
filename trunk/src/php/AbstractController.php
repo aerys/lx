@@ -11,8 +11,7 @@ abstract class AbstractController extends XMLResponseElement
 
   public function __call($p, $a)
   {
-    throw new UnknownMethodException(get_class($this) . '::' . $p,
-				     $a);
+    throw new UnknownMethodException(get_class($this) . '::' . $p, $a);
   }
 
 }
