@@ -44,6 +44,7 @@
     <xsl:value-of select="concat($LX_QUOTE, @database, $LX_QUOTE)"/>
     <xsl:text>);}</xsl:text>
 
+    <xsl:apply-templates select="lx:static-method"/>
     <xsl:apply-templates select="lx:method"/>
     <xsl:text>}</xsl:text>
   </xsl:template>
@@ -67,53 +68,51 @@
   </xsl:template>
 
   <xsl:template match="node()[@property][@value]" mode="set">
+    <xsl:variable name="method" select="ancestor::lx:method | ancestor::lx:static-method"/>
     <xsl:variable name="property" select="@property"/>
+    <xsl:variable name="value" select="@value"/>
+    <xsl:variable name="isArgument" select="$method/lx:argument[@name = $value]"/>
+    <xsl:variable name="isProperty" select="/lx:model/lx:property[@name = $value]"/>
 
-    <xsl:variable name="name">
-      <xsl:value-of select="translate(@value, '$', '')"/>
-    </xsl:variable>
-    <xsl:variable name="isVariable" select="starts-with(@value, '$')"/>
-    <xsl:variable name="isArgument" select="ancestor::lx:method/lx:argument[@name = $name]"/>
     <!-- variable name -->
-    <xsl:variable name="value">
+    <xsl:variable name="set_value">
       <xsl:choose>
-	<xsl:when test="not($isVariable)">
-	  <xsl:value-of select="$name"/>
-	</xsl:when>
 	<xsl:when test="$isArgument">
-	  <xsl:value-of select="concat('$', $name)"/>
+	  <xsl:value-of select="concat('$', $value)"/>
+	</xsl:when>
+	<xsl:when test="$isProperty">
+	  <xsl:value-of select="concat('$this->', $value)"/>
 	</xsl:when>
 	<xsl:otherwise>
-	  <xsl:value-of select="concat('$this->', $name)"/>
+	  <xsl:value-of select="$value"/>
 	</xsl:otherwise>
       </xsl:choose>
     </xsl:variable>
+
     <!-- variable type -->
-    <xsl:variable name="type">
+    <xsl:variable name="set_type">
       <xsl:choose>
-	<!--<xsl:when test="$isArgument">
-	  <xsl:value-of select="ancestor::*/lx:argument[@name = $name]/@type"/>
-	</xsl:when>-->
-	<xsl:when test="not($isVariable)">
-	  <xsl:call-template name="lx:typeof">
-	    <xsl:with-param name="input" select="@value"/>
-	  </xsl:call-template>
+	<xsl:when test="$isArgument or $isProperty">
+	  <xsl:value-of select="/lx:model/lx:property[@name = $property]/@type"/>
 	</xsl:when>
 	<xsl:otherwise>
-	  <xsl:value-of select="/lx:model/lx:property[@name = $property]/@type"/>
+	  <xsl:call-template name="lx:typeof">
+	    <xsl:with-param name="input" select="$value"/>
+	  </xsl:call-template>
 	</xsl:otherwise>
       </xsl:choose>
     </xsl:variable>
+
     <!-- set method -->
-    <xsl:variable name="method">
+    <xsl:variable name="set_method">
       <xsl:choose>
-	<xsl:when test="$type = 'integer'">
+	<xsl:when test="$set_type = 'integer'">
 	  <xsl:value-of select="'$query->setInteger'"/>
 	</xsl:when>
-	<xsl:when test="$type = 'float'">
+	<xsl:when test="$set_type = 'float'">
 	  <xsl:value-of select="'$query->setFloat'"/>
 	</xsl:when>
-	<xsl:when test="$type = 'boolean'">
+	<xsl:when test="$set_type = 'boolean'">
 	  <xsl:value-of select="'$query->setBoolean'"/>
 	</xsl:when>
 	<xsl:otherwise>
@@ -121,11 +120,12 @@
 	</xsl:otherwise>
       </xsl:choose>
     </xsl:variable>
+
     <!-- echo -->
-    <xsl:value-of select="concat($method, '(', $LX_QUOTE, @property, $LX_QUOTE, ',', $value, ');')"/>
+    <xsl:value-of select="concat($set_method, '(', $LX_QUOTE, @property, $LX_QUOTE, ',', $set_value, ');')"/>
   </xsl:template>
 
-  <xsl:template match="lx:method[@static = 'true']">
+  <xsl:template match="lx:static-method">
     <xsl:variable name="args">
       <xsl:call-template name="lx:foreach">
 	<xsl:with-param name="collection" select="lx:argument"/>
