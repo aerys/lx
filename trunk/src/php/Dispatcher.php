@@ -80,7 +80,9 @@ class Dispatcher
 	$filter = new $filterClass();
 	$filter_result = $filter->filter();
 
-	if (!(false === $filter_result))
+	if (FilterResult::STOP === $filter_result)
+	  break ;
+	else if (!(FilterResult::IGNORE === $filter_result))
 	  $this->response->appendFilter($filter, $filterName);
       }
 

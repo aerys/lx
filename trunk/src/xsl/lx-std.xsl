@@ -27,18 +27,19 @@
   <xsl:variable name="LX_AMP">&#38;</xsl:variable>
 
   <!--
-      @template lx:foreach
-      An extension of the xsl:foreach function.
+      @template lx:for-each
+      An extension of the xsl:for-each function.
     -->
-  <xsl:template name="lx:foreach">
+  <xsl:template match="lx:for-each"
+		name="lx:for-each">
     <!-- @param a string that will be printed before the collection -->
-    <xsl:param name="begin" select="@begin"/>
+    <xsl:param name="begin"/>
     <!-- @param a string that will be printed between each element of the collection -->
-    <xsl:param name="delimiter" select="@delimiter"/>
+    <xsl:param name="delimiter"/>
     <!-- @param the input collection to iterate on -->
-    <xsl:param name="collection" select="."/>
+    <xsl:param name="collection"/>
     <!-- @param a string that will be printed after the collection -->
-    <xsl:param name="end" select="@end"/>
+    <xsl:param name="end"/>
 
     <xsl:variable name="count" select="count($collection)"/>
     <xsl:variable name="subset" select="$collection[position()!=$count]"/>
@@ -124,7 +125,12 @@
     <xsl:value-of select="translate($string, $lower, $upper)"/>
   </xsl:template>
 
-  <xsl:template name="lx:str_lowercase">
+  <!--
+      @template lx:strtoupper
+      Converts all alphabetic characters to lowercase.
+    -->
+  <xsl:template name="lx:strlower">
+    <!-- @param the input string -->
     <xsl:param name="string"/>
 
     <xsl:variable name="lower" select="'abcdefghijklmnopqrstuvwxyz'"/>

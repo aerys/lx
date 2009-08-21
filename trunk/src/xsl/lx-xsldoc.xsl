@@ -37,7 +37,7 @@
 	    <xsl:value-of select="$name"/>
 	  </h1>
 	  <p>
-	    <xsl:value-of select="$description"/>
+	    <xsl:value-of disable-output-escaping="yes" select="$description"/>
 	  </p>
 	</xsl:if>
 
@@ -64,7 +64,7 @@
       <li>
 	<xsl:value-of select="@name"/>
 	<xsl:text> : </xsl:text>
-	<xsl:value-of select="substring-after($doc, '@const ')"/>
+	<xsl:value-of disable-output-escaping="yes" select="substring-after($doc, '@const ')"/>
       </li>
     </xsl:if>
   </xsl:template>
@@ -94,7 +94,7 @@
       <h2>
 	<xsl:value-of select="$name"/>
 	<xsl:text>(</xsl:text>
-	<xsl:call-template name="lx:foreach">
+	<xsl:call-template name="lx:for-each">
 	  <xsl:with-param name="delimiter" select="', '"/>
 	  <xsl:with-param name="collection" select="xsl:param"/>
 	</xsl:call-template>
@@ -109,7 +109,7 @@
       <xsl:if test="$description">
 	<h3>Description</h3>
 	<p>
-	  <xsl:value-of select="$description"/>
+	  <xsl:value-of disable-output-escaping="yes" select="$description"/>
 	</p>
       </xsl:if>
 
@@ -128,12 +128,23 @@
     <xsl:variable name="doc" select="preceding-sibling::node()[not(self::text()[not(normalize-space())])][1][self::comment()]"/>
 
     <li>
-      <em>
-	<xsl:value-of select="@name"/>
-      </em>
+      <xsl:choose>
+	<xsl:when test="xsl:apply-templates[@mode='lx:value-of']">
+	  <em>
+	    <xsl:value-of select="@name"/>
+	    <xsl:value-of select="concat(' [', xsl:apply-templates/@select, ']')"/>
+	  </em>
+	</xsl:when>
+	<xsl:otherwise>
+	  <xsl:value-of select="@name"/>
+	  <xsl:if test="@select">
+	    <xsl:value-of select="concat(' [', @select, ']')"/>
+	  </xsl:if>
+	</xsl:otherwise>
+      </xsl:choose>
       <xsl:if test="contains($doc, '@param')">
 	<xsl:text> : </xsl:text>
-	<xsl:value-of select="substring-after($doc, '@param ')"/>
+	<xsl:value-of disable-output-escaping="yes" select="substring-after($doc, '@param ')"/>
       </xsl:if>
     </li>
   </xsl:template>

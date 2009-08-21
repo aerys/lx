@@ -127,7 +127,7 @@
 
   <xsl:template match="lx:static-method">
     <xsl:variable name="args">
-      <xsl:call-template name="lx:foreach">
+      <xsl:call-template name="lx:for-each">
 	<xsl:with-param name="collection" select="lx:argument"/>
 	<xsl:with-param name="delimiter" select="','"/>
       </xsl:call-template>
@@ -164,7 +164,7 @@
 
   <xsl:template match="lx:method">
     <xsl:variable name="args">
-      <xsl:call-template name="lx:foreach">
+      <xsl:call-template name="lx:for-each">
 	<xsl:with-param name="collection" select="lx:argument"/>
 	<xsl:with-param name="delimiter" select="','"/>
       </xsl:call-template>

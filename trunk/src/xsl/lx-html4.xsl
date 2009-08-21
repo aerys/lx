@@ -61,10 +61,18 @@
     </xsl:if>
   </xsl:template>
 
-  <xsl:template match="@*|text()|comment()|processing-instruction()">
+  <xsl:template match="@*|comment()|processing-instruction()">
     <xsl:copy>
       <xsl:apply-templates select="@*|node()"/>
     </xsl:copy>
+  </xsl:template>
+
+  <xsl:template match="text()">
+    <xsl:if test="normalize-space(.) != '' or not(following-sibling::lx:text or preceding-sibling::lx:text)">
+      <xsl:copy>
+	<xsl:apply-templates select="@*|node()"/>
+      </xsl:copy>
+    </xsl:if>
   </xsl:template>
   <!-- END IDENTITY -->
 
@@ -150,7 +158,9 @@
   <xsl:template match="lx:skin"
 		name="lx:skin">
     <xsl:apply-templates select="lx:css-stylesheet">
-      <xsl:with-param name="skin" select="@name"/>
+      <xsl:with-param name="skin">
+	<xsl:apply-templates select="@name" mode="lx:value-of"/>
+      </xsl:with-param>
     </xsl:apply-templates>
   </xsl:template>
 
@@ -163,7 +173,9 @@
     <!-- @param name of the CSS stylesheet -->
     <xsl:param name="name" select="@name"/>
     <!-- @param name of the skin -->
-    <xsl:param name="skin" select="@skin"/>
+    <xsl:param name="skin">
+      <xsl:apply-templates select="@skin" mode="lx:value-of"/>
+    </xsl:param>
 
     <link rel="stylesheet" type="text/css" href="styles/{$skin}/{$name}.css"/>
     <xsl:value-of select="$LX_LF"/>
@@ -190,11 +202,17 @@
   <xsl:template match="lx:link[@controller] | lx:link[@module]"
 		name="lx:link-controller">
     <!-- @param module name -->
-    <xsl:param name="module" select="@module"/>
+    <xsl:param name="module">
+      <xsl:apply-templates select="@module" mode="lx:value-of"/>
+    </xsl:param>
     <!-- @param controller name -->
-    <xsl:param name="controller" select="@controller"/>
+    <xsl:param name="controller">
+      <xsl:apply-templates select="@controller" mode="lx:value-of"/>
+    </xsl:param>
     <!-- @param action to call -->
-    <xsl:param name="action" select="@action"/>
+    <xsl:param name="action">
+      <xsl:apply-templates select="@action" mode="lx:value-of"/>
+    </xsl:param>
     <!-- @param action arguments -->
     <xsl:param name="arguments" select="lx:argument"/>
     <!-- @param content of the link (string | node)-->
@@ -214,14 +232,15 @@
 	<xsl:text>/</xsl:text>
 	<xsl:value-of select="$action"/>
       </xsl:if>
-      <xsl:call-template name="lx:foreach">
+      <xsl:call-template name="lx:for-each">
 	<xsl:with-param name="begin" select="'/'"/>
 	<xsl:with-param name="delimiter" select="'/'"/>
 	<xsl:with-param name="collection" select="$arguments"/>
       </xsl:call-template>
     </xsl:variable>
 
-    <a href="{$url}">
+
+    <xsl:variable name="content_value">
       <xsl:choose>
 	<xsl:when test="$content = node()">
 	  <xsl:apply-templates select="$content"/>
@@ -230,6 +249,10 @@
 	  <xsl:value-of select="$content"/>
 	</xsl:otherwise>
       </xsl:choose>
+    </xsl:variable>
+
+    <a href="{$url}">
+      <xsl:value-of select="normalize-space($content_value)"/>
     </a>
   </xsl:template>
 

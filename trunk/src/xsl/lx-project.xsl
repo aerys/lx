@@ -62,7 +62,7 @@
     <xsl:text>$_LX['DATABASES']['</xsl:text>
     <xsl:value-of select="@name"/>
     <xsl:text>'] = array(</xsl:text>
-    <xsl:call-template name="lx:foreach">
+    <xsl:call-template name="lx:for-each">
       <xsl:with-param name="collection" select="@*"/>
       <xsl:with-param name="delimiter" select="', '"/>
     </xsl:call-template>
@@ -103,7 +103,7 @@
     <xsl:value-of select="$class"/>
 
     <xsl:text>', 'filters' => array(</xsl:text>
-    <xsl:call-template name="lx:foreach">
+    <xsl:call-template name="lx:for-each">
       <xsl:with-param name="collection" select="lx:filter"/>
       <xsl:with-param name="delimiter" select="', '"/>
     </xsl:call-template>
@@ -138,7 +138,7 @@
     <xsl:text>$_LX['map']['modules']['</xsl:text>
     <xsl:value-of select="@name"/>
     <xsl:text>'] = array('controllers' => array(), 'filters' => array(</xsl:text>
-    <xsl:call-template name="lx:foreach">
+    <xsl:call-template name="lx:for-each">
       <xsl:with-param name="collection" select="lx:filter"/>
       <xsl:with-param name="delimiter" select="', '"/>
     </xsl:call-template>

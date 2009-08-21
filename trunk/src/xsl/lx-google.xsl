@@ -20,7 +20,9 @@
     -->
   <xsl:template match="lx.google.analytics:tracker">
     <!-- @param tracker code (i.e. UA-XXXXXXX-X) -->
-    <xsl:param name="code" select="@code"/>
+    <xsl:param name="code">
+      <xsl:apply-templates select="@code" mode="lx:value-of"/>
+    </xsl:param>
 
     <xsl:variable name="script">
       new GoogleAnalytics('<xsl:value-of select="$code"/>').trackPageView();
@@ -49,15 +51,25 @@
   <xsl:template match="lx.google.maps:map"
 		name="lx.google.maps:map">
     <!-- @param latitude of the center of the map -->
-    <xsl:param name="latitude" select="@latitude"/>
+    <xsl:param name="latitude">
+      <xsl:apply-templates select="@latitude" mode="lx:value-of"/>
+    </xsl:param>
     <!-- @param longitude of the center of the map -->
-    <xsl:param name="longitude" select="@longitude"/>
+    <xsl:param name="longitude">
+      <xsl:apply-templates select="@longitude" mode="lx:value-of"/>
+    </xsl:param>
     <!-- @param width (in pixels) of the map [0 - 640] -->
-    <xsl:param name="width" select="@width"/>
+    <xsl:param name="width">
+      <xsl:apply-templates select="@width" mode="lx:value-of"/>
+    </xsl:param>
     <!-- @param height (in pixels) of the map [0 - 640] -->
-    <xsl:param name="height" select="@height"/>
+    <xsl:param name="height">
+      <xsl:apply-templates select="@height" mode="lx:value-of"/>
+    </xsl:param>
     <!-- @param zoom level [0 - 19] -->
-    <xsl:param name="zoom" select="@zoom"/>
+    <xsl:param name="zoom">
+      <xsl:apply-templates select="@zoom" mode="lx:value-of"/>
+    </xsl:param>
     <!-- @param a list of markers (see lx:google.maps:marker) -->
     <xsl:param name="markers" select="lx.google.maps:marker"/>
 
@@ -94,7 +106,7 @@
 	<xsl:text>zoom=</xsl:text>
 	<xsl:value-of select="concat($zoom, $LX_AMP)"/>
 	<xsl:text>markers=</xsl:text>
-	<xsl:call-template name="lx:foreach">
+	<xsl:call-template name="lx:for-each">
 	  <xsl:with-param name="collection" select="$markers"/>
 	  <xsl:with-param name="delimiter" select="'|'"/>
 	</xsl:call-template>
@@ -118,13 +130,21 @@
   <xsl:template match="lx.google.maps:marker"
 		name="lx.google.maps:marker">
     <!-- @param latitude of the marker -->
-    <xsl:param name="latitude" select="@latitude"/>
+    <xsl:param name="latitude">
+      <xsl:apply-templates select="@latitude" mode="lx:value-of"/>
+    </xsl:param>
     <!-- @param longitude of the marker -->
-    <xsl:param name="longitude" select="@longitude"/>
+    <xsl:param name="longitude">
+      <xsl:apply-templates select="@longitude" mode="lx:value-of"/>
+    </xsl:param>
     <!-- @param size the marker -->
-    <xsl:param name="size" select="@size"/>
+    <xsl:param name="size">
+      <xsl:apply-templates select="@size" mode="lx:value-of"/>
+    </xsl:param>
     <!-- @param color the marker -->
-    <xsl:param name="color" select="@color"/>
+    <xsl:param name="color">
+      <xsl:apply-templates select="@color" mode="lx:value-of"/>
+    </xsl:param>
 
     <xsl:value-of select="concat($latitude, ',', $longitude, ',', $size, $color)"/>
   </xsl:template>

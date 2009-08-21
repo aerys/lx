@@ -21,13 +21,13 @@
     <!-- TABLE -->
     <xsl:value-of select="$LX_TABLE_NAME"/>
     <!-- WHERE -->
-    <xsl:call-template name="lx:foreach">
+    <xsl:call-template name="lx:for-each">
       <xsl:with-param name="begin" select="' WHERE '"/>
       <xsl:with-param name="collection" select="lx:condition"/>
       <xsl:with-param name="delimiter" select="' AND '"/>
     </xsl:call-template>
     <!-- SORT -->
-    <xsl:call-template name="lx:foreach">
+    <xsl:call-template name="lx:for-each">
       <xsl:with-param name="begin" select="' ORDER BY '"/>
       <xsl:with-param name="collection" select="lx:sort"/>
       <xsl:with-param name="delimiter" select="', '"/>
@@ -50,7 +50,7 @@
     <xsl:text>DELETE FROM </xsl:text>
     <xsl:value-of select="$LX_TABLE_NAME"/>
     <!-- WHERE -->
-    <xsl:call-template name="lx:foreach">
+    <xsl:call-template name="lx:for-each">
       <xsl:with-param name="begin" select="' WHERE '"/>
       <xsl:with-param name="collection" select="lx:condition"/>
       <xsl:with-param name="delimiter" select="' AND '"/>
@@ -66,12 +66,12 @@
     <xsl:value-of select="$LX_TABLE_NAME"/>
     <!-- SET -->
     <xsl:text> SET </xsl:text>
-    <xsl:call-template name="lx:foreach">
+    <xsl:call-template name="lx:for-each">
       <xsl:with-param name="collection" select="lx:value"/>
       <xsl:with-param name="delimiter" select="', '"/>
     </xsl:call-template>
     <!-- WHERE -->
-    <xsl:call-template name="lx:foreach">
+    <xsl:call-template name="lx:for-each">
       <xsl:with-param name="begin" select="' WHERE '"/>
       <xsl:with-param name="collection" select="lx:condition"/>
       <xsl:with-param name="delimiter" select="' AND '"/>
@@ -107,14 +107,14 @@
   <xsl:template match="lx:insert">
     <xsl:text>INSERT INTO </xsl:text>
     <xsl:value-of select="$LX_TABLE_NAME"/>
-    <xsl:call-template name="lx:foreach">
+    <xsl:call-template name="lx:for-each">
       <xsl:with-param name="begin" select="' ('"/>
       <xsl:with-param name="collection" select="lx:value/@property"/>
       <xsl:with-param name="delimiter" select="', '"/>
     </xsl:call-template>
     <xsl:text>)</xsl:text>
     <xsl:text> VALUES </xsl:text>
-    <xsl:call-template name="lx:foreach">
+    <xsl:call-template name="lx:for-each">
       <xsl:with-param name="begin" select="'(:'"/>
       <xsl:with-param name="collection" select="lx:value/@property"/>
       <xsl:with-param name="delimiter" select="', :'"/>
