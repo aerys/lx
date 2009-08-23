@@ -219,17 +219,15 @@
     <xsl:param name="content" select="node()[name() != 'lx:argument']"/>
 
     <xsl:variable name="url">
-      <xsl:if test="$module">
+      <xsl:if test="$module != ''">
 	<xsl:value-of select="$module"/>
-	<xsl:if test="$controller">
-	  <xsl:text>/</xsl:text>
-	</xsl:if>
-      </xsl:if>
-      <xsl:if test="$controller">
-	<xsl:value-of select="$controller"/>
-      </xsl:if>
-      <xsl:if test="$action">
 	<xsl:text>/</xsl:text>
+      </xsl:if>
+      <xsl:if test="$controller != ''">
+	<xsl:value-of select="$controller"/>
+	<xsl:text>/</xsl:text>
+      </xsl:if>
+      <xsl:if test="$action != ''">
 	<xsl:value-of select="$action"/>
       </xsl:if>
       <xsl:call-template name="lx:for-each">
@@ -330,7 +328,7 @@
     <!-- @param ressource name (without 'flash/' and '.swf') of the SWF file -->
     <xsl:param name="name" select="@name"/>
     <!-- @param javascript code to execute when the application is ready -->
-    <xsl:param name="script" select="text()"/>
+    <xsl:param name="script" select="node()"/>
     <!-- @param width of the application -->
     <xsl:param name="width" select="@width"/>
     <!-- @param height of the application -->
@@ -397,7 +395,7 @@
         <xsl:if test="$script">
           <xsl:text>app.useFABridge=true;</xsl:text>
           <xsl:text>app.addEventListener(Event.COMPLETE,function(e){</xsl:text>
-          <xsl:value-of select="$script"/>
+          <xsl:apply-templates select="$script"/>
           <xsl:text>});</xsl:text>
         </xsl:if>
 

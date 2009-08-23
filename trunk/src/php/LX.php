@@ -9,7 +9,8 @@ class LX
 						'/exception',
 						'/filter',
 						'/response');
-  static private $app_directories	= array('/src/models',
+  static private $app_directories	= array('/src',
+						'/src/models',
 						'/src/controllers',
 						'/src/filters',
 						'/tmp',

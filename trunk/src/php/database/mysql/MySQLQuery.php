@@ -6,6 +6,7 @@ class MySQLQuery extends AbstractQuery
 
   protected $database	= NULL;
   protected $request	= '';
+  protected $arguments	= array();
 
   public function toString()	{return ($this->request);}
 

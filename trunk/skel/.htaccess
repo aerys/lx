@@ -3,8 +3,11 @@ Options +FollowSymLinks
 RewriteEngine On
 
 RewriteCond %{REQUEST_FILENAME} !/public
-RewriteCond %{REQUEST_URI} ^(.*)\.(js|css|xml|xsl|png|jpg|gif|ico|swf|txt|3ds)
-RewriteRule ^(.*)\.([A-Za-z0-9]{0,3})$ public/$1\.$2 [L]
+RewriteRule ^(.*)\.(js|css|png|jpg|gif|swf)$ public/$1\.$2 [L]
 
-RewriteCond %{REQUEST_FILENAME} !/public
+RewriteCond %{REQUEST_FILENAME} !/src/views
+RewriteRule ^views/(.*)\.(xml|xsl)$ src/views/$1\.$2 [L]
+
+RewriteCond %{REQUEST_FILENAME} !/(public|src/views) [OR]
+RewriteCond %{REQUEST_FILENAME} !-f
 RewriteRule ^.*$ public/lx-dispatch.php [QSA,L]

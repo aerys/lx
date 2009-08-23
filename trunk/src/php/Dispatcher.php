@@ -93,7 +93,7 @@ class Dispatcher
       // cal the controller's action
       call_user_func_array(array($cont, $action), $params);
 
-      $this->response->appendController($cont, LX_CONTROLLER, LX_ACTION);
+      $this->response->appendController($cont, $params);
     }
     catch (FilterException $e)
     {
