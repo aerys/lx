@@ -102,6 +102,11 @@
     <xsl:text>'] = array('class' => '</xsl:text>
     <xsl:value-of select="$class"/>
 
+    <xsl:if test="@default-action">
+      <xsl:text>', 'default-action' => '</xsl:text>
+      <xsl:value-of select="@default-action"/>
+    </xsl:if>
+
     <xsl:text>', 'filters' => array(</xsl:text>
     <xsl:call-template name="lx:for-each">
       <xsl:with-param name="collection" select="lx:filter"/>

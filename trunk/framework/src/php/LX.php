@@ -2,6 +2,7 @@
 
 class LX
 {
+  static private $dispatcher		= NULL;
   static private $response		= NULL;
   static private $directories		= array('/',
 						'/database',
@@ -36,33 +37,24 @@ class LX
     set_error_handler('lx_error_handler');
   }
 
-  static public function redirect($my_module,
-				  $my_controller	= NULL,
-				  $my_action		= NULL,
-				  $my_arguments		= NULL)
+  static public function redirect($myRedirection)
   {
-    $url = 'http://' . $_SERVER['HTTP_HOST'] . (LX_DOCUMENT_ROOT != '/' ? LX_DOCUMENT_ROOT . '/' : '/');
+    if ($myRedirection == NULL)
+      return ;
 
-    if ($my_module)
-      $url .= $my_module . '/';
-    if ($my_controller)
-      $url .= $my_controller;
-    if ($my_action)
-      $url .= '/' . $my_action;
-
-    if ($my_arguments != NULL && count($my_arguments))
+    if ($myRedirection instanceof ViewRedirection)
     {
-      $url .= '/';
-
-      foreach ($my_arguments as $value)
-      {
-	$url .= $value;
-	if ($value != end($my_arguments))
-	  $url .= '/';
-      }
+      if ($myRedirection->getView())
+	LX::setView($myRedirection->getView());
+      if ($myRedirection->getLayout())
+	LX::setLayout($myRedirection->getLayout());
+      if ($myRedirection->getTemplate())
+	LX::setTemplate($myRedirection->getTemplate());
     }
-
-    header('Location: ' . $url);
+    else
+    {
+      header('Location: ' . $myRedirection->getURL());
+    }
   }
 
   static public function setView($my_view)
@@ -110,6 +102,11 @@ class LX
   static public function addApplicationDirectory($my_directory)
   {
     self::$app_directories[] = $my_directory;
+  }
+
+  static public function dispatchHTTPRequest($url, $get, $post)
+  {
+    Dispatcher::get()->dispatchHTTPRequest($url, $get, $post);
   }
 }
 

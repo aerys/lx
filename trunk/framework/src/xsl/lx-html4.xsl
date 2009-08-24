@@ -342,8 +342,17 @@
 	<xsl:text>opaque</xsl:text>
       </xsl:if>
     </xsl:param>
-
-    <xsl:variable name="id" select="concat('flash_', generate-id())"/>
+    <!-- @param id -->
+    <xsl:param name="id">
+      <xsl:choose>
+	<xsl:when test="@id">
+	  <xsl:value-of select="@id"/>
+	</xsl:when>
+	<xsl:otherwise>
+	  <xsl:value-of select="concat('flash_', generate-id())"/>
+	</xsl:otherwise>
+      </xsl:choose>
+    </xsl:param>
 
     <xsl:variable name="swf">
       <xsl:text>flash/</xsl:text>

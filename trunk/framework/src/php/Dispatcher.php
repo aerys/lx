@@ -2,7 +2,17 @@
 
 class Dispatcher
 {
+  private static $instance	= NULL;
+
   protected $response	= NULL;
+
+  public static function get()
+  {
+    if (!self::$instance)
+      self::$instance = new Dispatcher();
+
+    return (self::$instance);
+  }
 
   public function Dispatcher()
   {
@@ -23,7 +33,7 @@ class Dispatcher
     LX::setResponse($this->response);
   }
 
-  public function dispatch()
+  public function dispatchHTTPRequest($request, $get, $post)
   {
     global $_LX;
 
@@ -32,9 +42,8 @@ class Dispatcher
       $map		= $_LX['map'];
       $module		= '';
       $controller	= LX_DEFAULT_CONTROLLER;
-      $action		= 'defaultAction';
+      $action		= '';
       $filters		= $_LX['map']['filters'];
-      $request		= $_SERVER['REDIRECT_URL'];
 
       if (LX_DOCUMENT_ROOT != '/')
 	$request = str_replace(LX_DOCUMENT_ROOT, '', $request);
@@ -61,15 +70,21 @@ class Dispatcher
       $map = $map['controllers'];
       if (count($params) && isset($map[$params[0]]))
 	$controller = array_shift($params);
-      $filters = array_merge($filters, $map[$controller]['filters']);
+      if (isset($map[$controller]))
+	$filters = array_merge($filters, $map[$controller]['filters']);
 
       // action
       if (isset($params[0]) && $params[0])
 	$action = array_shift($params);
+      else if (isset($map[$controller]['default-action']))
+	$action = $map[$controller]['default-action'];
 
       define('LX_MODULE', $module);
       define('LX_CONTROLLER', $controller);
       define('LX_ACTION', $action);
+
+      if (!isset($map[LX_CONTROLLER]))
+	throw new UnknownControllerException(LX_CONTROLLER);
 
       if (LX_MODULE)
 	LX::addApplicationDirectory('/src/controllers/' . LX_MODULE);
@@ -90,19 +105,15 @@ class Dispatcher
       $class = $map[LX_CONTROLLER]['class'];
       $cont = new $class();
 
-      // cal the controller's action
-      call_user_func_array(array($cont, $action), $params);
+      // call the controller's action
+      if ($action)
+	call_user_func_array(array($cont, $action), $params);
 
       $this->response->appendController($cont, $params);
     }
     catch (FilterException $e)
     {
-      if ($e->getView())
-	LX::setView($e->getView());
-      if ($e->getLayout())
-	LX::setLayout($e->getLayout());
-      if ($e->getTemplate())
-	LX::setTemplate($e->getTemplate());
+      LX::redirect($e->getRedirection());
     }
     catch (ErrorException $e)
     {

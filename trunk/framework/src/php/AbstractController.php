@@ -7,8 +7,6 @@ abstract class AbstractController extends XMLResponseElement
     parent::XMLResponseElement($my_controller ? $my_controller->getFragment() : NULL);
   }
 
-  abstract public function defaultAction();
-
   public function __call($p, $a)
   {
     throw new UnknownMethodException(get_class($this) . '::' . $p, $a);
