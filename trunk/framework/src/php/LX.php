@@ -37,24 +37,11 @@ class LX
     set_error_handler('lx_error_handler');
   }
 
-  static public function redirect($myRedirection)
+  static public function redirect($myURL)
   {
-    if ($myRedirection == NULL)
-      return ;
+    header('Location: ' . $myURL);
 
-    if ($myRedirection instanceof ViewRedirection)
-    {
-      if ($myRedirection->getView())
-	LX::setView($myRedirection->getView());
-      if ($myRedirection->getLayout())
-	LX::setLayout($myRedirection->getLayout());
-      if ($myRedirection->getTemplate())
-	LX::setTemplate($myRedirection->getTemplate());
-    }
-    else
-    {
-      header('Location: ' . $myRedirection->getURL());
-    }
+    exit ;
   }
 
   static public function setView($my_view)

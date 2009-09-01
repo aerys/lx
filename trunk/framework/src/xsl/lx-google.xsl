@@ -98,19 +98,30 @@
     <xsl:element name="img">
       <xsl:attribute name="src">
 	<xsl:text>http://maps.google.com/staticmap?key=</xsl:text>
-	<xsl:value-of select="concat($LX_GOOGLE_MAPS_KEY, $LX_AMP)"/>
-	<xsl:text>center=</xsl:text>
-	<xsl:value-of select="concat($latitude, ',', $longitude, $LX_AMP)"/>
-	<xsl:text>size=</xsl:text>
-	<xsl:value-of select="concat($pic_width, 'x', $pic_height, $LX_AMP)"/>
-	<xsl:text>zoom=</xsl:text>
-	<xsl:value-of select="concat($zoom, $LX_AMP)"/>
-	<xsl:text>markers=</xsl:text>
+	<xsl:value-of select="$LX_GOOGLE_MAPS_KEY"/>
+	<xsl:text>&amp;center=</xsl:text>
+	<xsl:value-of select="concat($latitude, ',', $longitude)"/>
+	<xsl:text>&amp;size=</xsl:text>
+	<xsl:value-of select="concat($pic_width, 'x', $pic_height)"/>
+	<xsl:text>&amp;zoom=</xsl:text>
+	<xsl:value-of select="$zoom"/>
+	<xsl:text>&amp;markers=</xsl:text>
+
+	<!-- markers -->
 	<xsl:call-template name="lx:for-each">
 	  <xsl:with-param name="collection" select="$markers"/>
 	  <xsl:with-param name="delimiter" select="'|'"/>
 	</xsl:call-template>
+
+	<!-- paths -->
+	<xsl:if test="lx.google.maps:path">
+	  <xsl:text>&amp;</xsl:text>
+	  <xsl:apply-templates select="lx.google.maps:path"/>
+	</xsl:if>
+
 	<xsl:text>&amp;format=png</xsl:text>
+	<xsl:text>&amp;sensor=false</xsl:text>
+
       </xsl:attribute>
 
       <xsl:attribute name="width">
@@ -147,6 +158,58 @@
     </xsl:param>
 
     <xsl:value-of select="concat($latitude, ',', $longitude, ',', $size, $color)"/>
+  </xsl:template>
+
+  <!--
+      @template lx.google.maps:path
+      A Google Maps path.
+    -->
+  <xsl:template match="lx.google.maps:path">
+    <!-- @param weight of the path -->
+    <xsl:param name="weight">
+      <xsl:apply-templates select="@weight" mode="lx:value-of"/>
+    </xsl:param>
+    <!-- @param color of the path -->
+    <xsl:param name="color">
+      <xsl:apply-templates select="@color" mode="lx:value-of"/>
+    </xsl:param>
+    <!-- @param fill-color of the path -->
+    <xsl:param name="fill-color">
+      <xsl:apply-templates select="@fill-color" mode="lx:value-of"/>
+    </xsl:param>
+
+    <xsl:text>path=</xsl:text>
+    <xsl:if test="$color != ''">
+      <xsl:text>color:</xsl:text>
+      <xsl:value-of select="$color"/>
+      <xsl:text>|</xsl:text>
+    </xsl:if>
+    <xsl:if test="$weight != ''">
+      <xsl:text>weight:</xsl:text>
+      <xsl:value-of select="$weight"/>
+      <xsl:text>|</xsl:text>
+    </xsl:if>
+
+    <xsl:call-template name="lx:for-each">
+      <xsl:with-param name="collection" select="lx.google.maps:waypoint"/>
+      <xsl:with-param name="delimiter" select="'|'"/>
+    </xsl:call-template>
+  </xsl:template>
+
+  <!--
+      @template lx.google.maps:waypoint
+      A Google Maps waypoint.
+    -->
+  <xsl:template match="lx.google.maps:waypoint">
+    <!-- @param latitude of the waypoint -->
+    <xsl:param name="latitude">
+      <xsl:apply-templates select="@latitude" mode="lx:value-of"/>
+    </xsl:param>
+    <!-- @param longitude of the waypoint -->
+    <xsl:param name="longitude">
+      <xsl:apply-templates select="@longitude" mode="lx:value-of"/>
+    </xsl:param>
+    <xsl:value-of select="concat($latitude, ',', $longitude)"/>
   </xsl:template>
 
 </xsl:stylesheet>

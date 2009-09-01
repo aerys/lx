@@ -113,7 +113,7 @@ class Dispatcher
     }
     catch (FilterException $e)
     {
-      LX::redirect($e->getRedirection());
+      // NOTHING
     }
     catch (ErrorException $e)
     {

@@ -150,6 +150,18 @@
     <xsl:text>));</xsl:text>
     <xsl:value-of select="$LX_LF"/>
     <xsl:apply-templates select="lx:controller"/>
+    <xsl:apply-templates select="@default-controller"/>
+  </xsl:template>
+
+  <xsl:template match="lx:module/@default-controller">
+    <xsl:text>$_LX['map']['modules']['</xsl:text>
+    <xsl:value-of select="../@name"/>
+    <xsl:text>']['controllers'][LX_DEFAULT_CONTROLLER] = $_LX['map']['modules']['</xsl:text>
+    <xsl:value-of select="../@name"/>
+    <xsl:text>']['controllers']['</xsl:text>
+    <xsl:value-of select="."/>
+    <xsl:text>'];</xsl:text>
+    <xsl:value-of select="$LX_LF"/>
   </xsl:template>
 
   <xsl:template match="lx:alias">
