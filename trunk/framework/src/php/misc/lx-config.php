@@ -20,6 +20,9 @@ if (!defined('LX_DEFAULT_MODULE'))
 if (!defined('LX_DEFAULT_CONTROLLER'))
   define('LX_DEFAULT_CONTROLLER', 'home');
 
+if (!defined('LX_DEFAULT_VIEW'))
+  define('LX_DEFAULT_VIEW', 'default');
+
 if (!defined('LX_DEBUG'))
   define('LX_DEBUG', false);
 

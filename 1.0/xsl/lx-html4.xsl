@@ -331,6 +331,7 @@
 	<param name="movie" value="{$swf}.swf" />
 	<param name="quality" value="high" />
 	<param name="allowScriptAccess" value="sameDomain" />
+	<param name="allowFullscreen" value="true" />
 	<param name="flashvars" value="{$flashvars_full}" />
 	<param name="wmode" value="{$wmode}" />
 	<param name="name" value="{$id}"/>
@@ -341,6 +342,7 @@
 	       flashvars="{$flashvars_full}"
 	       quality="high"
 	       allowScriptAccess="sameDomain"
+	       allowFullscreen="true"
 	       type="application/x-shockwave-flash"
 	       pluginspage="http://www.adobe.com/go/getflashplayer"
                wmode="{$wmode}">

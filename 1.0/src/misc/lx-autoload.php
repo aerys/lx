@@ -9,6 +9,7 @@ function __autoload($class_name)
 		       LX_SRC . '/database/mysql');
   if (defined('LX_APPLICATION_ROOT'))
   {
+    $directories[] = LX_APPLICATION_ROOT . '/src';
     $directories[] = LX_APPLICATION_ROOT . '/src/models';
     if (defined('LX_MODULE') && LX_MODULE)
       $directories[] = LX_APPLICATION_ROOT . '/src/controllers/' . LX_MODULE;

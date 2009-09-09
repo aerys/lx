@@ -6,7 +6,7 @@ class XMLResponse
   protected $rootNode		= NULL;
   protected $requestNode	= NULL;
 
-  protected $view		= 'default';
+  protected $view		= LX_DEFAULT_VIEW;
   protected $layout		= 'index';
   protected $template		= 'default';
 

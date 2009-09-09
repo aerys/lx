@@ -102,9 +102,9 @@
     <xsl:text>'] = array('class' => '</xsl:text>
     <xsl:value-of select="$class"/>
 
-    <xsl:if test="@default-action">
+    <xsl:if test="@action">
       <xsl:text>', 'default-action' => '</xsl:text>
-      <xsl:value-of select="@default-action"/>
+      <xsl:value-of select="@action"/>
     </xsl:if>
 
     <xsl:text>', 'filters' => array(</xsl:text>
@@ -150,10 +150,10 @@
     <xsl:text>));</xsl:text>
     <xsl:value-of select="$LX_LF"/>
     <xsl:apply-templates select="lx:controller"/>
-    <xsl:apply-templates select="@default-controller"/>
+    <xsl:apply-templates select="@controller"/>
   </xsl:template>
 
-  <xsl:template match="lx:module/@default-controller">
+  <xsl:template match="lx:module/@controller">
     <xsl:text>$_LX['map']['modules']['</xsl:text>
     <xsl:value-of select="../@name"/>
     <xsl:text>']['controllers'][LX_DEFAULT_CONTROLLER] = $_LX['map']['modules']['</xsl:text>

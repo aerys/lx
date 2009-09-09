@@ -295,11 +295,11 @@
   </xsl:template>
 
   <!--
-      @template lx:insert-view-here
+      @template lx:insert-template-here
       Set where to insert the view template.
-      If an lx:exception node is available, it is matchd instead of the view.
+      If an lx:exception node is available, it is matchd instead of the template.
     -->
-  <xsl:template match="lx:insert-view-here">
+  <xsl:template match="lx:insert-template-here">
     <xsl:choose>
       <xsl:when test="$LX_RESPONSE/lx:error">
 	<xsl:apply-templates select="$LX_RESPONSE/lx:error"/>
@@ -355,6 +355,9 @@
     </xsl:param>
 
     <xsl:variable name="swf">
+      <xsl:text>http://</xsl:text>
+      <xsl:value-of select="$LX_RESPONSE/@host"/>
+      <xsl:value-of select="$LX_RESPONSE/@document-root"/>
       <xsl:text>flash/</xsl:text>
       <xsl:value-of select="$name"/>
     </xsl:variable>
