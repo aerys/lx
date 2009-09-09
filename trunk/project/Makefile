@@ -31,6 +31,8 @@ clean: clean_models
 	@echo -n "Cleaning up /tmp..."
 	@rm -rf ${LX_APPLICATION}/tmp/*.php
 	@echo " $(GREEN)OK$(RST)"
+
+distclean: clean
 	@rm -rf ${LX_APPLICATION}/Makefile.rules
 
 clean_models:
