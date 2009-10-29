@@ -67,8 +67,14 @@ abstract class AbstractModel
       {
 	$propertyName = $property->getName();
 
-	$xml .= '<' . $propertyName . '>' . $this->$propertyName
-	  . '</' . $propertyName . '>';
+	$xml .= '<' . $propertyName . '>';
+
+	if (is_string($this->$propertyName))
+	  $xml .= '<![CDATA[' . $this->$propertyName . ']]>';
+	else
+	  $xml .=  $this->$propertyName;
+
+	$xml .= '</' . $propertyName . '>';
       }
     }
 
