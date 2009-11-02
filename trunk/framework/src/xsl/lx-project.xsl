@@ -22,17 +22,10 @@
 
     <!-- set database configurations -->
     <xsl:apply-templates select="lx:database"/>
-
-    <!-- BEGIN MODULES TEST -->
-    <xsl:text>$_LX['map'] = array('filters' => array(), 'modules' => array(), 'controllers' => array());</xsl:text>
-    <xsl:value-of select="$LX_LF"/>
-
+    <xsl:apply-templates select="lx:response"/>
     <xsl:apply-templates select="lx:filter"/>
-    <!-- set controllers map -->
     <xsl:apply-templates select="lx:controller"/>
-    <!-- set modules map -->
     <xsl:apply-templates select="lx:module"/>
-    <!-- END MODULES TEST -->
 
     <xsl:value-of select="concat($LX_LF, '?', $LX_GT)"/>
     <!-- ?> -->
@@ -41,7 +34,7 @@
   <xsl:template match="lx:project/lx:filter">
     <xsl:text>$_LX['map']['filters']['</xsl:text>
     <xsl:value-of select="@name"/>
-    <xsl:text>'] = '</xsl:text>
+    <xsl:text>']='</xsl:text>
     <xsl:call-template name="lx:ucfirst">
       <xsl:with-param name="string" select="@name"/>
     </xsl:call-template>
@@ -52,25 +45,32 @@
   <xsl:template match="lx:const[@name][@value]">
     <xsl:text>define('</xsl:text>
     <xsl:value-of select="@name"/>
-    <xsl:text>', </xsl:text>
+    <xsl:text>',</xsl:text>
     <xsl:value-of select="@value"/>
     <xsl:text>);</xsl:text>
     <xsl:value-of select="$LX_LF"/>
   </xsl:template>
 
+  <xsl:template match="lx:response">
+    <xsl:text>$_LX['responses']['</xsl:text>
+    <xsl:value-of select="@extension"/>
+    <xsl:text>']='</xsl:text>
+    <xsl:value-of select="concat(@handler, $LX_QUOTE, ';', $LX_LF)"/>
+  </xsl:template>
+
   <xsl:template match="lx:database">
-    <xsl:text>$_LX['DATABASES']['</xsl:text>
+    <xsl:text>$_LX['databases']['</xsl:text>
     <xsl:value-of select="@name"/>
-    <xsl:text>'] = array(</xsl:text>
+    <xsl:text>']=array(</xsl:text>
     <xsl:call-template name="lx:for-each">
       <xsl:with-param name="collection" select="@*"/>
-      <xsl:with-param name="delimiter" select="', '"/>
+      <xsl:with-param name="delimiter" select="','"/>
     </xsl:call-template>
     <xsl:value-of select="concat(');', $LX_LF)"/>
   </xsl:template>
 
   <xsl:template match="lx:database/@*">
-    <xsl:value-of select="concat($LX_QUOTE, name(), $LX_QUOTE, ' => ')"/>
+    <xsl:value-of select="concat($LX_QUOTE, name(), $LX_QUOTE, '=>')"/>
     <xsl:value-of select="concat($LX_QUOTE, current(), $LX_QUOTE)"/>
   </xsl:template>
 
@@ -99,18 +99,18 @@
     </xsl:if>
     <xsl:text>['controllers']['</xsl:text>
     <xsl:value-of select="@name"/>
-    <xsl:text>'] = array('class' => '</xsl:text>
+    <xsl:text>'] = array('class'=>'</xsl:text>
     <xsl:value-of select="$class"/>
 
     <xsl:if test="@action">
-      <xsl:text>', 'default-action' => '</xsl:text>
+      <xsl:text>','action'=>'</xsl:text>
       <xsl:value-of select="@action"/>
     </xsl:if>
 
-    <xsl:text>', 'filters' => array(</xsl:text>
+    <xsl:text>','filters'=>array(</xsl:text>
     <xsl:call-template name="lx:for-each">
       <xsl:with-param name="collection" select="lx:filter"/>
-      <xsl:with-param name="delimiter" select="', '"/>
+      <xsl:with-param name="delimiter" select="','"/>
     </xsl:call-template>
     <xsl:text>));</xsl:text>
 
@@ -135,17 +135,17 @@
     </xsl:variable>
 
     <xsl:value-of select="concat($LX_QUOTE, @name, $LX_QUOTE)"/>
-    <xsl:text> => </xsl:text>
+    <xsl:text>=></xsl:text>
     <xsl:value-of select="concat($LX_QUOTE, $class, $LX_QUOTE)"/>
   </xsl:template>
 
   <xsl:template match="lx:module">
     <xsl:text>$_LX['map']['modules']['</xsl:text>
     <xsl:value-of select="@name"/>
-    <xsl:text>'] = array('controllers' => array(), 'filters' => array(</xsl:text>
+    <xsl:text>']=array('controllers'=>array(),'filters'=>array(</xsl:text>
     <xsl:call-template name="lx:for-each">
       <xsl:with-param name="collection" select="lx:filter"/>
-      <xsl:with-param name="delimiter" select="', '"/>
+      <xsl:with-param name="delimiter" select="','"/>
     </xsl:call-template>
     <xsl:text>));</xsl:text>
     <xsl:value-of select="$LX_LF"/>
@@ -156,7 +156,7 @@
   <xsl:template match="lx:module/@controller">
     <xsl:text>$_LX['map']['modules']['</xsl:text>
     <xsl:value-of select="../@name"/>
-    <xsl:text>']['controllers'][LX_DEFAULT_CONTROLLER] = $_LX['map']['modules']['</xsl:text>
+    <xsl:text>']['controllers'][LX_DEFAULT_CONTROLLER]=$_LX['map']['modules']['</xsl:text>
     <xsl:value-of select="../@name"/>
     <xsl:text>']['controllers']['</xsl:text>
     <xsl:value-of select="."/>
@@ -181,7 +181,7 @@
 
     <xsl:value-of select="$base"/>
     <xsl:value-of select="@name"/>
-    <xsl:text>'] = </xsl:text>
+    <xsl:text>']=</xsl:text>
     <xsl:value-of select="$base"/>
     <xsl:value-of select="$controller/@name"/>
     <xsl:text>'];</xsl:text>

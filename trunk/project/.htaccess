@@ -3,9 +3,11 @@ Options +FollowSymLinks
 RewriteEngine On
 
 RewriteCond %{REQUEST_FILENAME} !/public
-RewriteRule ^(.*)\.(js|css|png|jpg|gif|swf)$ public/$1\.$2 [L]
+RewriteCond %{DOCUMENT_ROOT}/public/%{REQUEST_URI} -F
+RewriteRule ^(.*)$ public/$1 [L]
 
 RewriteCond %{REQUEST_FILENAME} !/src/views
+RewriteCond %{DOCUMENT_ROOT}/src/%{REQUEST_URI} -F
 RewriteRule ^views/(.*)\.(xml|xsl)$ src/views/$1\.$2 [L]
 
 RewriteCond %{REQUEST_FILENAME} !/(public|src/views) [OR]

@@ -16,21 +16,7 @@ class Dispatcher
 
   public function Dispatcher()
   {
-    $output = isset($_GET['LX_OUTPUT'])? $_GET['LX_OUTPUT'] : LX_DEFAULT_OUTPUT;
 
-    switch ($output)
-    {
-      case LX_OUTPUT_HTML:
-	$this->response = new HTMLResponse();
-	break;
-      case LX_OUTPUT_XSL:
-	$this->response = new XSLResponse();
-	break ;
-      default:
-	$this->response = new XMLResponse();
-    }
-
-    LX::setResponse($this->response);
   }
 
   public function dispatchHTTPRequest($request, $get, $post)
@@ -44,10 +30,43 @@ class Dispatcher
       $controller	= LX_DEFAULT_CONTROLLER;
       $action		= '';
       $filters		= $_LX['map']['filters'];
+      $extension	= NULL;
 
+      // delete document root from the URL
       if (LX_DOCUMENT_ROOT != '/')
 	$request = str_replace(LX_DOCUMENT_ROOT, '', $request);
 
+      // response handler
+      $pos = strrpos($request, '.');
+      if (false != $pos)
+      {
+	$extension = substr($request, $pos + 1);
+	$request = substr($request, 0, $pos);
+      }
+
+      if (!$extension)
+      {
+	define('LX_HANDLER', 'xsl');
+	$this->response = new XSLResponse();
+      }
+      else if (isset($_LX['responses'][$extension]))
+      {
+	define('LX_HANDLER', $extension);
+	$this->response = new $_LX['responses'][$extension]();
+      }
+      else if ($extension == 'xml')
+      {
+	define('LX_HANDLER', 'xml');
+	$this->response = new XMLResponse();
+      }
+      else if ($extension == 'html')
+      {
+	define('LX_HANDLER', 'html');
+	$this->response = new HTMLResponse();
+      }
+      LX::setResponse($this->response);
+
+      // cut the request
       preg_match_all("/\/([^\/]+)/", $request, $params);
       $params = $params[1];
 
@@ -76,8 +95,8 @@ class Dispatcher
       // action
       if (isset($params[0]) && $params[0])
 	$action = array_shift($params);
-      else if (isset($map[$controller]['default-action']))
-	$action = $map[$controller]['default-action'];
+      else if (isset($map[$controller]['action']))
+	$action = $map[$controller]['action'];
 
       define('LX_MODULE', $module);
       define('LX_CONTROLLER', $controller);

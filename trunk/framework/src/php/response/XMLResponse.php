@@ -5,6 +5,7 @@ class XMLResponse
   protected $document		= NULL;
   protected $rootNode		= NULL;
   protected $requestNode	= NULL;
+  protected $argumentNode	= NULL;
 
   protected $view		= LX_DEFAULT_VIEW;
   protected $layout		= 'index';
@@ -12,9 +13,9 @@ class XMLResponse
 
   protected $start_time		= 0;
 
-  public function setView($my_view)	{$this->view = $my_view;}
-  public function setLayout($my_layout)	{$this->layout = $my_layout;}
-  public function setTemplate($my_temp)	{$this->template = $my_temp;}
+  public function setView($my_view)		{$this->view = $my_view;}
+  public function setLayout($my_layout)		{$this->layout = $my_layout;}
+  public function setTemplate($my_temp)		{$this->template = $my_temp;}
 
   public function getDocument()		{return ($this->document);}
   public function getView()		{return ($this->view);}
@@ -38,34 +39,28 @@ class XMLResponse
 
     // lx:request
     $this->requestNode = $this->document->createElement('lx:request');
+    $this->rootNode->appendChild($this->requestNode);
+
+    // lx:argument
+    $this->argumentNode = $this->document->createElement('lx:arguments');
     foreach ($_GET as $key => $value)
       $this->appendArgument($value, $key);
     foreach ($_POST as $key => $value)
       $this->appendArgument($value, $key);
 
-    $this->rootNode->appendChild($this->requestNode);
+    $this->requestNode->appendChild($this->argumentNode);
   }
 
   private function appendArgument($value, $name = NULL)
   {
-    $argumentNode = $this->document->createElement('lx:argument');
-
     if (is_array($value))
-      $this->appendArgumentArrayValue($argumentNode, $name, $value);
+      $this->appendArgumentArrayValue($this->argumentNode, $name, $value);
     else
     {
-      $valueNode = $argumentNode;
-
-      if ($name)
-      {
-	$valueNode = $this->document->createElement($name);
-	$argumentNode->appendChild($valueNode);
-      }
-
+      $valueNode = $this->document->createElement($name ? $name : 'lx:argument');
       $valueNode->nodeValue = $value;
+      $this->argumentNode->appendChild($valueNode);
     }
-
-    $this->requestNode->appendChild($argumentNode);
   }
 
   private function appendArgumentArrayValue($owner, $name, $value)
@@ -143,6 +138,8 @@ class XMLResponse
     $this->rootNode->setAttribute('time', abs(microtime() - $this->start_time) * 1000);
 
     // request node
+    if (LX_HANDLER)
+      $this->requestNode->setAttribute('handler', LX_HANDLER);
     if (LX_MODULE)
       $this->requestNode->setAttribute('module', LX_MODULE);
     $this->requestNode->setAttribute('controller', LX_CONTROLLER);

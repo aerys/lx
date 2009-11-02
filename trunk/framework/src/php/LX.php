@@ -24,7 +24,7 @@ class LX
   {
     global $_LX;
 
-    return (isset($_LX['DATABASES'][$my_name]) ? $_LX['DATABASES'][$my_name] : NULL);
+    return (isset($_LX['databases'][$my_name]) ? $_LX['databases'][$my_name] : NULL);
   }
 
   static public function disableErrors()

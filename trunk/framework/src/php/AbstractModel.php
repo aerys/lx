@@ -69,7 +69,8 @@ abstract class AbstractModel
 
 	$xml .= '<' . $propertyName . '>';
 
-	if (is_string($this->$propertyName))
+	if (!is_numeric($this->$propertyName) && !is_bool($this->$propertyName)
+	    && $this->$propertyName)
 	  $xml .= '<![CDATA[' . $this->$propertyName . ']]>';
 	else
 	  $xml .=  $this->$propertyName;

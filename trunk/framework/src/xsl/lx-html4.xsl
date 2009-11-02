@@ -199,7 +199,7 @@
       @template lx:link-controller
       Create a link to a controller.
     -->
-  <xsl:template match="lx:link[@controller] | lx:link[@module]"
+  <xsl:template match="lx:link[@controller] | lx:link[@module] | lx:link[@action]"
 		name="lx:link-controller">
     <!-- @param module name -->
     <xsl:param name="module">
@@ -223,10 +223,14 @@
 	<xsl:value-of select="$module"/>
 	<xsl:text>/</xsl:text>
       </xsl:if>
-      <xsl:if test="$controller != ''">
-	<xsl:value-of select="$controller"/>
-	<xsl:text>/</xsl:text>
-      </xsl:if>
+      <xsl:choose>
+	<xsl:when test="$controller != ''">
+	  <xsl:value-of select="concat($controller, '/')"/>
+	</xsl:when>
+	<xsl:otherwise>
+	  <xsl:value-of select="concat($LX_RESPONSE/lx:request/@controller, '/')"/>
+	</xsl:otherwise>
+      </xsl:choose>
       <xsl:if test="$action != ''">
 	<xsl:value-of select="$action"/>
       </xsl:if>
