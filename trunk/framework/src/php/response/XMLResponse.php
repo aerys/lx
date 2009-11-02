@@ -138,12 +138,13 @@ class XMLResponse
     $this->rootNode->setAttribute('time', abs(microtime() - $this->start_time) * 1000);
 
     // request node
-    if (LX_HANDLER)
-      $this->requestNode->setAttribute('handler', LX_HANDLER);
     if (LX_MODULE)
       $this->requestNode->setAttribute('module', LX_MODULE);
     $this->requestNode->setAttribute('controller', LX_CONTROLLER);
-    $this->requestNode->setAttribute('action', LX_ACTION);
+    if (LX_ACTION)
+      $this->requestNode->setAttribute('action', LX_ACTION);
+    if (LX_HANDLER)
+      $this->requestNode->setAttribute('handler', LX_HANDLER);
 
     // insert view node
     $viewCfg = $this->document->createElement('lx:view');

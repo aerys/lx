@@ -99,7 +99,7 @@
     </xsl:if>
     <xsl:text>['controllers']['</xsl:text>
     <xsl:value-of select="@name"/>
-    <xsl:text>'] = array('class'=>'</xsl:text>
+    <xsl:text>']=array('class'=>'</xsl:text>
     <xsl:value-of select="$class"/>
 
     <xsl:if test="@action">
