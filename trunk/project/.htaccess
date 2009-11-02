@@ -4,7 +4,8 @@ RewriteEngine On
 
 RewriteCond %{REQUEST_FILENAME} !/public
 RewriteCond %{REQUEST_URI} (/[A-Za-z0-9]+)?/(.*)\.(.*)
-RewriteCond %{DOCUMENT_ROOT}%1/public/%2\.%3 -F
+RewriteCond %{DOCUMENT_ROOT}%1/public/%2\.%3 -F [OR]
+RewriteCond %{DOCUMENT_ROOT}/public%1/%2\.%3 -F
 RewriteRule ^(.*)$ public/$1 [L]
 
 RewriteCond %{REQUEST_URI} (/[A-Za-z0-9]+)?/views/(.*)\.(xml|xsl)
