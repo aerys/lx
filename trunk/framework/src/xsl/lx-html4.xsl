@@ -223,24 +223,21 @@
 	<xsl:value-of select="$module"/>
 	<xsl:text>/</xsl:text>
       </xsl:if>
-      <xsl:choose>
-	<xsl:when test="$controller != ''">
-	  <xsl:value-of select="concat($controller, '/')"/>
-	</xsl:when>
-	<xsl:otherwise>
-	  <xsl:value-of select="concat($LX_RESPONSE/lx:request/@controller, '/')"/>
-	</xsl:otherwise>
-      </xsl:choose>
+      <xsl:if test="$controller != ''">
+	<xsl:value-of select="$controller"/>
+      </xsl:if>
       <xsl:if test="$action != ''">
-	<xsl:value-of select="$action"/>
+	<xsl:value-of select="concat('/', $action)"/>
       </xsl:if>
       <xsl:call-template name="lx:for-each">
 	<xsl:with-param name="begin" select="'/'"/>
 	<xsl:with-param name="delimiter" select="'/'"/>
 	<xsl:with-param name="collection" select="$arguments"/>
       </xsl:call-template>
+      <xsl:if test="$LX_RESPONSE/lx:request/@handler!='xsl'">
+	<xsl:value-of select="concat('.', $LX_RESPONSE/lx:request/@handler)"/>
+      </xsl:if>
     </xsl:variable>
-
 
     <xsl:variable name="content_value">
       <xsl:choose>
@@ -330,7 +327,9 @@
   <xsl:template match="lx:flash"
                 name="lx:flash">
     <!-- @param ressource name (without 'flash/' and '.swf') of the SWF file -->
-    <xsl:param name="name" select="@name"/>
+    <xsl:param name="name">
+      <xsl:apply-templates select="@name" mode="lx:value-of"/>
+    </xsl:param>
     <!-- @param javascript code to execute when the application is ready -->
     <xsl:param name="script" select="node()"/>
     <!-- @param width of the application -->

@@ -44,12 +44,7 @@ class Dispatcher
 	$request = substr($request, 0, $pos);
       }
 
-      if (!$extension)
-      {
-	define('LX_HANDLER', 'xsl');
-	$this->response = new XSLResponse();
-      }
-      else if (isset($_LX['responses'][$extension]))
+      if ($extension && isset($_LX['responses'][$extension]))
       {
 	define('LX_HANDLER', $extension);
 	$this->response = new $_LX['responses'][$extension]();
@@ -63,6 +58,12 @@ class Dispatcher
       {
 	define('LX_HANDLER', 'html');
 	$this->response = new HTMLResponse();
+      }
+      else
+      {
+	$request .= '.' . $extension;
+	define('LX_HANDLER', 'xsl');
+	$this->response = new XSLResponse();
       }
       LX::setResponse($this->response);
 

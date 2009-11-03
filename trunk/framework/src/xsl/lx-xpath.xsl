@@ -21,9 +21,11 @@
     <xsl:attribute name="{name()}">
       <xsl:choose>
 	<xsl:when test="$xpath != ''">
+	  <xsl:value-of select="substring-before(., $LX_XPATH_START)"/>
 	  <xsl:call-template name="lx.xpath:parse-expression">
 	    <xsl:with-param name="expression" select="$xpath"/>
 	  </xsl:call-template>
+	  <xsl:value-of select="substring-after(., $LX_XPATH_STOP)"/>
 	</xsl:when>
 	<xsl:otherwise>
 	  <xsl:value-of select="."/>
@@ -37,9 +39,11 @@
 
     <xsl:choose>
       <xsl:when test="$xpath != ''">
+	<xsl:value-of select="substring-before(., $LX_XPATH_START)"/>
 	<xsl:call-template name="lx.xpath:parse-expression">
 	  <xsl:with-param name="expression" select="$xpath"/>
 	</xsl:call-template>
+	<xsl:value-of select="substring-after(., $LX_XPATH_STOP)"/>
       </xsl:when>
       <xsl:otherwise>
 	<xsl:value-of select="."/>

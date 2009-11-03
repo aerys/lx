@@ -21,3 +21,5 @@ class XSLResponse extends XMLResponse
   }
 
 }
+
+?>
