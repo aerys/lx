@@ -61,7 +61,8 @@ class Dispatcher
       }
       else
       {
-	$request .= '.' . $extension;
+	if ($extension)
+	  $request .= '.' . $extension;
 	define('LX_HANDLER', 'xsl');
 	$this->response = new XSLResponse();
       }
