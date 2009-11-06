@@ -74,11 +74,15 @@
 
     <xsl:if test="$doc and contains($doc, '@template')">
       <xsl:variable name="name" select="normalize-space(substring-before(substring-after($doc, '@template '), ' '))"/>
+      <xsl:variable name="description" select="normalize-space(substring-after($doc, $name))"/>
 
       <li>
 	<a href="#{$name}">
 	  <xsl:value-of select="$name"/>
 	</a>
+	<p>
+	  <xsl:value-of select="$description"/>
+	</p>
       </li>
     </xsl:if>
   </xsl:template>

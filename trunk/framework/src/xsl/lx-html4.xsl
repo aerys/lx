@@ -8,7 +8,8 @@
 -->
 <xsl:stylesheet version="1.0"
 		xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-		xmlns:lx="http://lx.aerys.in">
+		xmlns:lx="http://lx.aerys.in"
+		xmlns:lx.html="http://lx.aerys.in/html">
 
   <xsl:output method="html"
 	      version="4.0"
@@ -24,6 +25,9 @@
   <xsl:template match="/">
     <html>
       <head>
+
+	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/>
+
 	<base>
 	  <xsl:attribute name="href">
 	    <xsl:text>http://</xsl:text>
@@ -36,12 +40,12 @@
 	</base>
 
 	<title>
-	  <xsl:apply-templates select="$LX_LAYOUT/head/lx:title"/>
-	  <xsl:apply-templates select="$LX_TEMPLATE/head/lx:title"/>
+	  <xsl:apply-templates select="$LX_LAYOUT/head/title/node()"/>
+	  <xsl:apply-templates select="$LX_TEMPLATE/head/title/node()"/>
 	</title>
 
-	<xsl:apply-templates select="$LX_LAYOUT/head/*[name() != 'lx:title']"/>
-	<xsl:apply-templates select="$LX_TEMPLATE/head/*[name() != 'lx:title']"/>
+	<xsl:apply-templates select="$LX_LAYOUT/head/*[name()!='title']"/>
+	<xsl:apply-templates select="$LX_TEMPLATE/head/*[name()!='title']"/>
 
       </head>
       <body>
@@ -77,23 +81,11 @@
   <!-- END IDENTITY -->
 
   <!--
-      @template lx:controller
-      Default controller template.
+      @template lx:template
+      Default template template.
     -->
-  <xsl:template match="lx:controller">
-    <xsl:apply-templates select="node()"/>
-  </xsl:template>
-
-  <!--
-      @template lx:title
-      Set/concatenate the <title> value of the HTML document.
-    -->
-  <xsl:template match="lx:title"
-		name="lx:title">
-    <!-- @param the title to set/concatenate -->
-    <xsl:param name="content" select="node()"/>
-
-    <xsl:apply-templates select="$content" />
+  <xsl:template match="lx:template">
+    <xsl:apply-templates select="body/node()"/>
   </xsl:template>
 
   <!--
@@ -110,11 +102,11 @@
   </xsl:template>
 
   <!--
-      @template lx:javascript-class
+      @template lx.html:javascript-class
       Include a javascript class.
     -->
-  <xsl:template name="lx:javascript-class"
-		match="lx:javascript-class">
+  <xsl:template name="lx.html:javascript-class"
+		match="lx.html:javascript-class">
     <!-- @param name of the javascript class -->
     <xsl:param name="name" select="@name"/>
 
@@ -124,11 +116,11 @@
   </xsl:template>
 
   <!--
-      @template lx:javascript-library
+      @template lx.html:javascript-library
       Include a javascript library.
     -->
-  <xsl:template name="lx:javascript-library"
-		match="lx:javascript-library">
+  <xsl:template name="lx.html:javascript-library"
+		match="lx.html:javascript-library">
     <!-- @param name of the javascript library -->
     <xsl:param name="name" select="@name"/>
 
@@ -138,11 +130,11 @@
   </xsl:template>
 
   <!--
-      @template lx:javascript
+      @template lx.html:javascript
       Embed javascript code.
     -->
-  <xsl:template name="lx:javascript"
-		match="lx:javascript">
+  <xsl:template name="lx.html:javascript"
+		match="lx.html:javascript">
     <!-- @param javascript code to embed -->
     <xsl:param name="script" select="."/>
 
@@ -153,11 +145,11 @@
   </xsl:template>
 
   <!--
-      @template lx:skin
+      @template lx.html:skin
     -->
-  <xsl:template match="lx:skin"
-		name="lx:skin">
-    <xsl:apply-templates select="lx:css-stylesheet">
+  <xsl:template match="lx.html:skin"
+		name="lx.html:skin">
+    <xsl:apply-templates select="lx.html:stylesheet">
       <xsl:with-param name="skin">
 	<xsl:apply-templates select="@name" mode="lx:value-of"/>
       </xsl:with-param>
@@ -165,11 +157,11 @@
   </xsl:template>
 
   <!--
-      @template lx:css-stylesheet
+      @template lx.html:stylesheet
       Include a CSS stylesheet.
     -->
-  <xsl:template name="lx:css-stylesheet"
-		match="lx:css-stylesheet">
+  <xsl:template name="lx.html:stylesheet"
+		match="lx.html:stylesheet">
     <!-- @param name of the CSS stylesheet -->
     <xsl:param name="name" select="@name"/>
     <!-- @param name of the skin -->
@@ -182,11 +174,11 @@
   </xsl:template>
 
   <!--
-      @template lx:css
+      @template lx.html:css
       Include a CSS style declaration
     -->
-  <xsl:template name="lx:css"
-		match="lx:css">
+  <xsl:template name="lx.html:style"
+		match="lx.html:style">
     <!-- @param style declaration -->
     <xsl:param name="style" select="text()"/>
 
@@ -196,11 +188,11 @@
   </xsl:template>
 
   <!--
-      @template lx:link-controller
+      @template lx.html:link-controller
       Create a link to a controller.
     -->
-  <xsl:template match="lx:link[@controller] | lx:link[@module] | lx:link[@action]"
-		name="lx:link-controller">
+  <xsl:template match="lx.html:link[@controller] | lx.html:link[@module] | lx.html:link[@action]"
+		name="lx.html:link-controller">
     <!-- @param module name -->
     <xsl:param name="module">
       <xsl:apply-templates select="@module" mode="lx:value-of"/>
@@ -221,13 +213,18 @@
     <xsl:variable name="url">
       <xsl:if test="$module != ''">
 	<xsl:value-of select="$module"/>
-	<xsl:text>/</xsl:text>
+	<xsl:if test="$controller != ''">
+	  <xsl:text>/</xsl:text>
+	</xsl:if>
       </xsl:if>
       <xsl:if test="$controller != ''">
-	<xsl:value-of select="$controller"/>
+	<xsl:value-of select="$LX_RESPONSE/lx:request/@controller"/>
+	<xsl:if test="$action != ''">
+	  <xsl:text>/</xsl:text>
+	</xsl:if>
       </xsl:if>
       <xsl:if test="$action != ''">
-	<xsl:value-of select="concat('/', $action)"/>
+	<xsl:value-of select="$action"/>
       </xsl:if>
       <xsl:call-template name="lx:for-each">
 	<xsl:with-param name="begin" select="'/'"/>
@@ -238,6 +235,7 @@
 	<xsl:value-of select="concat('.', $LX_RESPONSE/lx:request/@handler)"/>
       </xsl:if>
     </xsl:variable>
+
 
     <xsl:variable name="content_value">
       <xsl:choose>
@@ -262,28 +260,32 @@
   </xsl:template>
 
   <!--
-      @template lx:link
+      @template lx.html:link
       Create a link.
     -->
-  <xsl:template match="lx:link[@href]"
-		name="lx:link">
+  <xsl:template match="lx.html:link[@href]"
+		name="lx.html:link">
     <!-- @param URL of the link -->
     <xsl:param name="href" select="@href"/>
     <!-- @param content of the link -->
     <xsl:param name="content" select="node()"/>
     <!-- @param target of the link ('_blank' | '_parent') -->
-    <xsl:param name="target">
-      <xsl:choose>
-	<xsl:when test="@target">
-	  <xsl:value-of select="@target"/>
-	</xsl:when>
-	<xsl:otherwise>
-	  <xsl:text>_self</xsl:text>
-	</xsl:otherwise>
-      </xsl:choose>
-    </xsl:param>
+    <xsl:param name="target" select="@target"/>
 
-    <a href="{$href}" target="{$target}">
+    <xsl:element name="a">
+      <xsl:attribute name="href">
+	<xsl:value-of select="$href"/>
+	<xsl:if test="$LX_RESPONSE/lx:request/@handler!='xsl' and $target!='_blank'">
+	  <xsl:value-of select="concat('.', $LX_RESPONSE/lx:request/@handler)"/>
+	</xsl:if>
+      </xsl:attribute>
+
+      <xsl:if test="$target!='' and $target!='_self'">
+	<xsl:attribute name="target">
+	  <xsl:value-of select="$target"/>
+	</xsl:attribute>
+      </xsl:if>
+
       <xsl:choose>
 	<xsl:when test="$content = node()">
 	  <xsl:apply-templates select="node()"/>
@@ -292,52 +294,28 @@
 	  <xsl:value-of select="$content"/>
 	</xsl:otherwise>
       </xsl:choose>
-    </a>
+    </xsl:element>
   </xsl:template>
 
   <!--
-      @template lx:insert-template-here
-      Set where to insert the view template.
-      If an lx:exception node is available, it is matchd instead of the template.
-    -->
-  <xsl:template match="lx:insert-template-here">
-    <xsl:choose>
-      <xsl:when test="$LX_RESPONSE/lx:error">
-	<xsl:apply-templates select="$LX_RESPONSE/lx:error"/>
-      </xsl:when>
-      <xsl:otherwise>
-	<xsl:apply-templates select="$LX_TEMPLATE/body/node()"/>
-      </xsl:otherwise>
-    </xsl:choose>
-  </xsl:template>
-
-  <!--
-      @template lx:insert-controller-here
-      Set where to insert the view generated output.
-    -->
-  <xsl:template match="lx:insert-controller-here">
-    <xsl:apply-templates select="$LX_CONTROLLER"/>
-  </xsl:template>
-
-  <!--
-      @template lx:flash
+      @template lx.html:flash
       Insert Flash content.
       The content of the tag is used as javascript code and is automagicaly called when the Flash application is ready.
     -->
-  <xsl:template match="lx:flash"
-                name="lx:flash">
+  <xsl:template match="lx.html:flash"
+                name="lx.html:flash">
     <!-- @param ressource name (without 'flash/' and '.swf') of the SWF file -->
     <xsl:param name="name">
       <xsl:apply-templates select="@name" mode="lx:value-of"/>
     </xsl:param>
     <!-- @param javascript code to execute when the application is ready -->
-    <xsl:param name="script" select="node()"/>
+    <xsl:param name="script" select="normalize-space(text())"/>
     <!-- @param width of the application -->
     <xsl:param name="width" select="@width"/>
     <!-- @param height of the application -->
     <xsl:param name="height" select="@height"/>
     <!-- @param flashvars -->
-    <xsl:param name="flashvars" select="@flashvars"/>
+    <xsl:param name="flashvars" select="lx.html:flashvar"/>
     <!-- @param [opaque] wmode -->
     <xsl:param name="wmode">
       <xsl:value-of select="@wmode"/>
@@ -373,7 +351,7 @@
 	  <xsl:text>&amp;</xsl:text>
 	</xsl:if>
       </xsl:if>
-      <xsl:value-of select="$flashvars"/>
+      <xsl:apply-templates select="$flashvars"/>
     </xsl:variable>
 
     <span id="{$id}">
@@ -401,7 +379,7 @@
 	</embed>
       </object>
 
-    <xsl:call-template name="lx:javascript">
+    <xsl:call-template name="lx.html:javascript">
       <xsl:with-param name="script">
         <xsl:text>var app=new FlashApplication(</xsl:text>
         <xsl:value-of select="concat($LX_DQUOTE, $swf, $LX_DQUOTE)"/>
@@ -422,6 +400,24 @@
       </xsl:with-param>
     </xsl:call-template>
     </span>
+  </xsl:template>
+
+  <!--
+      @template lx.html:favicon
+      Set the page favicon.
+    -->
+  <xsl:template match="lx.html:favicon"
+		name="lx.html:favicon">
+    <xsl:param name="href" select="@href"/>
+
+    <link rel="icon" href="{$href}"/>
+  </xsl:template>
+
+  <xsl:template match="lx.html:flashvar">
+    <xsl:if test="preceding-sibling::lx.html:flashvar">
+      <xsl:value-of select="$LX_AMP"/>
+    </xsl:if>
+    <xsl:value-of select="concat(@name, '=', @value)"/>
   </xsl:template>
 
 </xsl:stylesheet>

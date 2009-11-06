@@ -38,4 +38,32 @@
   <!-- @const controller node (lx:controller) -->
   <xsl:variable name="LX_CONTROLLER" select="$LX_RESPONSE/lx:controller"/>
 
+  <!--
+      @template lx:insert-template
+      Set where to insert the view template.
+      If an lx:exception node is available, it is matchd instead of the template.
+    -->
+  <xsl:template match="lx:insert-template">
+    <xsl:choose>
+      <xsl:when test="$LX_RESPONSE/lx:error">
+	<xsl:apply-templates select="$LX_RESPONSE/lx:error"/>
+      </xsl:when>
+      <xsl:otherwise>
+	<xsl:apply-templates select="$LX_TEMPLATE"/>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:template>
+
+  <!--
+      @template lx:insert-controller
+      Set where to insert the view generated output.
+    -->
+  <xsl:template match="lx:insert-controller">
+    <xsl:apply-templates select="$LX_CONTROLLER"/>
+  </xsl:template>
+
+  <xsl:template match="lx:controller|lx:template">
+    <xsl:apply-templates select="node()"/>
+  </xsl:template>
+
 </xsl:stylesheet>

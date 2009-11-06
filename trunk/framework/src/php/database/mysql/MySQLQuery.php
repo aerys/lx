@@ -15,6 +15,18 @@ class MySQLQuery extends AbstractQuery
   {
     $this->database  = $my_database;
     $this->request = $my_request;
+
+    $args = array();
+    preg_match_all('/:([A-Za-z0-9_]+)/', $this->request, $args);
+
+    foreach ($args[0] as $i => $arg)
+    {
+      $pos = strpos($this->request, $arg);
+      $hash = self::ARGUMENT_PREFIX . md5(rand());
+
+      $this->arguments[$args[1][$i]] = $hash;
+      $this->request = substr_replace($this->request, $hash, $pos, strlen($arg));
+    }
   }
 
   public function setInteger($my_arg,
@@ -23,7 +35,7 @@ class MySQLQuery extends AbstractQuery
     // sql injection fix
     $my_value = (int)$my_value;
 
-    $this->request = str_replace(self::ARGUMENT_PREFIX . $my_arg,
+    $this->request = str_replace($this->arguments[$my_arg],
 				 $my_value,
 				 $this->request);
   }
@@ -34,7 +46,7 @@ class MySQLQuery extends AbstractQuery
     // sql injection fix
     $my_value = (float)$my_value;
 
-    $this->request = str_replace(self::ARGUMENT_PREFIX . $my_arg,
+    $this->request = str_replace($this->arguments[$my_arg],
 				 $my_value,
 				 $this->request);
   }
@@ -45,7 +57,7 @@ class MySQLQuery extends AbstractQuery
     // sql injections fix
     $my_value = $this->database->escapeString($my_value);
 
-    $this->request = str_replace(self::ARGUMENT_PREFIX . $my_arg,
+    $this->request = str_replace($this->arguments[$my_arg],
 				 "'" . $my_value . "'",
 				 $this->request);
   }
@@ -55,7 +67,7 @@ class MySQLQuery extends AbstractQuery
   {
     $my_value = (int)$my_value ? 1 : 0;
 
-    $this->request = str_replace(self::ARGUMENT_PREFIX . $my_arg,
+    $this->request = str_replace($this->arguments[$my_arg],
 				 $my_value,
 				 $this->request);
   }

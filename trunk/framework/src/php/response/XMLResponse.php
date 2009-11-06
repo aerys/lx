@@ -5,7 +5,7 @@ class XMLResponse
   protected $document		= NULL;
   protected $rootNode		= NULL;
   protected $requestNode	= NULL;
-  protected $argumentNode	= NULL;
+  protected $argumentsNode	= NULL;
 
   protected $view		= LX_DEFAULT_VIEW;
   protected $layout		= 'index';
@@ -41,25 +41,23 @@ class XMLResponse
     $this->requestNode = $this->document->createElement('lx:request');
     $this->rootNode->appendChild($this->requestNode);
 
-    // lx:argument
-    $this->argumentNode = $this->document->createElement('lx:arguments');
+    // lx:arguments
+    $this->argumentsNode = $this->document->createElement('lx:arguments');
     foreach ($_GET as $key => $value)
       $this->appendArgument($value, $key);
     foreach ($_POST as $key => $value)
       $this->appendArgument($value, $key);
-
-    $this->requestNode->appendChild($this->argumentNode);
   }
 
   private function appendArgument($value, $name = NULL)
   {
     if (is_array($value))
-      $this->appendArgumentArrayValue($this->argumentNode, $name, $value);
+      $this->appendArgumentArrayValue($this->argumentsNode, $name, $value);
     else
     {
       $valueNode = $this->document->createElement($name ? $name : 'lx:argument');
       $valueNode->nodeValue = $value;
-      $this->argumentNode->appendChild($valueNode);
+      $this->argumentsNode->appendChild($valueNode);
     }
   }
 
@@ -134,10 +132,10 @@ class XMLResponse
 
   protected function finalize()
   {
-    // update the root node
+    // lx:response
     $this->rootNode->setAttribute('time', abs(microtime() - $this->start_time) * 1000);
 
-    // request node
+    // lx:request
     if (LX_MODULE)
       $this->requestNode->setAttribute('module', LX_MODULE);
     $this->requestNode->setAttribute('controller', LX_CONTROLLER);
@@ -145,6 +143,8 @@ class XMLResponse
       $this->requestNode->setAttribute('action', LX_ACTION);
     if (LX_HANDLER)
       $this->requestNode->setAttribute('handler', LX_HANDLER);
+    if ($this->argumentsNode->hasChildNodes())
+      $this->requestNode->appendChild($this->argumentsNode);
 
     // insert view node
     $viewCfg = $this->document->createElement('lx:view');

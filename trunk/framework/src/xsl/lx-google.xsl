@@ -5,14 +5,17 @@
 <!--
     @stylesheet LX Google Services
     Ready to use Google Services such as Maps and Analytics. In order to use Google Maps,
-    you must set the LX_GOOGLE_MAPS_KEY variable in your view file (lx-view.xsl).
+    you must set the LX_GOOGLE_MAPS_KEY parameter (xsl:param) in your view file (lx-view.xsl).
 -->
 <xsl:stylesheet version="1.0"
 		xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
 		xmlns:lx="http://lx.aerys.in"
+		xmlns:lx.html="http://lx.aerys.in/html"
 		xmlns:lx.google.analytics="http://lx.aerys.in/google/analytics"
 		xmlns:lx.google.maps="http://lx.aerys.in/google/maps"
 		id="LX Google Services">
+
+  <xsl:param name="LX_GOOGLE_MAPS_KEY"/>
 
   <!--
       @template lx.google.analytics:tracker
@@ -25,20 +28,22 @@
     </xsl:param>
 
     <xsl:variable name="script">
-      new GoogleAnalytics('<xsl:value-of select="$code"/>').trackPageView();
+      <xsl:text>new GoogleAnalytics('</xsl:text>
+      <xsl:value-of select="$code"/>
+      <xsl:text>').trackPageView();</xsl:text>
     </xsl:variable>
 
     <!-- Function.js -->
-    <xsl:call-template name="lx:javascript-class">
+    <xsl:call-template name="lx.html:javascript-class">
       <xsl:with-param name="name" select="'Function'"/>
     </xsl:call-template>
 
     <!-- GoogleAnalytics.js -->
-    <xsl:call-template name="lx:javascript-class">
+    <xsl:call-template name="lx.html:javascript-class">
       <xsl:with-param name="name" select="'GoogleAnalytics'"/>
     </xsl:call-template>
 
-    <xsl:call-template name="lx:javascript">
+    <xsl:call-template name="lx.html:javascript">
       <xsl:with-param name="script" select="$script"/>
     </xsl:call-template>
   </xsl:template>

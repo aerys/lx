@@ -28,7 +28,7 @@ class HTMLResponse extends XMLResponse
 
     $result = $processor->transformToDoc($xml);
 
-    $result->save(LX_APPLICATION_ROOT . '/tmp/test.html');
+    //$result->save(LX_APPLICATION_ROOT . '/tmp/test.html');
 
     header('Content-type: text/html; charset="utf-8"');
 
