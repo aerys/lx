@@ -58,7 +58,7 @@
 
   <!-- BEGIN IDENTITY -->
   <xsl:template match="*">
-    <xsl:if test="not(ancestor::lx:response) and local-name()=name()">
+    <xsl:if test="local-name()=name()">
       <xsl:element name="{name()}">
 	<xsl:apply-templates select="@*|node()"/>
       </xsl:element>
@@ -141,7 +141,6 @@
     <script language="javascript" type="text/javascript">
       <xsl:value-of select="$script"/>
     </script>
-    <xsl:value-of select="$LX_LF"/>
   </xsl:template>
 
   <!--
@@ -169,7 +168,14 @@
       <xsl:apply-templates select="@skin" mode="lx:value-of"/>
     </xsl:param>
 
-    <link rel="stylesheet" type="text/css" href="styles/{$skin}/{$name}.css"/>
+    <xsl:variable name="skin_path">
+      <xsl:if test="$skin != ''">
+	<xsl:value-of select="$skin"/>
+	<xsl:text>/</xsl:text>
+      </xsl:if>
+    </xsl:variable>
+
+    <link rel="stylesheet" type="text/css" href="styles/{$skin_path}{$name}.css"/>
     <xsl:value-of select="$LX_LF"/>
   </xsl:template>
 
@@ -218,7 +224,7 @@
 	</xsl:if>
       </xsl:if>
       <xsl:if test="$controller != ''">
-	<xsl:value-of select="$LX_RESPONSE/lx:request/@controller"/>
+	<xsl:value-of select="$controller"/>
 	<xsl:if test="$action != ''">
 	  <xsl:text>/</xsl:text>
 	</xsl:if>
@@ -266,7 +272,9 @@
   <xsl:template match="lx.html:link[@href]"
 		name="lx.html:link">
     <!-- @param URL of the link -->
-    <xsl:param name="href" select="@href"/>
+    <xsl:param name="href">
+      <xsl:apply-templates select="@href" mode="lx:value-of"/>
+    </xsl:param>
     <!-- @param content of the link -->
     <xsl:param name="content" select="node()"/>
     <!-- @param target of the link ('_blank' | '_parent') -->
@@ -300,7 +308,6 @@
   <!--
       @template lx.html:flash
       Insert Flash content.
-      The content of the tag is used as javascript code and is automagicaly called when the Flash application is ready.
     -->
   <xsl:template match="lx.html:flash"
                 name="lx.html:flash">
@@ -309,21 +316,16 @@
       <xsl:apply-templates select="@name" mode="lx:value-of"/>
     </xsl:param>
     <!-- @param javascript code to execute when the application is ready -->
-    <xsl:param name="script" select="normalize-space(text())"/>
+    <xsl:param name="script" select="node()[name()!='lx.html:flashvar']"/>
     <!-- @param width of the application -->
     <xsl:param name="width" select="@width"/>
     <!-- @param height of the application -->
     <xsl:param name="height" select="@height"/>
     <!-- @param flashvars -->
     <xsl:param name="flashvars" select="lx.html:flashvar"/>
-    <!-- @param [opaque] wmode -->
-    <xsl:param name="wmode">
-      <xsl:value-of select="@wmode"/>
-      <xsl:if test="@wmode = ''">
-	<xsl:text>opaque</xsl:text>
-      </xsl:if>
-    </xsl:param>
-    <!-- @param id -->
+    <!-- @param wmode -->
+    <xsl:param name="wmode" select="@wmode"/>
+    <!-- @param id of the application -->
     <xsl:param name="id">
       <xsl:choose>
 	<xsl:when test="@id">
@@ -403,6 +405,16 @@
   </xsl:template>
 
   <!--
+      @template lx.html:flashvar
+    -->
+  <xsl:template match="lx.html:flashvar">
+    <xsl:if test="preceding-sibling::lx.html:flashvar">
+      <xsl:value-of select="$LX_AMP"/>
+    </xsl:if>
+    <xsl:value-of select="concat(@name, '=', @value)"/>
+  </xsl:template>
+
+  <!--
       @template lx.html:favicon
       Set the page favicon.
     -->
@@ -411,13 +423,6 @@
     <xsl:param name="href" select="@href"/>
 
     <link rel="icon" href="{$href}"/>
-  </xsl:template>
-
-  <xsl:template match="lx.html:flashvar">
-    <xsl:if test="preceding-sibling::lx.html:flashvar">
-      <xsl:value-of select="$LX_AMP"/>
-    </xsl:if>
-    <xsl:value-of select="concat(@name, '=', @value)"/>
   </xsl:template>
 
 </xsl:stylesheet>

@@ -54,7 +54,7 @@ abstract class AbstractModel
     }
   }
 
-  public function serialize()
+  public function serialize($my_unescape = NULL)
   {
     $rClass	= new ReflectionClass(get_class($this));
     $className  = strtolower($rClass->getName());
@@ -70,7 +70,8 @@ abstract class AbstractModel
 	$xml .= '<' . $propertyName . '>';
 
 	if (!is_numeric($this->$propertyName) && !is_bool($this->$propertyName)
-	    && $this->$propertyName)
+	    && $this->$propertyName
+	    && (!$my_unescape || array_search($propertyName, $my_unescape, true)))
 	  $xml .= '<![CDATA[' . $this->$propertyName . ']]>';
 	else
 	  $xml .=  $this->$propertyName;

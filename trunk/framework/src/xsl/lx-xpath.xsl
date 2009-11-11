@@ -19,34 +19,29 @@
     <xsl:variable name="xpath" select="substring-after(substring-before(., $LX_XPATH_STOP), $LX_XPATH_START)"/>
 
     <xsl:attribute name="{name()}">
-      <xsl:choose>
-	<xsl:when test="$xpath != ''">
-	  <xsl:value-of select="substring-before(., $LX_XPATH_START)"/>
-	  <xsl:call-template name="lx.xpath:parse-expression">
-	    <xsl:with-param name="expression" select="$xpath"/>
-	  </xsl:call-template>
-	  <xsl:value-of select="substring-after(., $LX_XPATH_STOP)"/>
-	</xsl:when>
-	<xsl:otherwise>
-	  <xsl:value-of select="."/>
-	</xsl:otherwise>
-      </xsl:choose>
+      <xsl:apply-templates select="." mode="lx:value-of"/>
     </xsl:attribute>
   </xsl:template>
 
-  <xsl:template match="@*" mode="lx:value-of">
-    <xsl:variable name="xpath" select="substring-after(substring-before(., $LX_XPATH_STOP), $LX_XPATH_START)"/>
+  <xsl:template match="@*" mode="lx:value-of"
+		name="lx:value-of-attribute">
+    <xsl:param name="value" select="."/>
+
+    <xsl:variable name="xpath"
+		  select="substring-after(substring-before($value, $LX_XPATH_STOP), $LX_XPATH_START)"/>
 
     <xsl:choose>
       <xsl:when test="$xpath != ''">
-	<xsl:value-of select="substring-before(., $LX_XPATH_START)"/>
+	<xsl:value-of select="substring-before($value, $LX_XPATH_START)"/>
 	<xsl:call-template name="lx.xpath:parse-expression">
 	  <xsl:with-param name="expression" select="$xpath"/>
 	</xsl:call-template>
-	<xsl:value-of select="substring-after(., $LX_XPATH_STOP)"/>
+	<xsl:call-template name="lx:value-of-attribute">
+	  <xsl:with-param name="value" select="substring-after($value, $LX_XPATH_STOP)"/>
+	</xsl:call-template>
       </xsl:when>
       <xsl:otherwise>
-	<xsl:value-of select="."/>
+	<xsl:value-of select="$value"/>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>

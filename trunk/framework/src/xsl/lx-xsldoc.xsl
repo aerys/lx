@@ -46,7 +46,7 @@
 	</ul>
 
 	<ul>
-	  <xsl:apply-templates select="xsl:template" mode="table"/>
+	  <xsl:apply-templates select="xsl:template" mode="list"/>
 	</ul>
 
 	<br />
@@ -69,7 +69,7 @@
     </xsl:if>
   </xsl:template>
 
-  <xsl:template match="xsl:template" mode="table">
+  <xsl:template match="xsl:template" mode="list">
     <xsl:variable name="doc" select="preceding-sibling::node()[not(self::text()[not(normalize-space())])][1][self::comment()]"/>
 
     <xsl:if test="$doc and contains($doc, '@template')">
@@ -134,15 +134,15 @@
     <li>
       <xsl:choose>
 	<xsl:when test="xsl:apply-templates[@mode='lx:value-of']">
-	  <em>
+	  <strong>
 	    <xsl:value-of select="@name"/>
-	    <xsl:value-of select="concat(' [', xsl:apply-templates/@select, ']')"/>
-	  </em>
+	    <xsl:value-of select="concat(' = ', xsl:apply-templates/@select)"/>
+	  </strong>
 	</xsl:when>
 	<xsl:otherwise>
 	  <xsl:value-of select="@name"/>
 	  <xsl:if test="@select">
-	    <xsl:value-of select="concat(' [', @select, ']')"/>
+	    <xsl:value-of select="concat(' = ', @select)"/>
 	  </xsl:if>
 	</xsl:otherwise>
       </xsl:choose>

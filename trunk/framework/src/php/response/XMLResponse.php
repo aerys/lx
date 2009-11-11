@@ -6,6 +6,7 @@ class XMLResponse
   protected $rootNode		= NULL;
   protected $requestNode	= NULL;
   protected $argumentsNode	= NULL;
+  protected $filtersNode	= NULL;
 
   protected $view		= LX_DEFAULT_VIEW;
   protected $layout		= 'index';
@@ -47,6 +48,9 @@ class XMLResponse
       $this->appendArgument($value, $key);
     foreach ($_POST as $key => $value)
       $this->appendArgument($value, $key);
+
+    //lx:filter
+    $this->filtersNode = $this->document->createElement('lx:filters');
   }
 
   private function appendArgument($value, $name = NULL)
@@ -120,14 +124,13 @@ class XMLResponse
 
   public function appendFilter($my_filter, $my_name)
   {
-    $node = $this->document->createElement('lx:filter');
+    $node = $this->document->createElement($my_name);
     $fragment = $my_filter->getFragment();
 
-    $node->setAttribute('name', $my_name);
     if ($fragment->hasAttributes() || $fragment->hasChildNodes())
       $node->appendChild($fragment);
 
-    $this->rootNode->appendChild($node);
+    $this->filtersNode->appendChild($node);
   }
 
   protected function finalize()
@@ -145,6 +148,10 @@ class XMLResponse
       $this->requestNode->setAttribute('handler', LX_HANDLER);
     if ($this->argumentsNode->hasChildNodes())
       $this->requestNode->appendChild($this->argumentsNode);
+
+    // lx:filters
+    if ($this->filtersNode->hasChildNodes())
+      $this->rootNode->appendChild($this->filtersNode);
 
     // insert view node
     $viewCfg = $this->document->createElement('lx:view');

@@ -33,7 +33,7 @@
   <xsl:variable name="LX_TEMPLATE" select="document($LX_TEMPLATE_FILE)/lx:template"/>
 
   <!-- @const filter nodes (lx:filter) -->
-  <xsl:variable name="LX_FILTERS" select="$LX_RESPONSE/lx:filter"/>
+  <xsl:variable name="LX_FILTERS" select="$LX_RESPONSE/lx:filters"/>
 
   <!-- @const controller node (lx:controller) -->
   <xsl:variable name="LX_CONTROLLER" select="$LX_RESPONSE/lx:controller"/>

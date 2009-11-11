@@ -4,8 +4,7 @@
 
 <!--
     @stylesheet LX Google Services
-    Ready to use Google Services such as Maps and Analytics. In order to use Google Maps,
-    you must set the LX_GOOGLE_MAPS_KEY parameter (xsl:param) in your view file (lx-view.xsl).
+    Ready to use Google Services such as Maps and Analytics. In order to use Google Maps.
 -->
 <xsl:stylesheet version="1.0"
 		xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -14,8 +13,6 @@
 		xmlns:lx.google.analytics="http://lx.aerys.in/google/analytics"
 		xmlns:lx.google.maps="http://lx.aerys.in/google/maps"
 		id="LX Google Services">
-
-  <xsl:param name="LX_GOOGLE_MAPS_KEY"/>
 
   <!--
       @template lx.google.analytics:tracker
@@ -55,6 +52,10 @@
     -->
   <xsl:template match="lx.google.maps:map"
 		name="lx.google.maps:map">
+    <!-- @param Google Maps API key -->
+    <xsl:param name="api_key">
+      <xsl:apply-templates select="@api-key" mode="lx:value-of"/>
+    </xsl:param>
     <!-- @param latitude of the center of the map -->
     <xsl:param name="latitude">
       <xsl:apply-templates select="@latitude" mode="lx:value-of"/>
@@ -103,7 +104,7 @@
     <xsl:element name="img">
       <xsl:attribute name="src">
 	<xsl:text>http://maps.google.com/staticmap?key=</xsl:text>
-	<xsl:value-of select="$LX_GOOGLE_MAPS_KEY"/>
+	<xsl:value-of select="$api_key"/>
 	<xsl:text>&amp;center=</xsl:text>
 	<xsl:value-of select="concat($latitude, ',', $longitude)"/>
 	<xsl:text>&amp;size=</xsl:text>
