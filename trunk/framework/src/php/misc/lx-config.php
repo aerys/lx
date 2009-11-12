@@ -32,8 +32,9 @@ define('LX_SRC',	LX_ROOT . '/src/php');
 define('LX_SCRIPTS',	LX_ROOT . '/scripts');
 define('LX_XSL',	LX_ROOT . '/src/xsl');
 
+date_default_timezone_set(LX_TIMEZONE);
+
 require_once (LX_SRC . '/LX.php');
-require_once (LX_SRC . '/misc/lx-header.php');
 require_once (LX_SRC . '/misc/lx-autoload.php');
 require_once (LX_SRC . '/misc/lx-errors.php');
 
