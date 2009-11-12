@@ -202,7 +202,4 @@
       <xsl:otherwise>string</xsl:otherwise>
     </xsl:choose>
   </xsl:template>
-
-
-
 </xsl:stylesheet>

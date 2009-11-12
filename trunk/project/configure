@@ -5,7 +5,7 @@ LX_ROOT="/var/www/lx/trunk/framework"
 
 LX_MODELS=""
 for file in `ls ${LX_APPLICATION}/src/models/*.xml`; do
-    LX_MODELS="${LX_MODELS} ${file}"
+    LX_MODELS="${LX_MODELS} \"${file}\""
 done
 
 
@@ -17,6 +17,6 @@ echo "Aplication directory: ${LX_APPLICATION}"
 
 
 # write Makefile.rules
-echo "LX_ROOT=${LX_ROOT}" > Makefile.rules
-echo "LX_APPLICATION=${LX_APPLICATION}" >> Makefile.rules
+echo "LX_ROOT=\"${LX_ROOT}\"" > Makefile.rules
+echo "LX_APPLICATION=\"${LX_APPLICATION}\"" >> Makefile.rules
 echo "LX_MODELS=${LX_MODELS}" >> Makefile.rules
