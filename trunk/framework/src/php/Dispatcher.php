@@ -47,21 +47,25 @@ class Dispatcher
       if ($extension && isset($_LX['responses'][$extension]))
       {
 	define('LX_HANDLER', $extension);
-	$this->response = new $_LX['responses'][$extension]();
+
+	if ($_LX['responses'][$extension])
+	  $this->response = new $_LX['responses'][$extension]();
+	else
+	  $this->response = new XSLResponse();
       }
       else if ($extension == 'xml')
       {
 	define('LX_HANDLER', 'xml');
 	$this->response = new XMLResponse();
       }
-      else if ($extension == 'html')
+      else if ($extension == 'lxml')
       {
-	define('LX_HANDLER', 'html');
-	$this->response = new HTMLResponse();
+	define('LX_HANDLER', 'lxml');
+	$this->response = new LXMLResponse();
       }
       else
       {
-	if ($extension)
+	if ($extension && $extension != 'xsl')
 	  $request .= '.' . $extension;
 	define('LX_HANDLER', 'xsl');
 	$this->response = new XSLResponse();
@@ -77,6 +81,7 @@ class Dispatcher
       {
 	$module = array_shift($params);
 	$map = $map['modules'][$module];
+	$module = $map['dir'];
 	$filters = array_merge($filters, $map['filters']);
       }
       else if (!(count($params) && isset($map['controllers'][$params[0]]))
@@ -128,9 +133,14 @@ class Dispatcher
 
       // call the controller's action
       if ($action)
-	call_user_func_array(array($cont, $action), $params);
+      {
+	foreach ($params as $argv)
+	  $this->response->appendArgument($argv);
 
-      $this->response->appendController($cont, $params);
+	call_user_func_array(array($cont, $action), $params);
+      }
+
+      $this->response->appendController($cont);
     }
     catch (FilterException $e)
     {

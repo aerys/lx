@@ -58,11 +58,9 @@
 
   <!-- BEGIN IDENTITY -->
   <xsl:template match="*">
-    <xsl:if test="local-name()=name()">
-      <xsl:element name="{name()}">
-	<xsl:apply-templates select="@*|node()"/>
-      </xsl:element>
-    </xsl:if>
+    <xsl:copy>
+      <xsl:apply-templates select="@*|node()"/>
+    </xsl:copy>
   </xsl:template>
 
   <xsl:template match="@*|comment()|processing-instruction()">

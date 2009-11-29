@@ -22,7 +22,7 @@ class MySQLDatabase extends AbstractDatabase
   {
     $this->connect();
 
-    return ($this->mysqli->insert_id($this->cd));
+    return ($this->mysqli->insert_id);
   }
 
   public function connect()

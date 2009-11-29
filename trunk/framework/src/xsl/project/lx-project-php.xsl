@@ -35,11 +35,18 @@
     <xsl:text>$_LX['map']['filters']['</xsl:text>
     <xsl:value-of select="@name"/>
     <xsl:text>']='</xsl:text>
-    <xsl:call-template name="lx:ucfirst">
-      <xsl:with-param name="string" select="@name"/>
-    </xsl:call-template>
-    <xsl:text>Filter';</xsl:text>
-    <xsl:value-of select="$LX_LF"/>
+    <xsl:choose>
+      <xsl:when test="@class">
+	<xsl:value-of select="@class"/>
+      </xsl:when>
+      <xsl:otherwise>
+	<xsl:call-template name="lx:ucfirst">
+	  <xsl:with-param name="string" select="@name"/>
+	</xsl:call-template>
+	<xsl:text>Filter</xsl:text>
+      </xsl:otherwise>
+    </xsl:choose>
+    <xsl:value-of select="concat($LX_QUOTE, ';', $LX_LF)"/>
   </xsl:template>
 
   <xsl:template match="lx:const[@name][@value]">
@@ -142,7 +149,9 @@
   <xsl:template match="lx:module">
     <xsl:text>$_LX['map']['modules']['</xsl:text>
     <xsl:value-of select="@name"/>
-    <xsl:text>']=array('controllers'=>array(),'filters'=>array(</xsl:text>
+    <xsl:text>']=array('controllers'=>array(),'dir'=>'</xsl:text>
+    <xsl:value-of select="@name"/>
+    <xsl:text>', 'filters'=>array(</xsl:text>
     <xsl:call-template name="lx:for-each">
       <xsl:with-param name="collection" select="lx:filter"/>
       <xsl:with-param name="delimiter" select="','"/>
@@ -151,6 +160,8 @@
     <xsl:value-of select="$LX_LF"/>
     <xsl:apply-templates select="lx:controller"/>
     <xsl:apply-templates select="@controller"/>
+
+    <xsl:apply-templates select="lx:alias"/>
   </xsl:template>
 
   <xsl:template match="lx:module/@controller">
@@ -164,7 +175,7 @@
     <xsl:value-of select="$LX_LF"/>
   </xsl:template>
 
-  <xsl:template match="lx:alias">
+  <xsl:template match="lx:controller/lx:alias">
     <xsl:variable name="module" select="ancestor::lx:module"/>
     <xsl:variable name="controller" select="ancestor::lx:controller"/>
     <xsl:variable name="base">
@@ -184,6 +195,23 @@
     <xsl:text>']=</xsl:text>
     <xsl:value-of select="$base"/>
     <xsl:value-of select="$controller/@name"/>
+    <xsl:text>'];</xsl:text>
+
+    <xsl:value-of select="$LX_LF"/>
+  </xsl:template>
+
+  <xsl:template match="lx:module/lx:alias">
+    <xsl:variable name="base">
+      <xsl:text>$_LX['map']['</xsl:text>
+
+	<xsl:text>modules']['</xsl:text>
+    </xsl:variable>
+
+    <xsl:value-of select="$base"/>
+    <xsl:value-of select="@name"/>
+    <xsl:text>']=</xsl:text>
+    <xsl:value-of select="$base"/>
+    <xsl:value-of select="ancestor::lx:module/@name"/>
     <xsl:text>'];</xsl:text>
 
     <xsl:value-of select="$LX_LF"/>

@@ -53,7 +53,7 @@ class XMLResponse
     $this->filtersNode = $this->document->createElement('lx:filters');
   }
 
-  private function appendArgument($value, $name = NULL)
+  public function appendArgument($value, $name = NULL)
   {
     if (is_array($value))
       $this->appendArgumentArrayValue($this->argumentsNode, $name, $value);
@@ -81,7 +81,7 @@ class XMLResponse
     }
   }
 
-  public function appendController($my_controller, $my_arguments)
+  public function appendController($my_controller)
   {
     $node = LX::getResponse()->getDocument()->createElement('lx:controller');
     $fragment = $my_controller->getFragment();
@@ -90,9 +90,6 @@ class XMLResponse
       $node->appendChild($fragment);
 
     $this->rootNode->appendChild($node);
-
-    foreach ($my_arguments as $value)
-      $this->appendArgument($value);
   }
 
   public function appendErrorException($my_exception)

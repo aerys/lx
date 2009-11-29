@@ -6,7 +6,7 @@ $xml = new DOMDocument();
 $xml->load($argv[1]);
 
 $xsl = new DOMDocument();
-$xsl->load(LX_XSL . '/lx-project.xsl');
+$xsl->load(LX_XSL . '/project/lx-project-php.xsl');
 
 $processor = new XSLTProcessor();
 $processor->importStyleSheet($xsl);
