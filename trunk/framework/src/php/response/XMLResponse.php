@@ -8,24 +8,30 @@ class XMLResponse
   protected $argumentsNode	= NULL;
   protected $filtersNode	= NULL;
 
+  protected $debugNode		= NULL;
+  protected $debugFragment	= NULL;
+
   protected $view		= LX_DEFAULT_VIEW;
   protected $layout		= 'index';
   protected $template		= 'default';
 
+  protected $date		= 0;
   protected $start_time		= 0;
 
   public function setView($my_view)		{$this->view = $my_view;}
   public function setLayout($my_layout)		{$this->layout = $my_layout;}
   public function setTemplate($my_temp)		{$this->template = $my_temp;}
 
-  public function getDocument()		{return ($this->document);}
-  public function getView()		{return ($this->view);}
-  public function getLayout()		{return ($this->layout);}
-  public function getTemplate()		{return ($this->template);}
+  public function getDocument()			{return ($this->document);}
+  public function getView()			{return ($this->view);}
+  public function getLayout()			{return ($this->layout);}
+  public function getTemplate()			{return ($this->template);}
+  public function getDate()			{return ($this->date);}
 
   public function XMLResponse()
   {
     $this->start_time = microtime();
+    $this->date = time();
 
     $this->document = new DOMDocument('1.0', 'utf-8');
 
@@ -33,7 +39,7 @@ class XMLResponse
     $this->rootNode = $this->document->createElement('lx:response');
     $this->rootNode->setAttribute('xmlns:lx', LX_NAMESPACE);
     $this->rootNode->setAttribute('host', $_SERVER['HTTP_HOST']);
-    $this->rootNode->setAttribute('date', time());
+    $this->rootNode->setAttribute('date', $this->date);
     $this->rootNode->setAttribute('document-root', LX_DOCUMENT_ROOT);
     $this->rootNode->setAttribute('debug', LX_DEBUG ? 'true' : 'false');
     $this->document->appendChild($this->rootNode);
@@ -51,6 +57,24 @@ class XMLResponse
 
     //lx:filter
     $this->filtersNode = $this->document->createElement('lx:filters');
+    $this->rootNode->appendChild($this->filtersNode);
+
+    //lx:debug
+    if (LX_DEBUG)
+    {
+      $this->debugNode = $this->document->createElement('lx:debug');
+      $this->debugFragment = $this->document->createDocumentFragment();
+
+      $this->rootNode->appendChild($this->debugNode);
+    }
+  }
+
+  public function appendDebugMessage($my_msg)
+  {
+    if (!LX_DEBUG)
+      return ;
+
+    $this->debugFragment->appendXML($my_msg);
   }
 
   public function appendArgument($value, $name = NULL)
@@ -60,6 +84,10 @@ class XMLResponse
     else
     {
       $valueNode = $this->document->createElement($name ? $name : 'lx:argument');
+
+      if (is_string($value) && get_magic_quotes_gpc())
+	$value = stripslashes($value);
+
       $valueNode->nodeValue = $value;
       $this->argumentsNode->appendChild($valueNode);
     }
@@ -73,9 +101,16 @@ class XMLResponse
       $valueNode = $this->document->createElement($nodeName);
 
       if (is_array($v))
+      {
 	$this->appendArgumentArrayValue($valueNode, $nodeName, $v);
+      }
       else
+      {
+	if (is_string($v) && get_magic_quotes_gpc())
+	  $v = stripslashes($v);
+
 	$valueNode->nodeValue = $v;
+      }
 
       $owner->appendChild($valueNode);
     }
@@ -146,26 +181,26 @@ class XMLResponse
     if ($this->argumentsNode->hasChildNodes())
       $this->requestNode->appendChild($this->argumentsNode);
 
-    // lx:filters
-    if ($this->filtersNode->hasChildNodes())
-      $this->rootNode->appendChild($this->filtersNode);
-
     // insert view node
     $viewCfg = $this->document->createElement('lx:view');
     $viewCfg->setAttribute('name', $this->view);
     $viewCfg->setAttribute('layout', $this->layout);
     $viewCfg->setAttribute('template', $this->template);
     $this->rootNode->insertBefore($viewCfg, $this->rootNode->firstChild);
+
+    //lx:debug
+    if (LX_DEBUG && ($this->debugFragment->hasAttributes() || $this->debugFragment->hasChildNodes()))
+      $this->debugNode->appendChild($this->debugFragment);
   }
 
   public function save($my_filename	= NULL)
   {
+    header('Content-type: text/xml; charset="utf-8"');
+
     $this->finalize();
 
     if ($my_filename != NULL)
       return ($this->document->saveXML($my_filename));
-
-    header('Content-type: text/xml; charset="utf-8"');
 
     return ($this->document->saveXML());
   }

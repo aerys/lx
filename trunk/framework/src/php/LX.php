@@ -86,6 +86,11 @@ class LX
     }
   }
 
+  static public function appendDebugMessage($my_msg)
+  {
+    self::$response->appendDebugMessage($my_msg);
+  }
+
   static public function addApplicationDirectory($my_directory)
   {
     self::$app_directories[] = $my_directory;

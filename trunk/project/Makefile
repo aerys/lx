@@ -25,7 +25,7 @@ PINK=\033[1;35m
 DK_PINK=\033[0;35m
 ORANGE=\033[0;33m
 
-all: reload
+all: chmod reload
 
 clean: clean_models
 	@echo -n "Cleaning up /tmp..."
@@ -58,4 +58,5 @@ reload: clean $(LX_PROJECT) models
 	@echo "$(LT_GREEN)The application is ready!$(RST)"
 
 chmod:
+	chgrp -R www-data *
 	chmod -R 770 *

@@ -212,7 +212,7 @@
     <!-- @param action arguments -->
     <xsl:param name="arguments" select="lx:argument"/>
     <!-- @param content of the link (string | node)-->
-    <xsl:param name="content" select="node()[name() != 'lx:argument']"/>
+    <xsl:param name="content"/>
 
     <xsl:variable name="url">
       <xsl:if test="$module != ''">
@@ -240,20 +240,15 @@
       </xsl:if>
     </xsl:variable>
 
-
-    <xsl:variable name="content_value">
+    <a href="{$url}">
       <xsl:choose>
-	<xsl:when test="$content = node()">
-	  <xsl:apply-templates select="$content"/>
+	<xsl:when test="not($content)">
+	  <xsl:apply-templates select="node()[name()!='lx:argument']"/>
 	</xsl:when>
 	<xsl:otherwise>
-	  <xsl:value-of select="$content"/>
+	  <xsl:value-of select="normalize-space($content)"/>
 	</xsl:otherwise>
       </xsl:choose>
-    </xsl:variable>
-
-    <a href="{$url}">
-      <xsl:value-of select="normalize-space($content_value)"/>
     </a>
   </xsl:template>
 
@@ -406,10 +401,14 @@
       @template lx.html:flashvar
     -->
   <xsl:template match="lx.html:flashvar">
+    <xsl:variable name="value">
+      <xsl:apply-templates select="@value" mode="lx:value-of"/>
+    </xsl:variable>
+
     <xsl:if test="preceding-sibling::lx.html:flashvar">
       <xsl:value-of select="$LX_AMP"/>
     </xsl:if>
-    <xsl:value-of select="concat(@name, '=', @value)"/>
+    <xsl:value-of select="concat(@name, '=', $value)"/>
   </xsl:template>
 
   <!--

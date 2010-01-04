@@ -151,7 +151,7 @@
 	<xsl:apply-templates select="descendant::node()[@property][@value]" mode="set"/>
       </xsl:otherwise>
     </xsl:choose>
-    <xsl:text>$result=$db->performQuery($query);foreach($result as $i=>$record)</xsl:text>
+    <xsl:text>$result=$db->performQuery($query);if(!is_array($result))return($result);foreach($result as $i=>$record)</xsl:text>
     <xsl:text>{$model=new </xsl:text>
     <xsl:value-of select="//lx:model/@name"/>
     <xsl:text>();$model->loadArray($record);$models[]=$model;}</xsl:text>

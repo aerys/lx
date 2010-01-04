@@ -37,7 +37,9 @@ abstract class AbstractModel
   public function loadArray($my_data)
   {
     foreach ($my_data as $name => $value)
+    {
       $this->$name = $value;
+    }
   }
 
   public function __get($my_property)
@@ -54,7 +56,8 @@ abstract class AbstractModel
     }
   }
 
-  public function serialize($my_unescape = NULL)
+  public function serialize($my_unescape = NULL,
+			    $my_exclude	 = NULL)
   {
     $rClass	= new ReflectionClass(get_class($this));
     $className  = strtolower($rClass->getName());
@@ -63,15 +66,16 @@ abstract class AbstractModel
 
     foreach ($properties as $property)
     {
-      if ($property->isProtected())
-      {
-	$propertyName = $property->getName();
+      $propertyName = $property->getName();
 
+      if ($property->isProtected()
+	  && (!$my_exclude || false === array_search($propertyName, $my_exclude, true)))
+      {
 	$xml .= '<' . $propertyName . '>';
 
 	if (!is_numeric($this->$propertyName) && !is_bool($this->$propertyName)
 	    && $this->$propertyName
-	    && (!$my_unescape || array_search($propertyName, $my_unescape, true)))
+	    && (!$my_unescape || false === array_search($propertyName, $my_unescape, true)))
 	  $xml .= '<![CDATA[' . $this->$propertyName . ']]>';
 	else
 	  $xml .=  $this->$propertyName;

@@ -144,7 +144,8 @@ class Dispatcher
     }
     catch (FilterException $e)
     {
-      // NOTHING
+      if (LX_DEBUG)
+	LX::getResponse()->appendErrorException($e);
     }
     catch (ErrorException $e)
     {
