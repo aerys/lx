@@ -88,7 +88,8 @@ class LX
 
   static public function appendDebugMessage($my_msg)
   {
-    self::$response->appendDebugMessage($my_msg);
+    if (self::$response)
+      self::$response->appendDebugMessage($my_msg);
   }
 
   static public function addApplicationDirectory($my_directory)

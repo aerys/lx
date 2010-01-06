@@ -55,6 +55,10 @@ class MySQLDatabase extends AbstractDatabase
     $this->connect();
 
     $sql_str = $my_query->toString();
+
+    if (LX_DEBUG)
+      LX::appendDebugMessage($sql_str);
+
     $result = $this->mysqli->query($sql_str);
 
     if (!$result)

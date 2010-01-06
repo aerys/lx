@@ -309,7 +309,7 @@
       <xsl:apply-templates select="@name" mode="lx:value-of"/>
     </xsl:param>
     <!-- @param javascript code to execute when the application is ready -->
-    <xsl:param name="script" select="node()[name()!='lx.html:flashvar']"/>
+    <xsl:param name="script" select="text()"/>
     <!-- @param width of the application -->
     <xsl:param name="width" select="@width"/>
     <!-- @param height of the application -->
@@ -321,7 +321,7 @@
     <!-- @param id of the application -->
     <xsl:param name="id">
       <xsl:choose>
-	<xsl:when test="@id">
+	<xsl:when test="@id != ''">
 	  <xsl:value-of select="@id"/>
 	</xsl:when>
 	<xsl:otherwise>
@@ -349,7 +349,8 @@
       <xsl:apply-templates select="$flashvars"/>
     </xsl:variable>
 
-    <span id="{$id}">
+    <span>
+    <!--<span id="{$id}">-->
       <object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000"
 	      id="{$name}" width="{$width}" height="{$height}"
 	      codebase="http://fpdownload.macromedia.com/get/flashplayer/current/swflash.cab">
@@ -382,7 +383,7 @@
         <xsl:value-of select="concat($LX_DQUOTE, $id, $LX_DQUOTE)"/>
         <xsl:text>);</xsl:text>
 
-        <xsl:if test="$script">
+        <xsl:if test="normalize-space($script) != ''">
           <xsl:text>app.useFABridge=true;</xsl:text>
           <xsl:text>app.addEventListener(Event.COMPLETE,function(e){</xsl:text>
           <xsl:apply-templates select="$script"/>
@@ -394,7 +395,7 @@
         <xsl:text>));</xsl:text>
       </xsl:with-param>
     </xsl:call-template>
-    </span>
+  </span>
   </xsl:template>
 
   <!--

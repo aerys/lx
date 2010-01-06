@@ -74,7 +74,7 @@ class XMLResponse
     if (!LX_DEBUG)
       return ;
 
-    $this->debugFragment->appendXML($my_msg);
+    $this->debugFragment->appendXML('<![CDATA[' . $my_msg . ']]>');
   }
 
   public function appendArgument($value, $name = NULL)
