@@ -1,8 +1,8 @@
 <?php
 
-class HTMLResponse extends XMLResponse
+class LXMLResponse extends XMLResponse
 {
-  public function HTMLResponse()
+  public function LXMLResponse()
   {
     parent::XMLResponse();
   }
@@ -31,7 +31,9 @@ class HTMLResponse extends XMLResponse
     //$result->save(LX_APPLICATION_ROOT . '/tmp/test.html');
 
     header('Content-type: text/html; charset="utf-8"');
+    //$result = $processor->transformToURI($xml, 'php://output');
 
+    //return ('');
     return ($result->saveHTML());
   }
 }
