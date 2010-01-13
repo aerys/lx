@@ -349,31 +349,17 @@
       <xsl:apply-templates select="$flashvars"/>
     </xsl:variable>
 
-    <span>
     <!--<span id="{$id}">-->
-      <object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000"
-	      id="{$name}" width="{$width}" height="{$height}"
-	      codebase="http://fpdownload.macromedia.com/get/flashplayer/current/swflash.cab">
-	<param name="movie" value="{$swf}.swf" />
-	<param name="quality" value="high" />
-	<param name="allowScriptAccess" value="sameDomain" />
-	<param name="allowFullscreen" value="true" />
-	<param name="flashvars" value="{$flashvars_full}" />
-	<param name="wmode" value="{$wmode}" />
-	<param name="name" value="{$id}"/>
-	<embed src="{$swf}.swf"
-	       width="{$width}" height="{$height}" name="{$id}" align="middle"
-	       play="true"
-	       loop="false"
-	       flashvars="{$flashvars_full}"
-	       quality="high"
-	       allowScriptAccess="sameDomain"
-	       type="application/x-shockwave-flash"
-	       pluginspage="http://www.adobe.com/go/getflashplayer"
-	       allowFullscreen="true"
-               wmode="{$wmode}">
-	</embed>
-      </object>
+    <object type="application/x-shockwave-flash" data="{$swf}.swf" width="{$width}" height="{$height}" id="{$id}">
+      <param name="movie" value="{$swf}.swf" />
+      <param name="allowScriptAccess" value="sameDomain" />
+      <param name="allowFullscreen" value="true" />
+      <param name="flashvars" value="{$flashvars_full}" />
+      <param name="wmode" value="{$wmode}" />
+      <param name="name" value="{$id}"/>
+
+      <!--<span>update flash</span>-->
+    </object>
 
     <xsl:call-template name="lx.html:javascript">
       <xsl:with-param name="script">
@@ -395,7 +381,6 @@
         <xsl:text>));</xsl:text>
       </xsl:with-param>
     </xsl:call-template>
-  </span>
   </xsl:template>
 
   <!--

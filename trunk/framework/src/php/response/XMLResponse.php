@@ -74,7 +74,7 @@ class XMLResponse
     if (!LX_DEBUG)
       return ;
 
-    $this->debugFragment->appendXML('<![CDATA[' . $my_msg . ']]>');
+    $this->debugFragment->appendXML($my_msg);
   }
 
   public function appendArgument($value, $name = NULL)
@@ -165,6 +165,11 @@ class XMLResponse
     $this->filtersNode->appendChild($node);
   }
 
+  protected function httpHeader()
+  {
+    header('Content-type: text/xml; charset="utf-8"');
+  }
+
   protected function finalize()
   {
     // lx:response
@@ -191,12 +196,12 @@ class XMLResponse
     //lx:debug
     if (LX_DEBUG && ($this->debugFragment->hasAttributes() || $this->debugFragment->hasChildNodes()))
       $this->debugNode->appendChild($this->debugFragment);
+
+    $this->httpHeader();
   }
 
   public function save($my_filename	= NULL)
   {
-    header('Content-type: text/xml; charset="utf-8"');
-
     $this->finalize();
 
     if ($my_filename != NULL)

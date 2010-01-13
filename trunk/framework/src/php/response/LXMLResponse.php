@@ -7,6 +7,13 @@ class LXMLResponse extends XMLResponse
     parent::XMLResponse();
   }
 
+  protected function httpHeader()
+  {
+    parent::httpHeader();
+
+    header('Content-type: text/html; charset="utf-8"');
+  }
+
   public function save($my_filename	 = NULL)
   {
     $dir = LX_APPLICATION_ROOT . '/src/views/' . $this->view . '/';
@@ -30,7 +37,6 @@ class LXMLResponse extends XMLResponse
 
     //$result->save(LX_APPLICATION_ROOT . '/tmp/test.html');
 
-    header('Content-type: text/html; charset="utf-8"');
     //$result = $processor->transformToURI($xml, 'php://output');
 
     //return ('');
