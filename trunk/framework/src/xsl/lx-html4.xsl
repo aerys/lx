@@ -9,7 +9,8 @@
 <xsl:stylesheet version="1.0"
 		xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
 		xmlns:lx="http://lx.aerys.in"
-		xmlns:lx.html="http://lx.aerys.in/html">
+		xmlns:lx.html="http://lx.aerys.in/html"
+		xmlns:lx.html.flash="http://lx.aerys.in/html/flash">
 
   <xsl:output method="html"
 	      version="4.0"
@@ -302,8 +303,8 @@
       @template lx.html:flash
       Insert Flash content.
     -->
-  <xsl:template match="lx.html:flash"
-                name="lx.html:flash">
+  <xsl:template match="lx.html.flash:flash"
+                name="lx.html.flash:flash">
     <!-- @param ressource name (without 'flash/' and '.swf') of the SWF file -->
     <xsl:param name="name">
       <xsl:apply-templates select="@name" mode="lx:value-of"/>
@@ -315,7 +316,7 @@
     <!-- @param height of the application -->
     <xsl:param name="height" select="@height"/>
     <!-- @param flashvars -->
-    <xsl:param name="flashvars" select="lx.html:flashvar"/>
+    <xsl:param name="flashvars" select="lx.html.flash:flashvar"/>
     <!-- @param wmode -->
     <xsl:param name="wmode" select="@wmode"/>
     <!-- @param id of the application -->
@@ -349,7 +350,6 @@
       <xsl:apply-templates select="$flashvars"/>
     </xsl:variable>
 
-    <!--<span id="{$id}">-->
     <object type="application/x-shockwave-flash" data="{$swf}.swf" width="{$width}" height="{$height}" id="{$id}">
       <param name="movie" value="{$swf}.swf" />
       <param name="allowScriptAccess" value="sameDomain" />
@@ -358,40 +358,27 @@
       <param name="wmode" value="{$wmode}" />
       <param name="name" value="{$id}"/>
 
-      <!--<span>update flash</span>-->
+      <xsl:apply-templates select="lx.html.flash:alternative-content"/>
     </object>
+  </xsl:template>
 
-    <xsl:call-template name="lx.html:javascript">
-      <xsl:with-param name="script">
-        <xsl:text>var app=new FlashApplication(</xsl:text>
-        <xsl:value-of select="concat($LX_DQUOTE, $swf, $LX_DQUOTE)"/>
-        <xsl:text>,</xsl:text>
-        <xsl:value-of select="concat($LX_DQUOTE, $id, $LX_DQUOTE)"/>
-        <xsl:text>);</xsl:text>
+  <xsl:template match="lx.html.flash:alternative-content">
+    <xsl:apply-templates select="node()"/>
+  </xsl:template>
 
-        <xsl:if test="normalize-space($script) != ''">
-          <xsl:text>app.useFABridge=true;</xsl:text>
-          <xsl:text>app.addEventListener(Event.COMPLETE,function(e){</xsl:text>
-          <xsl:apply-templates select="$script"/>
-          <xsl:text>});</xsl:text>
-        </xsl:if>
-
-        <xsl:text>app.run(document.getElementById(</xsl:text>
-        <xsl:value-of select="concat($LX_DQUOTE, $id, $LX_DQUOTE)"/>
-        <xsl:text>));</xsl:text>
-      </xsl:with-param>
-    </xsl:call-template>
+  <xsl:template match="lx.html.flash:fabridge">
+    <!-- FIXME -->
   </xsl:template>
 
   <!--
       @template lx.html:flashvar
     -->
-  <xsl:template match="lx.html:flashvar">
+  <xsl:template match="lx.html.flash:flashvar">
     <xsl:variable name="value">
       <xsl:apply-templates select="@value" mode="lx:value-of"/>
     </xsl:variable>
 
-    <xsl:if test="preceding-sibling::lx.html:flashvar">
+    <xsl:if test="preceding-sibling::lx.html.flash:flashvar">
       <xsl:value-of select="$LX_AMP"/>
     </xsl:if>
     <xsl:value-of select="concat(@name, '=', $value)"/>

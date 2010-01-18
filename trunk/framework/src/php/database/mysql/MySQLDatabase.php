@@ -56,7 +56,7 @@ class MySQLDatabase extends AbstractDatabase
 
     $sql_str = $my_query->toString();
 
-    LX::appendDebugMessage('<mysql-query>' . $sql_str . '</mysql-query>');
+    LX::appendDebugMessage('<mysql-query><![CDATA[' . $sql_str . ']]></mysql-query>');
 
     $result = $this->mysqli->query($sql_str);
 
