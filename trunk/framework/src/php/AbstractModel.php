@@ -73,12 +73,15 @@ abstract class AbstractModel
       {
 	$xml .= '<' . $propertyName . '>';
 
-	if (!is_numeric($this->$propertyName) && !is_bool($this->$propertyName)
-	    && $this->$propertyName
-	    && (!$my_unescape || false === array_search($propertyName, $my_unescape, true)))
-	  $xml .= '<![CDATA[' . $this->$propertyName . ']]>';
-	else
+	if (is_numeric($this->$propertyName) || is_bool($this->$propertyName)
+	    || ($my_unescape || array_search($propertyName, $my_unescape, true)))
+	{
 	  $xml .=  $this->$propertyName;
+	}
+	else
+	{
+	  $xml .= '<![CDATA[' . $this->$propertyName . ']]>';
+	}
 
 	$xml .= '</' . $propertyName . '>';
       }

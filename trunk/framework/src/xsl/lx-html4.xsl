@@ -318,7 +318,16 @@
     <!-- @param flashvars -->
     <xsl:param name="flashvars" select="lx.html.flash:flashvar"/>
     <!-- @param wmode -->
-    <xsl:param name="wmode" select="@wmode"/>
+    <xsl:param name="wmode">
+      <xsl:choose>
+	<xsl:when test="@wmode!=''">
+	  <xsl:value-of select="@wmode"/>
+	</xsl:when>
+	<xsl:otherwise>
+	  <xsl:text>opaque</xsl:text>
+	</xsl:otherwise>
+      </xsl:choose>
+    </xsl:param>
     <!-- @param id of the application -->
     <xsl:param name="id">
       <xsl:choose>

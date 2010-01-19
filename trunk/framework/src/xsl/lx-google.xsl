@@ -25,23 +25,32 @@
     </xsl:param>
 
     <xsl:variable name="script">
-      <xsl:text>new GoogleAnalytics('</xsl:text>
-      <xsl:value-of select="$code"/>
-      <xsl:text>').trackPageView();</xsl:text>
+      var s = document.createElement("script");
+      var h = document.getElementsByTagName("head")[0];
+
+      s.setAttribute("type", "text/javascript");
+      s.setAttribute("src", (("https:" == document.location.protocol) ? "https://ssl." : "http://www.")
+                            + "google-analytics.com/ga.js");
+      h.appendChild(s);
+
+      function lx_trackPageView(myCode)
+      {
+        try
+        {
+          _gat._getTracker(myCode)._trackPageview();
+        }
+        catch (e)
+        {
+          if (e instanceof ReferenceError)
+            setTimeout(function(){lx_trackPageView(myCode);}, 100);
+        }
+      };
+
+      lx_trackPageView(<xsl:value-of select="concat($LX_DQUOTE, $code, $LX_DQUOTE)"/>);
     </xsl:variable>
 
-    <!-- Function.js -->
-    <xsl:call-template name="lx.html:javascript-class">
-      <xsl:with-param name="name" select="'Function'"/>
-    </xsl:call-template>
-
-    <!-- GoogleAnalytics.js -->
-    <xsl:call-template name="lx.html:javascript-class">
-      <xsl:with-param name="name" select="'GoogleAnalytics'"/>
-    </xsl:call-template>
-
     <xsl:call-template name="lx.html:javascript">
-      <xsl:with-param name="script" select="$script"/>
+      <xsl:with-param name="script" select="normalize-space($script)"/>
     </xsl:call-template>
   </xsl:template>
 
