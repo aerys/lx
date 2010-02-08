@@ -135,10 +135,17 @@
   <xsl:template name="lx.html:javascript"
 		match="lx.html:javascript">
     <!-- @param javascript code to embed -->
-    <xsl:param name="script" select="."/>
+    <xsl:param name="script"/>
 
     <script language="javascript" type="text/javascript">
-      <xsl:value-of select="$script"/>
+      <xsl:choose>
+	<xsl:when test="$script != ''">
+	  <xsl:value-of select="$script"/>
+	</xsl:when>
+	<xsl:otherwise>
+	  <xsl:apply-templates select="node()"/>
+	</xsl:otherwise>
+      </xsl:choose>
     </script>
   </xsl:template>
 
