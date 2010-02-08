@@ -74,7 +74,7 @@ abstract class AbstractModel
 	$xml .= '<' . $propertyName . '>';
 
 	if (is_numeric($this->$propertyName) || is_bool($this->$propertyName)
-	    || ($my_unescape || array_search($propertyName, $my_unescape, true)))
+	    || ($my_unescape && array_search($propertyName, $my_unescape, true)))
 	{
 	  $xml .=  $this->$propertyName;
 	}

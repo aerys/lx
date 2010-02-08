@@ -143,6 +143,17 @@
   </xsl:template>
 
   <!--
+      @template lx.html:favicon
+      Set the page favicon.
+    -->
+  <xsl:template match="lx.html:favicon"
+		name="lx.html:favicon">
+    <xsl:param name="href" select="@href"/>
+
+    <link rel="icon" href="{$href}"/>
+  </xsl:template>
+
+  <!--
       @template lx.html:skin
     -->
   <xsl:template match="lx.html:skin"
@@ -300,11 +311,13 @@
   </xsl:template>
 
   <!--
-      @template lx.html:flash
+      @template lx.html.flash:flash
       Insert Flash content.
     -->
   <xsl:template match="lx.html.flash:flash"
                 name="lx.html.flash:flash">
+    <!-- @param id of the application -->
+    <xsl:param name="id" select="@id"/>
     <!-- @param ressource name (without 'flash/' and '.swf') of the SWF file -->
     <xsl:param name="name">
       <xsl:apply-templates select="@name" mode="lx:value-of"/>
@@ -325,17 +338,6 @@
 	</xsl:when>
 	<xsl:otherwise>
 	  <xsl:text>opaque</xsl:text>
-	</xsl:otherwise>
-      </xsl:choose>
-    </xsl:param>
-    <!-- @param id of the application -->
-    <xsl:param name="id">
-      <xsl:choose>
-	<xsl:when test="@id != ''">
-	  <xsl:value-of select="@id"/>
-	</xsl:when>
-	<xsl:otherwise>
-	  <xsl:value-of select="concat('flash_', generate-id())"/>
 	</xsl:otherwise>
       </xsl:choose>
     </xsl:param>
@@ -369,6 +371,8 @@
 
       <xsl:apply-templates select="lx.html.flash:alternative-content"/>
     </object>
+
+    <xsl:apply-templates select="lx.html.flash:fabridge"/>
   </xsl:template>
 
   <xsl:template match="lx.html.flash:alternative-content">
@@ -380,7 +384,7 @@
   </xsl:template>
 
   <!--
-      @template lx.html:flashvar
+      @template lx.html.flash:flashvar
     -->
   <xsl:template match="lx.html.flash:flashvar">
     <xsl:variable name="value">
@@ -394,14 +398,25 @@
   </xsl:template>
 
   <!--
-      @template lx.html:favicon
-      Set the page favicon.
+      lx.html.flash:fabridge
+      Set a Flex-Ajax bridge using the FABridge library provided with the Flex SDK.
     -->
-  <xsl:template match="lx.html:favicon"
-		name="lx.html:favicon">
-    <xsl:param name="href" select="@href"/>
+  <xsl:template match="lx.html.flash:fabridge">
+    <xsl:param name="bridgeName" select="../@id"/>
+    <xsl:param name="script" select="node()"/>
 
-    <link rel="icon" href="{$href}"/>
+    <xsl:variable name="callback">
+      FABridge.addInitializationCallback('<xsl:value-of select="$bridgeName"/>',
+      function()
+      {
+        window.<xsl:value-of select="$bridgeName"/> = FABridge['<xsl:value-of select="$bridgeName"/>'].root();
+        <xsl:apply-templates select="$script"/>
+      });
+    </xsl:variable>
+
+    <xsl:call-template name="lx.html:javascript">
+      <xsl:with-param name="script" select="normalize-space($callback)"/>
+    </xsl:call-template>
   </xsl:template>
 
 </xsl:stylesheet>
