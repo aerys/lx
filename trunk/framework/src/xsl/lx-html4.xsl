@@ -400,6 +400,9 @@
   <!--
       lx.html.flash:fabridge
       Set a Flex-Ajax bridge using the FABridge library provided with the Flex SDK.
+      The content of this markup must be JavaScript code. The Flex application is
+      accessible using an object named by the id attribute specified in the parent
+      lx.html.flash:flash node.
     -->
   <xsl:template match="lx.html.flash:fabridge">
     <xsl:param name="bridgeName" select="../@id"/>

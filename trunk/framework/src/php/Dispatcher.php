@@ -97,13 +97,17 @@ class Dispatcher
       if (count($params) && isset($map[$params[0]]))
 	$controller = array_shift($params);
       if (isset($map[$controller]))
+      {
+	$action = $map[$controller]['default_action'];
 	$filters = array_merge($filters, $map[$controller]['filters']);
+      }
 
       // action
-      if (isset($params[0]) && $params[0])
+      $actionsMap = $map[$controller]['actions'];
+      if (count($params) && isset($actionsMap[$params[0]]))
 	$action = array_shift($params);
-      else if (isset($map[$controller]['action']))
-	$action = $map[$controller]['action'];
+      if (isset($actionsMap[$action]))
+	$filters = array_merge($filters, $actionsMap[$action]['filters']);
 
       define('LX_MODULE', $module);
       define('LX_CONTROLLER', $controller);
@@ -112,8 +116,8 @@ class Dispatcher
       if (!isset($map[LX_CONTROLLER]))
 	throw new UnknownControllerException(LX_CONTROLLER);
 
-      if (LX_MODULE)
-	LX::addApplicationDirectory('/src/controllers/' . LX_MODULE);
+      //if (LX_MODULE)
+      //LX::addApplicationDirectory('/src/controllers/' . LX_MODULE);
 
       // filters
       foreach ($filters as $filterName => $filterClass)

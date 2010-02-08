@@ -176,12 +176,13 @@ class XMLResponse
     $this->rootNode->setAttribute('time', abs(microtime() - $this->start_time) * 1000);
 
     // lx:request
-    if (LX_MODULE)
+    if (defined('LX_MODULE') && LX_MODULE)
       $this->requestNode->setAttribute('module', LX_MODULE);
+    if (defined('LX_CONTROLLER') && LX_CONTROLLER)
     $this->requestNode->setAttribute('controller', LX_CONTROLLER);
-    if (LX_ACTION)
+    if (defined('LX_ACTION') && LX_ACTION)
       $this->requestNode->setAttribute('action', LX_ACTION);
-    if (LX_HANDLER)
+    if (defined('LX_HANDLER') && LX_HANDLER)
       $this->requestNode->setAttribute('handler', LX_HANDLER);
     if ($this->argumentsNode->hasChildNodes())
       $this->requestNode->appendChild($this->argumentsNode);
