@@ -56,8 +56,13 @@ abstract class AbstractModel
     }
   }
 
-  public function serialize($my_unescape = NULL,
-			    $my_exclude	 = NULL)
+  public function __call($p, $a)
+  {
+    throw new UnknownMethodException(get_class($this) . '::' . $p, $a);
+  }
+
+  public function serialize($my_exclude	= NULL,
+			    $my_escape	= NULL)
   {
     $rClass	= new ReflectionClass(get_class($this));
     $className  = strtolower($rClass->getName());
@@ -73,15 +78,10 @@ abstract class AbstractModel
       {
 	$xml .= '<' . $propertyName . '>';
 
-	if (is_numeric($this->$propertyName) || is_bool($this->$propertyName)
-	    || ($my_unescape && array_search($propertyName, $my_unescape, true)))
-	{
-	  $xml .=  $this->$propertyName;
-	}
-	else
-	{
+	if ($my_escape && false !== array_search($propertyName, $my_escape, true))
 	  $xml .= '<![CDATA[' . $this->$propertyName . ']]>';
-	}
+	else
+	  $xml .= $this->$propertyName;
 
 	$xml .= '</' . $propertyName . '>';
       }

@@ -229,7 +229,7 @@
       <xsl:apply-templates select="@action" mode="lx:value-of"/>
     </xsl:param>
     <!-- @param action arguments -->
-    <xsl:param name="arguments" select="lx:argument"/>
+    <xsl:param name="arguments" select="lx.html:argument"/>
     <!-- @param content of the link (string | node)-->
     <xsl:param name="content"/>
 
@@ -262,7 +262,7 @@
     <a href="{$url}">
       <xsl:choose>
 	<xsl:when test="not($content)">
-	  <xsl:apply-templates select="node()[name()!='lx:argument']"/>
+	  <xsl:apply-templates select="node()[name()!='lx.html:argument']"/>
 	</xsl:when>
 	<xsl:otherwise>
 	  <xsl:value-of select="normalize-space($content)"/>
@@ -271,9 +271,11 @@
     </a>
   </xsl:template>
 
-  <xsl:template match="lx:argument">
-    <xsl:value-of select="@name"/>
-    <xsl:text>=</xsl:text>
+  <xsl:template match="lx.html:argument">
+    <xsl:if test="@name!=''">
+      <xsl:value-of select="@name"/>
+      <xsl:text>=</xsl:text>
+    </xsl:if>
     <xsl:value-of select="@value"/>
   </xsl:template>
 

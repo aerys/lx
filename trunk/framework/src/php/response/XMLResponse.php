@@ -88,7 +88,7 @@ class XMLResponse
       if (is_string($value) && get_magic_quotes_gpc())
 	$value = stripslashes($value);
 
-      $valueNode->nodeValue = $value;
+      $valueNode->nodeValue = htmlentities($value);
       $this->argumentsNode->appendChild($valueNode);
     }
   }

@@ -65,9 +65,11 @@
     -->
   <xsl:template match="lx:text">
     <!-- @param the output text -->
-    <xsl:param name="content" select="normalize-space(.)"/>
+    <xsl:param name="content">
+      <xsl:apply-templates select="node()"/>
+    </xsl:param>
 
-    <xsl:value-of select="$content"/>
+    <xsl:value-of select="normalize-space($content)"/>
   </xsl:template>
 
   <!--

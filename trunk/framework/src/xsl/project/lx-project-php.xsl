@@ -120,8 +120,8 @@
 
     <xsl:value-of select="$LX_LF"/>
 
-    <xsl:apply-templates select="lx:alias"/>
     <xsl:apply-templates select="lx:action"/>
+    <xsl:apply-templates select="lx:alias"/>
   </xsl:template>
 
   <xsl:template match="lx:filter">

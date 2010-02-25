@@ -5,7 +5,7 @@ LX_ROOT="/var/www/lx/trunk/framework"
 
 LX_MODELS=""
 for file in `ls ${LX_APPLICATION}/src/models/*.xml`; do
-    LX_MODELS="${LX_MODELS} \"${file}\""
+    LX_MODELS="${LX_MODELS} ${file}"
 done
 
 
