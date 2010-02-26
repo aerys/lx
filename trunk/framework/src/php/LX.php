@@ -101,6 +101,7 @@ class LX
   {
     Dispatcher::get()->dispatchHTTPRequest($url, $get, $post);
   }
+
 }
 
 ?>

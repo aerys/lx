@@ -123,12 +123,12 @@ class Dispatcher
       foreach ($filters as $filterName => $filterClass)
       {
 	$filter = new $filterClass();
-	$filter_result = $filter->filter();
+	$filter_result = (int)$filter->filter();
 
-	if (FilterResult::STOP === $filter_result)
-	  break ;
-	else if (!(FilterResult::IGNORE === $filter_result))
+	if (!(FilterResult::IGNORE & $filter_result))
 	  $this->response->appendFilter($filter, $filterName);
+	if (FilterResult::STOP & $filter_result)
+	  break ;
       }
 
       // create a new controller instance
@@ -148,6 +148,7 @@ class Dispatcher
     }
     catch (FilterException $e)
     {
+      // FIXME: not very relevent!
       if (LX_DEBUG)
 	LX::getResponse()->appendErrorException($e);
     }

@@ -69,6 +69,11 @@ class XMLResponse
     }
   }
 
+  public function addXMLNamespace($my_namespace, $my_uri)
+  {
+    $this->rootNode->setAttribute('xmlns:' . $my_namespace, $my_uri);
+  }
+
   public function appendDebugMessage($my_msg)
   {
     if (!LX_DEBUG)

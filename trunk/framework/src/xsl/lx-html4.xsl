@@ -276,7 +276,7 @@
       <xsl:value-of select="@name"/>
       <xsl:text>=</xsl:text>
     </xsl:if>
-    <xsl:value-of select="@value"/>
+    <xsl:apply-templates select="@value" mode="lx:value-of"/>
   </xsl:template>
 
   <!--

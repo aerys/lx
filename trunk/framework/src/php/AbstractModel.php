@@ -62,11 +62,12 @@ abstract class AbstractModel
   }
 
   public function serialize($my_exclude	= NULL,
-			    $my_escape	= NULL)
+			    $my_escape	= NULL,
+			    $my_no_root	= false)
   {
     $rClass	= new ReflectionClass(get_class($this));
     $className  = strtolower($rClass->getName());
-    $xml	= '<' . $className . '>';
+    $xml	= $my_no_root ? '' : '<' . $className . '>';
     $properties = $rClass->getProperties();
 
     foreach ($properties as $property)
@@ -87,7 +88,8 @@ abstract class AbstractModel
       }
     }
 
-    $xml .= '</' . $className . '>';
+    if (!$my_no_root)
+      $xml .= '</' . $className . '>';
 
     return ($xml);
   }

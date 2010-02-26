@@ -2,7 +2,6 @@
 
 class XMLResponseElement
 {
-
   private $fragment;
 
   public function getFragment()  {return ($this->fragment);}
