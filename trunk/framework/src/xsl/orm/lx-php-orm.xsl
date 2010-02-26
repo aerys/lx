@@ -173,6 +173,7 @@
     <xsl:variable name="sql">
       <xsl:apply-templates select="lx:select | lx:delete | lx:update | lx:insert"/>
     </xsl:variable>
+
     <xsl:text>public function </xsl:text>
     <xsl:value-of select="concat(@name, '(', $args, ')')"/>
     <xsl:text>{$db=DatabaseFactory::create('</xsl:text>
@@ -181,20 +182,30 @@
     <xsl:value-of select="concat($LX_QUOTE, $sql, $LX_QUOTE)"/>
     <xsl:text>);</xsl:text>
     <xsl:apply-templates select="descendant::node()[@property][@value]" mode="set"/>
-    <xsl:text>$db->performQuery($query);return($this);}</xsl:text>
+    <xsl:text>$db->performQuery($query);</xsl:text>
+
+    <xsl:call-template name="lx:method-return"/>
+
+    <xsl:text>}</xsl:text>
   </xsl:template>
 
   <xsl:template name="lx:method-return">
-    <xsl:text>return(</xsl:text>
+    <xsl:text>return </xsl:text>
     <xsl:choose>
       <xsl:when test="lx:select/@limit=1">
 	<xsl:text>count($models) ? $models[0] : NULL</xsl:text>
       </xsl:when>
-      <xsl:otherwise>
+      <xsl:when test="lx:insert">
+	<xsl:text>$db->getInsertId()</xsl:text>
+      </xsl:when>
+      <xsl:when test="lx:static-method">
 	<xsl:text>$models</xsl:text>
+      </xsl:when>
+      <xsl:otherwise>
+	<xsl:text>$this</xsl:text>
       </xsl:otherwise>
     </xsl:choose>
-    <xsl:text>);</xsl:text>
+    <xsl:text>;</xsl:text>
   </xsl:template>
 
 </xsl:stylesheet>

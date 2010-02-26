@@ -230,7 +230,7 @@
     </xsl:param>
     <!-- @param action arguments -->
     <xsl:param name="arguments" select="lx.html:argument"/>
-    <!-- @param content of the link (string | node)-->
+    <!-- @param content of the link (string or node set)-->
     <xsl:param name="content"/>
 
     <xsl:variable name="url">
@@ -272,7 +272,7 @@
   </xsl:template>
 
   <xsl:template match="lx.html:argument">
-    <xsl:if test="@name!=''">
+    <xsl:if test="@name!='' and @method='GET'">
       <xsl:value-of select="@name"/>
       <xsl:text>=</xsl:text>
     </xsl:if>
