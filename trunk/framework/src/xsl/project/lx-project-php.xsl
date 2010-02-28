@@ -147,9 +147,14 @@
   <xsl:template match="lx:module">
     <xsl:text>$_LX['map']['modules']['</xsl:text>
     <xsl:value-of select="@name"/>
-    <xsl:text>']=array('controllers'=>array(),'dir'=>'</xsl:text>
-    <xsl:value-of select="@name"/>
-    <xsl:text>','filters'=>array(</xsl:text>
+    <xsl:text>']=array('controllers'=>array(),</xsl:text>
+    <xsl:if test="@default-controller != ''">
+      <xsl:text>'default_controller'=>'</xsl:text>
+      <xsl:value-of select="@default-controller"/>
+      <xsl:text>',</xsl:text>
+    </xsl:if>
+
+    <xsl:text>'filters'=>array(</xsl:text>
     <xsl:call-template name="lx:for-each">
       <xsl:with-param name="collection" select="lx:filter"/>
       <xsl:with-param name="delimiter" select="','"/>
@@ -157,7 +162,7 @@
     <xsl:text>));</xsl:text>
     <xsl:value-of select="$LX_LF"/>
     <xsl:apply-templates select="lx:controller"/>
-    <xsl:apply-templates select="@controller"/>
+    <xsl:apply-templates select="@default-controller"/>
 
     <xsl:apply-templates select="lx:alias"/>
   </xsl:template>

@@ -37,7 +37,11 @@
       {
         try
         {
-          _gat._getTracker(myCode)._trackPageview();
+          var t = _gat._getTracker(myCode);
+          <xsl:if test="@domain-name">
+	    t._setDomainName('<xsl:value-of select="@domain-name"/>');
+	  </xsl:if>
+          t._trackPageview();
         }
         catch (e)
         {

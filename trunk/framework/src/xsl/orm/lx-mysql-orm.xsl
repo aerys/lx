@@ -17,7 +17,19 @@
       SELECT database request template.
     -->
   <xsl:template match="lx:select">
-    <xsl:text><![CDATA[SELECT * FROM ]]></xsl:text>
+    <xsl:text>SELECT </xsl:text>
+    <xsl:choose>
+      <xsl:when test="lx:get">
+	<xsl:call-template name="lx:for-each">
+	  <xsl:with-param name="collection" select="lx:get"/>
+	  <xsl:with-param name="delimiter" select="', '"/>
+	</xsl:call-template>
+      </xsl:when>
+      <xsl:otherwise>
+	<xsl:text><![CDATA[*]]></xsl:text>
+      </xsl:otherwise>
+    </xsl:choose>
+    <xsl:text> FROM </xsl:text>
     <!-- TABLE -->
     <xsl:value-of select="$LX_TABLE_NAME"/>
     <!-- WHERE -->
@@ -65,11 +77,27 @@
     <xsl:text>UPDATE </xsl:text>
     <xsl:value-of select="$LX_TABLE_NAME"/>
     <!-- SET -->
-    <xsl:text> SET </xsl:text>
-    <xsl:call-template name="lx:for-each">
-      <xsl:with-param name="collection" select="lx:value"/>
-      <xsl:with-param name="delimiter" select="', '"/>
-    </xsl:call-template>
+    <xsl:text> SET</xsl:text>
+    <xsl:choose>
+      <xsl:when test="lx:set">
+	<xsl:call-template name="lx:for-each">
+	  <xsl:with-param name="begin" select="' '"/>
+	  <xsl:with-param name="collection" select="lx:set"/>
+	  <xsl:with-param name="delimiter" select="', '"/>
+	</xsl:call-template>
+      </xsl:when>
+      <xsl:otherwise>
+	<xsl:for-each select="//lx:property">
+	  <xsl:if test="position() != 1">
+	    <xsl:text>,</xsl:text>
+	  </xsl:if>
+	  <xsl:text> </xsl:text>
+	  <xsl:value-of select="@name"/>
+	  <xsl:text>=:</xsl:text>
+	  <xsl:value-of select="@name"/>
+	</xsl:for-each>
+      </xsl:otherwise>
+    </xsl:choose>
     <!-- WHERE -->
     <xsl:call-template name="lx:for-each">
       <xsl:with-param name="begin" select="' WHERE '"/>
@@ -78,8 +106,72 @@
     </xsl:call-template>
   </xsl:template>
 
-  <xsl:template match="lx:value">
-    <xsl:value-of select="concat(@property, '=:', @property)"/>
+  <!--
+      @template lx:insert
+      INSERT database request template.
+    -->
+  <xsl:template match="lx:insert">
+    <xsl:text>INSERT INTO </xsl:text>
+    <xsl:value-of select="$LX_TABLE_NAME"/>
+    <xsl:text> (</xsl:text>
+    <xsl:choose>
+      <xsl:when test="lx:set">
+	<xsl:call-template name="lx:for-each">
+	  <xsl:with-param name="collection" select="lx:set/@property"/>
+	  <xsl:with-param name="delimiter" select="', '"/>
+	</xsl:call-template>
+      </xsl:when>
+      <xsl:otherwise>
+	<xsl:for-each select="//lx:property">
+	  <xsl:if test="position() != 1">
+	    <xsl:text>, </xsl:text>
+	  </xsl:if>
+	  <xsl:value-of select="@name"/>
+	</xsl:for-each>
+      </xsl:otherwise>
+    </xsl:choose>
+    <xsl:text>)</xsl:text>
+    <xsl:text> VALUES (</xsl:text>
+    <xsl:choose>
+      <xsl:when test="lx:set">
+	<xsl:call-template name="lx:for-each">
+	  <xsl:with-param name="begin" select="':'"/>
+	  <xsl:with-param name="collection" select="lx:set/@property"/>
+	  <xsl:with-param name="delimiter" select="', :'"/>
+	</xsl:call-template>
+      </xsl:when>
+      <xsl:otherwise>
+	<xsl:for-each select="//lx:property">
+	  <xsl:if test="position() != 1">
+	    <xsl:text>, </xsl:text>
+	  </xsl:if>
+	  <xsl:value-of select="concat(':', @name)"/>
+	</xsl:for-each>
+      </xsl:otherwise>
+    </xsl:choose>
+    <xsl:text>)</xsl:text>
+  </xsl:template>
+
+  <xsl:template match="lx:sort">
+    <xsl:value-of select="@property"/>
+    <xsl:if test="@desc">
+      <xsl:text> DESC</xsl:text>
+    </xsl:if>
+  </xsl:template>
+
+  <xsl:template match="lx:get">
+    <xsl:value-of select="@property"/>
+  </xsl:template>
+
+  <xsl:template match="lx:set">
+    <xsl:choose>
+      <xsl:when test="@value">
+	<xsl:value-of select="concat(@property, '=:', @value)"/>
+      </xsl:when>
+      <xsl:otherwise>
+	<xsl:value-of select="concat(@property, '=:', @property)"/>
+      </xsl:otherwise>
+    </xsl:choose>
   </xsl:template>
 
   <xsl:template match="lx:condition">
@@ -98,35 +190,6 @@
     </xsl:variable>
 
     <xsl:value-of select="concat($property, $operator, $value)"/>
-  </xsl:template>
-
-  <!--
-      @template lx:insert
-      INSERT database request template.
-    -->
-  <xsl:template match="lx:insert">
-    <xsl:text>INSERT INTO </xsl:text>
-    <xsl:value-of select="$LX_TABLE_NAME"/>
-    <xsl:call-template name="lx:for-each">
-      <xsl:with-param name="begin" select="' ('"/>
-      <xsl:with-param name="collection" select="lx:value/@property"/>
-      <xsl:with-param name="delimiter" select="', '"/>
-    </xsl:call-template>
-    <xsl:text>)</xsl:text>
-    <xsl:text> VALUES </xsl:text>
-    <xsl:call-template name="lx:for-each">
-      <xsl:with-param name="begin" select="'(:'"/>
-      <xsl:with-param name="collection" select="lx:value/@property"/>
-      <xsl:with-param name="delimiter" select="', :'"/>
-    </xsl:call-template>
-    <xsl:text>)</xsl:text>
-  </xsl:template>
-
-  <xsl:template match="lx:sort">
-    <xsl:value-of select="@property"/>
-    <xsl:if test="@desc">
-      <xsl:text> DESC</xsl:text>
-    </xsl:if>
   </xsl:template>
 
 </xsl:stylesheet>

@@ -1,7 +1,7 @@
 include Makefile.rules
 
 MODELS_PHP=$(LX_MODELS:.xml=.php)
-LX_PROJECT=$(LX_APPLICATION)/tmp/lx-project.php
+LX_PROJECT=$(LX_APPLICATION)/$(LX_OUT)/lx-project.php
 
 # Colors
 RST=\033[00m
@@ -28,21 +28,21 @@ ORANGE=\033[0;33m
 all: chmod reload
 
 clean: clean_models
-	@echo -n "Cleaning up /tmp..."
-	@rm -rf ${LX_APPLICATION}/tmp/*.php
+	@echo -n "Cleaning up /$(LX_OUT)..."
+	@rm -rf ${LX_APPLICATION}/$(LX_OUT)/*.php
 	@echo " $(GREEN)OK$(RST)"
 
 distclean: clean
 	@rm -rf ${LX_APPLICATION}/Makefile.rules
 
 clean_models:
-	@echo -n "Cleaning up /tmp/models..."
-	@rm -rf ${LX_APPLICATION}/tmp/models/*.php
+	@echo -n "Cleaning up /$(LX_OUT)/models..."
+	@rm -rf ${LX_APPLICATION}/$(LX_OUT)/models/*.php
 	@echo " $(GREEN)OK$(RST)"
 
 %.php: %.xml
 	@echo -n "Generating model '$(ORANGE)$(basename $(notdir $@))$(RST)'..."
-	@cd ${LX_ROOT}/src/php/scripts && php lx-orm.php $< lx-php-orm.xsl > $(LX_APPLICATION)/tmp/models/$(notdir $@)
+	@cd ${LX_ROOT}/src/php/scripts && php lx-orm.php $< lx-php-orm.xsl > $(LX_APPLICATION)/$(LX_OUT)/models/$(notdir $@)
 	@echo " $(GREEN)OK$(RST)"
 
 $(LX_PROJECT):
