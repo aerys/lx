@@ -80,14 +80,14 @@ class Dispatcher
       if (count($params) && isset($map['modules'][$params[0]]))
       {
 	$module = array_shift($params);
-	$map = $map['modules'][$module];
-	$module = $map['dir'];
-	$filters = array_merge($filters, $map['filters']);
       }
-      else if (!(count($params) && isset($map['controllers'][$params[0]]))
-	       && isset($map['modules'][LX_DEFAULT_MODULE]))
+      else if (!(count($params) && isset($map['modules'][LX_DEFAULT_MODULE])
+		 && isset($map['modules'][LX_DEFAULT_MODULE]['controllers'][$params[0]])))
       {
 	$module = LX_DEFAULT_MODULE;
+      }
+      if (isset($map['modules'][$module]))
+      {
 	$map = $map['modules'][$module];
 	$filters = array_merge($filters, $map['filters']);
       }

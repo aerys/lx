@@ -14,8 +14,8 @@ class LX
 						'/src/models',
 						'/src/controllers',
 						'/src/filters',
-						'/tmp',
-						'/tmp/models');
+						'/bin',
+						'/bin/models');
 
   static public function setResponse($my_response)	{self::$response = $my_response;}
   static public function getResponse()			{return (self::$response);}
@@ -103,5 +103,25 @@ class LX
   }
 
 }
+
+function __autoload($class_name)
+{
+  LX::autoload($class_name);
+}
+
+function lx_error_handler($my_errno,
+			  $my_errstr,
+			  $my_errfile,
+			  $my_errline,
+			  $my_context)
+{
+  // FIXME
+  throw new ErrorException($my_errstr, 0, $my_errno, $my_errfile, $my_errline);
+
+  /* Don't execute PHP internal error handler */
+  return (true);
+}
+
+set_error_handler('lx_error_handler');
 
 ?>
