@@ -76,7 +76,7 @@
 
   </xsl:template>
 
-  <xsl:template match="node()[@property]"
+  <xsl:template match="lx:set | lx:condition"
 		name="lx:set-property"
 		mode="set">
     <xsl:param name="property" select="@property"/>
@@ -142,7 +142,7 @@
       </xsl:choose>
     </xsl:variable>
 
-    <xsl:value-of select="concat('->', $set_method, '(', $LX_QUOTE, $property, position(), $LX_QUOTE, ',', $set_value, ')')"/>
+    <xsl:value-of select="concat('->', $set_method, '(', $LX_QUOTE, $property, '_', generate-id(.), $LX_QUOTE, ',', $set_value, ')')"/>
   </xsl:template>
 
   <xsl:template match="lx:static-method">
@@ -197,14 +197,15 @@
 
     <xsl:call-template name="lx:set-query-properties"/>
 
-    <xsl:text>;$db->performQuery($query);return($this);}</xsl:text>
+    <xsl:text>;$db->performQuery($query);</xsl:text>
 
+    <!-- return -->
     <xsl:call-template name="lx:method-return"/>
     <xsl:text>}</xsl:text>
   </xsl:template>
 
   <xsl:template name="lx:set-query-properties">
-    <xsl:apply-templates select="descendant::node()[@property][name()!='lx:get']" mode="set"/>
+    <xsl:apply-templates select="descendant::node()[@property]" mode="set"/>
     <xsl:if test="(lx:update or lx:insert) and not(descendant::lx:set)">
       <xsl:apply-templates select="/lx:model/lx:property[not(@read-only)]" mode="set"/>
     </xsl:if>
@@ -219,7 +220,7 @@
       <xsl:when test="lx:insert">
 	<xsl:text>$db->getInsertId()</xsl:text>
       </xsl:when>
-      <xsl:when test="lx:static-method">
+      <xsl:when test="../lx:static-method = current()">
 	<xsl:text>$models</xsl:text>
       </xsl:when>
       <xsl:otherwise>

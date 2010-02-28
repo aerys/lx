@@ -94,7 +94,7 @@
 	  <xsl:text> </xsl:text>
 	  <xsl:value-of select="@name"/>
 	  <xsl:text>=:</xsl:text>
-	  <xsl:value-of select="@name"/>
+	  <xsl:value-of select="concat(@name, '_', generate-id(.))"/>
 	</xsl:for-each>
       </xsl:otherwise>
     </xsl:choose>
@@ -145,7 +145,7 @@
 	  <xsl:if test="position() != 1">
 	    <xsl:text>, </xsl:text>
 	  </xsl:if>
-	  <xsl:value-of select="concat(':', @name, position())"/>
+	  <xsl:value-of select="concat(':', @name, '_', generate-id())"/>
 	</xsl:for-each>
       </xsl:otherwise>
     </xsl:choose>
@@ -169,14 +169,14 @@
 	<xsl:value-of select="concat(@property, '=:', @value)"/>
       </xsl:when>
       <xsl:otherwise>
-	<xsl:value-of select="concat(@property, '=:', @property, position())"/>
+	<xsl:value-of select="concat(@property, '=:', @property, '_', generate-id(.))"/>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
 
   <xsl:template match="lx:condition">
     <xsl:variable name="property" select="@property"/>
-    <xsl:variable name="value" select="concat(':', $property, position())"/>
+    <xsl:variable name="value" select="concat(':', $property, '_', generate-id())"/>
     <xsl:variable name="type" select="/lx:model/lx:property[@name = $property]/@type"/>
     <xsl:variable name="operator">
       <xsl:choose>
