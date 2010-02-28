@@ -13,7 +13,7 @@ done
 echo "Launching configure..."
 echo
 echo "LX root directory: ${LX_ROOT}"
-echo "Aplication directory: ${LX_APPLICATION}"
+echo "Application directory: ${LX_APPLICATION}"
 echo "LX output directory: ${LX_OUT}"
 
 # write Makefile.rules
