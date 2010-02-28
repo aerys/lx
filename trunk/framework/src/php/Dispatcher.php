@@ -81,8 +81,8 @@ class Dispatcher
       {
 	$module = array_shift($params);
       }
-      else if (!(count($params) && isset($map['modules'][LX_DEFAULT_MODULE])
-		 && isset($map['modules'][LX_DEFAULT_MODULE]['controllers'][$params[0]])))
+      else if (!count($params) == 1 && isset($map['modules'][LX_DEFAULT_MODULE])
+	       && isset($map['modules'][LX_DEFAULT_MODULE]['controllers'][$params[0]]))
       {
 	$module = LX_DEFAULT_MODULE;
       }

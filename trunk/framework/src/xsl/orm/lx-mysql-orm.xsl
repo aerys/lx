@@ -87,7 +87,7 @@
 	</xsl:call-template>
       </xsl:when>
       <xsl:otherwise>
-	<xsl:for-each select="//lx:property">
+	<xsl:for-each select="/lx:model/lx:property[not(@read-only)]">
 	  <xsl:if test="position() != 1">
 	    <xsl:text>,</xsl:text>
 	  </xsl:if>
@@ -117,12 +117,12 @@
     <xsl:choose>
       <xsl:when test="lx:set">
 	<xsl:call-template name="lx:for-each">
-	  <xsl:with-param name="collection" select="lx:set/@property"/>
+	  <xsl:with-param name="collection" select="lx:set"/>
 	  <xsl:with-param name="delimiter" select="', '"/>
 	</xsl:call-template>
       </xsl:when>
       <xsl:otherwise>
-	<xsl:for-each select="//lx:property">
+	<xsl:for-each select="/lx:model/lx:property[not(@read-only)]">
 	  <xsl:if test="position() != 1">
 	    <xsl:text>, </xsl:text>
 	  </xsl:if>
@@ -136,16 +136,16 @@
       <xsl:when test="lx:set">
 	<xsl:call-template name="lx:for-each">
 	  <xsl:with-param name="begin" select="':'"/>
-	  <xsl:with-param name="collection" select="lx:set/@property"/>
+	  <xsl:with-param name="collection" select="lx:set"/>
 	  <xsl:with-param name="delimiter" select="', :'"/>
 	</xsl:call-template>
       </xsl:when>
       <xsl:otherwise>
-	<xsl:for-each select="//lx:property">
+	<xsl:for-each select="/lx:model/lx:property[not(@read-only)]">
 	  <xsl:if test="position() != 1">
 	    <xsl:text>, </xsl:text>
 	  </xsl:if>
-	  <xsl:value-of select="concat(':', @name)"/>
+	  <xsl:value-of select="concat(':', @name, position())"/>
 	</xsl:for-each>
       </xsl:otherwise>
     </xsl:choose>
@@ -169,15 +169,15 @@
 	<xsl:value-of select="concat(@property, '=:', @value)"/>
       </xsl:when>
       <xsl:otherwise>
-	<xsl:value-of select="concat(@property, '=:', @property)"/>
+	<xsl:value-of select="concat(@property, '=:', @property, position())"/>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
 
   <xsl:template match="lx:condition">
     <xsl:variable name="property" select="@property"/>
-    <xsl:variable name="value" select="concat(':', $property)"/>
-    <xsl:variable name="type" select="//lx:property[@name = $property]/@type"/>
+    <xsl:variable name="value" select="concat(':', $property, position())"/>
+    <xsl:variable name="type" select="/lx:model/lx:property[@name = $property]/@type"/>
     <xsl:variable name="operator">
       <xsl:choose>
 	<xsl:when test="$type = 'string' and @operator = '='">

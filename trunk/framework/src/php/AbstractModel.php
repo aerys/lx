@@ -37,9 +37,7 @@ abstract class AbstractModel
   public function loadArray($my_data)
   {
     foreach ($my_data as $name => $value)
-    {
       $this->$name = $value;
-    }
   }
 
   public function __get($my_property)
