@@ -8,14 +8,14 @@ abstract class AbstractModel
   private $database	= NULL;
   private $flags	= self::FLAG_DEFAULT;
 
-  public function getDatabase()		{return ($this->database);}
+  public function getDatabase()		{return $this->database;}
 
   public function setDatabase($my_db)	{$this->database = $my_db;}
 
   /* CONSTRUCTOR */
-  public function AbstractModel($my_cfg)
+  public function AbstractModel($my_database)
   {
-    $this->setDatabase(DatabaseFactory::create($my_cfg));
+    $this->setDatabase($my_database);
   }
 
   /* METHODS */
@@ -42,7 +42,7 @@ abstract class AbstractModel
 
   public function __get($my_property)
   {
-    return ($this->$my_property);
+    return $this->$my_property;
   }
 
   public function __set($my_property, $my_value)

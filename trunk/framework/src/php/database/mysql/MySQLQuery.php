@@ -39,7 +39,7 @@ class MySQLQuery extends AbstractQuery
 				 $my_value,
 				 $this->request);
 
-    return ($this);
+    return $this;
   }
 
   public function setFloat($my_arg,
@@ -52,7 +52,7 @@ class MySQLQuery extends AbstractQuery
 				 $my_value,
 				 $this->request);
 
-    return ($this);
+    return $this;
   }
 
   public function setString($my_arg,
@@ -71,7 +71,7 @@ class MySQLQuery extends AbstractQuery
   public function setBoolean($my_arg,
 			     $my_value)
   {
-    $my_value = (int)$my_value ? 1 : 0;
+    $my_value = (boolean)$my_value;// ? 'true' : 'false';
 
     $this->request = str_replace($this->arguments[$my_arg],
 				 $my_value,

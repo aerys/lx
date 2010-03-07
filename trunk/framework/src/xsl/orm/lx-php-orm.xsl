@@ -17,35 +17,34 @@
 
   <xsl:template match="/">
     <xsl:value-of select="concat($LX_LT, '?php', ' ')"/>
-
-    <xsl:apply-templates select="/lx:model" />
-
+    <xsl:apply-templates select="lx:model" />
     <xsl:value-of select="concat('?', $LX_GT)"/>
   </xsl:template>
 
   <xsl:template match="lx:model">
-    <!-- Model class -->
+    <!-- class -->
     <xsl:text>class </xsl:text>
     <xsl:value-of select="@name"/>
-    <xsl:text> extends AbstractModel {</xsl:text>
+    <xsl:text> extends AbstractModel {private static $__db__;</xsl:text>
+    <xsl:text>private static function db(){return self::$__db__?</xsl:text>
+    <xsl:text>self::$__db__:self::$__db__=DatabaseFactory::create('</xsl:text>
+    <xsl:value-of select="@database"/>
+    <xsl:text>');}</xsl:text>
 
-    <!-- class constants -->
+    <!-- constants -->
     <xsl:apply-templates select="lx:const"/>
 
-    <!-- class properties -->
+    <!-- properties -->
     <xsl:apply-templates select="lx:property"/>
 
-    <!-- constructor declaration -->
+    <!-- constructor -->
     <xsl:text>public function </xsl:text>
     <xsl:value-of select="@name"/>
-    <xsl:text>(){</xsl:text>
-    <!-- parent constructor call -->
-    <xsl:text>parent::AbstractModel(</xsl:text>
-    <xsl:value-of select="concat($LX_QUOTE, @database, $LX_QUOTE)"/>
-    <xsl:text>);}</xsl:text>
+    <xsl:text>(){parent::AbstractModel(self::db());}</xsl:text>
 
-    <xsl:apply-templates select="lx:static-method"/>
-    <xsl:apply-templates select="lx:method"/>
+    <!-- methods -->
+    <xsl:apply-templates select="lx:static-method | lx:method"/>
+
     <xsl:text>}</xsl:text>
   </xsl:template>
 
@@ -59,21 +58,15 @@
     <xsl:text>;</xsl:text>
   </xsl:template>
 
-  <xsl:template match="lx:argument">
-    <xsl:value-of select="concat('$', @name)"/>
-  </xsl:template>
-
   <xsl:template match="lx:const">
     <xsl:value-of select="concat('const ', @name, '=', @value, ';')"/>
   </xsl:template>
 
   <xsl:template match="lx:property" mode="set">
-
-      <xsl:call-template name="lx:set-property">
-	<xsl:with-param name="property" select="@name"/>
-	<xsl:with-param name="value" select="@name"/>
-      </xsl:call-template>
-
+    <xsl:call-template name="lx:set-property">
+      <xsl:with-param name="property" select="@name"/>
+      <xsl:with-param name="value" select="@name"/>
+    </xsl:call-template>
   </xsl:template>
 
   <xsl:template match="lx:set | lx:condition"
@@ -145,65 +138,6 @@
     <xsl:value-of select="concat('->', $set_method, '(', $LX_QUOTE, $property, '_', generate-id(.), $LX_QUOTE, ',', $set_value, ')')"/>
   </xsl:template>
 
-  <xsl:template match="lx:static-method">
-    <xsl:variable name="args">
-      <xsl:call-template name="lx:for-each">
-	<xsl:with-param name="collection" select="lx:argument"/>
-	<xsl:with-param name="delimiter" select="','"/>
-      </xsl:call-template>
-    </xsl:variable>
-
-    <xsl:variable name="sql">
-      <xsl:apply-templates select="lx:select | lx:delete | lx:update"/>
-    </xsl:variable>
-    <xsl:text>static public function </xsl:text>
-    <xsl:value-of select="concat(@name, '(', $args, ')')"/>
-    <xsl:text>{$models=array();$db=DatabaseFactory::create('</xsl:text>
-    <xsl:value-of select="//lx:model/@database"/>
-    <xsl:text>');$query=$db->createQuery(</xsl:text>
-    <xsl:value-of select="concat($LX_QUOTE, $sql, $LX_QUOTE)"/>
-    <xsl:text>)</xsl:text>
-    <xsl:call-template name="lx:set-query-properties"/>
-    <xsl:text>;$result=$db->performQuery($query);if(!is_array($result))return($result);foreach($result as $i=>$record)</xsl:text>
-    <xsl:text>{$model=new </xsl:text>
-    <xsl:value-of select="//lx:model/@name"/>
-    <xsl:text>();$model->loadArray($record);$models[]=$model;}</xsl:text>
-
-    <!-- return -->
-    <xsl:call-template name="lx:method-return"/>
-
-    <xsl:text>}</xsl:text>
-  </xsl:template>
-
-  <xsl:template match="lx:method">
-    <xsl:variable name="args">
-      <xsl:call-template name="lx:for-each">
-	<xsl:with-param name="collection" select="lx:argument"/>
-	<xsl:with-param name="delimiter" select="','"/>
-      </xsl:call-template>
-    </xsl:variable>
-
-    <xsl:variable name="sql">
-      <xsl:apply-templates select="lx:select | lx:delete | lx:update | lx:insert"/>
-    </xsl:variable>
-
-    <xsl:text>public function </xsl:text>
-    <xsl:value-of select="concat(@name, '(', $args, ')')"/>
-    <xsl:text>{$db=DatabaseFactory::create('</xsl:text>
-    <xsl:value-of select="//lx:model/@database"/>
-    <xsl:text>');$query=$db->createQuery(</xsl:text>
-    <xsl:value-of select="concat($LX_QUOTE, $sql, $LX_QUOTE)"/>
-    <xsl:text>)</xsl:text>
-
-    <xsl:call-template name="lx:set-query-properties"/>
-
-    <xsl:text>;$db->performQuery($query);</xsl:text>
-
-    <!-- return -->
-    <xsl:call-template name="lx:method-return"/>
-    <xsl:text>}</xsl:text>
-  </xsl:template>
-
   <xsl:template name="lx:set-query-properties">
     <xsl:apply-templates select="descendant::node()[@property]" mode="set"/>
     <xsl:if test="(lx:update or lx:insert) and not(descendant::lx:set)">
@@ -211,23 +145,65 @@
     </xsl:if>
   </xsl:template>
 
-  <xsl:template name="lx:method-return">
+  <xsl:template match="lx:argument">
+    <xsl:value-of select="concat('$', @name)"/>
+  </xsl:template>
+
+  <xsl:template match="lx:method | lx:static-method">
+    <xsl:variable name="isStatic" select="name() = 'lx:static-method'"/>
+
+    <!-- prototype -->
+    <xsl:text>public </xsl:text>
+    <xsl:if test="$isStatic">
+      <xsl:text>static </xsl:text>
+    </xsl:if>
+    <xsl:text>function </xsl:text>
+    <xsl:value-of select="concat(@name, '(')"/>
+    <xsl:call-template name="lx:for-each">
+      <xsl:with-param name="collection" select="lx:argument"/>
+      <xsl:with-param name="delimiter" select="','"/>
+    </xsl:call-template>
+    <xsl:text>){</xsl:text>
+
+    <!-- prepary query -->
+    <xsl:text>$q=self::db()->createQuery('</xsl:text>
+    <xsl:apply-templates select="lx:select | lx:delete | lx:update | lx:insert"/>
+    <xsl:text>')</xsl:text>
+    <xsl:call-template name="lx:set-query-properties"/>
+    <xsl:text>;</xsl:text>
+
+    <!-- perform query -->
+    <xsl:if test="$isStatic">
+      <xsl:text>$n=array();$r=</xsl:text>
+    </xsl:if>
+    <xsl:text>self::db()->performQuery($q);</xsl:text>
+
+    <!-- fetch records -->
+    <xsl:if test="$isStatic">
+      <xsl:text>if(!is_array($r))return $r;foreach($r as $e)</xsl:text>
+      <xsl:text>{$m=new </xsl:text>
+      <xsl:value-of select="/lx:model/@name"/>
+      <xsl:text>();$m->loadArray($e);$n[]=$m;}</xsl:text>
+    </xsl:if>
+
+    <!-- return -->
     <xsl:text>return </xsl:text>
     <xsl:choose>
       <xsl:when test="lx:select/@limit=1">
-	<xsl:text>count($models)?$models[0]:NULL</xsl:text>
+	<xsl:text>count($n)?$n[0]:NULL</xsl:text>
       </xsl:when>
       <xsl:when test="lx:insert">
-	<xsl:text>$db->getInsertId()</xsl:text>
+	<xsl:text>self::db()->getInsertId()</xsl:text>
+      </xsl:when>
+      <xsl:when test="lx:delete">
       </xsl:when>
       <xsl:when test="../lx:static-method = current()">
-	<xsl:text>$models</xsl:text>
+	<xsl:text>$n</xsl:text>
       </xsl:when>
       <xsl:otherwise>
 	<xsl:text>$this</xsl:text>
       </xsl:otherwise>
     </xsl:choose>
-    <xsl:text>;</xsl:text>
+    <xsl:text>;}</xsl:text>
   </xsl:template>
-
 </xsl:stylesheet>
