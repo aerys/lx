@@ -206,14 +206,11 @@ class XMLResponse
     $this->httpHeader();
   }
 
-  public function save($my_filename	= NULL)
+  public function send()
   {
     $this->finalize();
 
-    if ($my_filename != NULL)
-      return ($this->document->saveXML($my_filename));
-
-    return ($this->document->saveXML());
+    $this->document->save('php://output');
   }
 
 }

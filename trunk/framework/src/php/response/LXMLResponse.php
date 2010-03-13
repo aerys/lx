@@ -14,18 +14,18 @@ class LXMLResponse extends XMLResponse
     header('Content-type: text/html; charset="utf-8"');
   }
 
-  public function save($my_filename	 = NULL)
+  public function send()
   {
+    $this->finalize();
+
     $dir = LX_APPLICATION_ROOT . '/src/views/' . $this->view . '/';
     $file = 'templates/' . $this->template . '.xsl';
 
     if (!file_exists($dir .'/' . $file))
 	$file = 'lx-view.xsl';
 
-    $xml_text = parent::save($my_filename);
-
     $xml = new DOMDocument();
-    $xml->loadXML($xml_text);
+    $xml->loadXML($this->document->saveXML());
 
     $xsl = new DOMDocument();
     $xsl->load($dir . $file);
@@ -35,12 +35,7 @@ class LXMLResponse extends XMLResponse
 
     $result = $processor->transformToDoc($xml);
 
-    //$result->save(LX_APPLICATION_ROOT . '/tmp/test.html');
-
-    //$result = $processor->transformToURI($xml, 'php://output');
-
-    //return ('');
-    return ($result->saveHTML());
+    echo $result->saveHTML();
   }
 }
 

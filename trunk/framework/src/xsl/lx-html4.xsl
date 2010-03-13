@@ -370,7 +370,13 @@
       <xsl:apply-templates select="$flashvars"/>
     </xsl:variable>
 
-    <object type="application/x-shockwave-flash" data="{$swf}.swf" width="{$width}" height="{$height}" id="{$id}">
+    <object type="application/x-shockwave-flash" data="{$swf}.swf" width="{$width}" height="{$height}"
+	    style="outline:none">
+      <xsl:if test="$id">
+	<xsl:attribute name="id">
+	  <xsl:value-of select="$id"/>
+	</xsl:attribute>
+      </xsl:if>
       <param name="movie" value="{$swf}.swf" />
       <param name="allowScriptAccess" value="sameDomain" />
       <param name="allowFullscreen" value="true" />

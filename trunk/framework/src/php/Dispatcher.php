@@ -163,7 +163,7 @@ class Dispatcher
     }
 
     // send response
-    echo LX::getResponse()->save();
+    LX::getResponse()->send();
   }
 }
 
