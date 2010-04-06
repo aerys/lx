@@ -26,9 +26,7 @@
   <xsl:template match="/">
     <html>
       <head>
-
 	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/>
-
 	<base>
 	  <xsl:attribute name="href">
 	    <xsl:text>http://</xsl:text>
@@ -39,19 +37,15 @@
 	    <xsl:text>/</xsl:text>
 	  </xsl:attribute>
 	</base>
-
 	<title>
 	  <xsl:apply-templates select="$LX_LAYOUT/head/title/node()"/>
 	  <xsl:apply-templates select="$LX_TEMPLATE/head/title/node()"/>
 	</title>
-
 	<xsl:apply-templates select="$LX_LAYOUT/head/*[name()!='title']"/>
 	<xsl:apply-templates select="$LX_TEMPLATE/head/*[name()!='title']"/>
-
       </head>
       <body>
 	<xsl:copy-of select="$LX_LAYOUT/body/@* | $LX_TEMPLATE/body/@*"/>
-
 	<xsl:apply-templates select="$LX_LAYOUT/body/node()"/>
       </body>
     </html>
@@ -354,13 +348,16 @@
     <xsl:variable name="swf">
       <xsl:text>http://</xsl:text>
       <xsl:value-of select="$LX_RESPONSE/@host"/>
-      <xsl:value-of select="$LX_RESPONSE/@document-root"/>
+      <xsl:if test="$LX_RESPONSE/@document-root">
+	<xsl:value-of select="$LX_RESPONSE/@document-root"/>
+	<xsl:text>/</xsl:text>
+      </xsl:if>
       <xsl:text>flash/</xsl:text>
       <xsl:value-of select="$name"/>
     </xsl:variable>
 
     <xsl:variable name="flashvars_full">
-      <xsl:if test="$script">
+      <xsl:if test="normalize-space($script)">
 	<xsl:text>bridgeName=</xsl:text>
 	<xsl:value-of select="$id"/>
 	<xsl:if test="$flashvars">
@@ -371,7 +368,7 @@
     </xsl:variable>
 
     <object type="application/x-shockwave-flash" data="{$swf}.swf" width="{$width}" height="{$height}"
-	    style="outline:none">
+	    style="outline:none;display:block">
       <xsl:if test="$id">
 	<xsl:attribute name="id">
 	  <xsl:value-of select="$id"/>
@@ -382,11 +379,9 @@
       <param name="allowFullscreen" value="true" />
       <param name="flashvars" value="{$flashvars_full}" />
       <param name="wmode" value="{$wmode}" />
-      <param name="name" value="{$id}"/>
-
+      <param name="name" value="{$name}"/>
       <xsl:apply-templates select="lx.html.flash:alternative-content"/>
     </object>
-
     <xsl:apply-templates select="lx.html.flash:fabridge"/>
   </xsl:template>
 
