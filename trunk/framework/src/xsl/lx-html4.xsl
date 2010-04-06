@@ -346,12 +346,12 @@
     </xsl:param>
 
     <xsl:variable name="swf">
-      <xsl:text>http://</xsl:text>
+      <!--<xsl:text>http://</xsl:text>
       <xsl:value-of select="$LX_RESPONSE/@host"/>
       <xsl:if test="$LX_RESPONSE/@document-root">
 	<xsl:value-of select="$LX_RESPONSE/@document-root"/>
 	<xsl:text>/</xsl:text>
-      </xsl:if>
+      </xsl:if>-->
       <xsl:text>flash/</xsl:text>
       <xsl:value-of select="$name"/>
     </xsl:variable>
