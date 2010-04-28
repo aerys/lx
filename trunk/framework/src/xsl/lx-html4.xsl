@@ -340,7 +340,7 @@
 	  <xsl:value-of select="@wmode"/>
 	</xsl:when>
 	<xsl:otherwise>
-	  <xsl:text>opaque</xsl:text>
+	  <xsl:text>window</xsl:text>
 	</xsl:otherwise>
       </xsl:choose>
     </xsl:param>

@@ -9,7 +9,14 @@
   <xsl:variable name="LX_PREFIX" select="'lx'"/>
 
   <xsl:variable name="LX_TABLE_NAME">
-    <xsl:value-of select="concat($LX_PREFIX, /lx:model/@name)"/>
+    <xsl:choose>
+      <xsl:when test="/lx:model/@table">
+	<xsl:value-of select="/lx:model/@table"/>
+      </xsl:when>
+      <xsl:otherwise>
+	<xsl:value-of select="concat($LX_PREFIX, /lx:model/@name)"/>
+      </xsl:otherwise>
+    </xsl:choose>
   </xsl:variable>
 
   <!--
@@ -26,7 +33,11 @@
 	</xsl:call-template>
       </xsl:when>
       <xsl:otherwise>
-	<xsl:text><![CDATA[*]]></xsl:text>
+	<xsl:call-template name="lx:for-each">
+	  <xsl:with-param name="collection" select="//lx:property/@name"/>
+	  <xsl:with-param name="delimiter" select="', '"/>
+	</xsl:call-template>
+	<!--<xsl:text><![CDATA[*]]></xsl:text>-->
       </xsl:otherwise>
     </xsl:choose>
     <xsl:text> FROM </xsl:text>
