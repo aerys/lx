@@ -10,8 +10,11 @@
 		xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
 		xmlns:lx="http://lx.aerys.in">
 
-  <!-- @const response root node (lx:response) -->
+  <!-- @const response root node (/lx:response) -->
   <xsl:variable name="LX_RESPONSE" select="/lx:response"/>
+
+  <!-- @const request node (/lx:response/lx:request) -->
+  <xsl:variable name="LX_REQUEST" select="/lx:response/lx:request"/>
 
   <!-- @const response view node (lx:view) -->
   <xsl:variable name="LX_VIEW" select="$LX_RESPONSE/lx:view"/>

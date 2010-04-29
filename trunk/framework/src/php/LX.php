@@ -39,7 +39,7 @@ class LX
 
   static public function redirect($myURL)
   {
-    header('Location: ' . $myURL);
+    header('Location: ' . LX_DOCUMENT_ROOT . $myURL);
 
     exit ;
   }

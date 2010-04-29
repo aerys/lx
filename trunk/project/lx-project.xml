@@ -10,6 +10,8 @@
 	       user="user" password="password"
 	       host="host"/>
 
-  <lx:controller name="home" default-action="home"/>
+  <lx:controller name="home">
+    <lx:action name="home" default="true"/>
+  </lx:controller>
 
 </lx:project>

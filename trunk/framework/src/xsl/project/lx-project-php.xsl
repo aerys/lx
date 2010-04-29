@@ -110,7 +110,7 @@
     <xsl:value-of select="$class"/>
 
     <xsl:text>','default_action'=>'</xsl:text>
-    <xsl:value-of select="@default-action"/>
+    <xsl:value-of select="./lx:action[@default='true'][last()]/@name"/>
     <xsl:text>','actions'=>array(),'filters'=>array(</xsl:text>
     <xsl:call-template name="lx:for-each">
       <xsl:with-param name="collection" select="lx:filter"/>
@@ -148,9 +148,9 @@
     <xsl:text>$_LX['map']['modules']['</xsl:text>
     <xsl:value-of select="@name"/>
     <xsl:text>']=array('controllers'=>array(),</xsl:text>
-    <xsl:if test="@default-controller != ''">
+    <xsl:if test="@lx:controller[@default='true']">
       <xsl:text>'default_controller'=>'</xsl:text>
-      <xsl:value-of select="@default-controller"/>
+      <xsl:value-of select="@lx:controller[@default='true'][last()]/@name"/>
       <xsl:text>',</xsl:text>
     </xsl:if>
 
