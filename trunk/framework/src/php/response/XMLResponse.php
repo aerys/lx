@@ -187,8 +187,6 @@ class XMLResponse
     $this->requestNode->setAttribute('controller', LX_CONTROLLER);
     if (defined('LX_ACTION') && LX_ACTION)
       $this->requestNode->setAttribute('action', LX_ACTION);
-    if (defined('LX_HANDLER') && LX_HANDLER)
-      $this->requestNode->setAttribute('handler', LX_HANDLER);
     if ($this->argumentsNode->hasChildNodes())
       $this->requestNode->appendChild($this->argumentsNode);
 

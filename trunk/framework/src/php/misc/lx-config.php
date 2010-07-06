@@ -1,8 +1,8 @@
 <?php
 
 define('LX_NAMESPACE',		'http://lx.aerys.in');
-
 define('LX_DEFAULT_TIMEZONE',	'Europe/Paris');
+define('LX_DEFAULT_EXTENSION',	'');
 
 if (!defined('LX_ROOT'))
   define('LX_ROOT', realpath(dirname(__FILE__) . '/../../..'));

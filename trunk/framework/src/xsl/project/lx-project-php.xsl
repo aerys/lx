@@ -59,6 +59,9 @@
   </xsl:template>
 
   <xsl:template match="lx:response">
+    <xsl:if test="@default='true'">
+      <xsl:text>$_LX['responses'][LX_DEFAULT_EXTENSION]=</xsl:text>
+    </xsl:if>
     <xsl:text>$_LX['responses']['</xsl:text>
     <xsl:value-of select="@extension"/>
     <xsl:text>']='</xsl:text>

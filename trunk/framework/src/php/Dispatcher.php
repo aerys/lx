@@ -31,7 +31,7 @@ class Dispatcher
       $action		= '';
       $filters		= $_LX['map']['filters'];
       $extension	= NULL;
-
+      
       // delete document root from the URL
       if (LX_DOCUMENT_ROOT != '/')
 	$request = str_replace(LX_DOCUMENT_ROOT, '', $request);
@@ -46,29 +46,14 @@ class Dispatcher
 
       if ($extension && isset($_LX['responses'][$extension]))
       {
-	define('LX_HANDLER', $extension);
-
-	if ($_LX['responses'][$extension])
-	  $this->response = new $_LX['responses'][$extension]();
-	else
-	  $this->response = new XSLResponse();
-      }
-      else if ($extension == 'xml')
-      {
-	define('LX_HANDLER', 'xml');
-	$this->response = new XMLResponse();
-      }
-      else if ($extension == 'lxml')
-      {
-	define('LX_HANDLER', 'lxml');
-	$this->response = new LXMLResponse();
+      	  $this->response = new $_LX['responses'][$extension]();
       }
       else
       {
-	if ($extension && $extension != 'xsl')
+	if ($extension)
 	  $request .= '.' . $extension;
-	define('LX_HANDLER', 'xsl');
-	$this->response = new XSLResponse();
+
+	$this->response = new $_LX['responses'][LX_DEFAULT_EXTENSION]();
       }
       LX::setResponse($this->response);
 
