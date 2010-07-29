@@ -19,6 +19,12 @@ if (!defined('LX_DEFAULT_CONTROLLER'))
 if (!defined('LX_DEFAULT_VIEW'))
   define('LX_DEFAULT_VIEW', 'default');
 
+if (!defined('LX_DEFAULT_LAYOUT'))
+  define('LX_DEFAULT_LAYOUT', 'default');
+
+if (!defined('LX_DEFAULT_TEMPLATE'))
+  define('LX_DEFAULT_TEMPLATE', 'default');
+
 if (!defined('LX_DEBUG'))
   define('LX_DEBUG', false);
 

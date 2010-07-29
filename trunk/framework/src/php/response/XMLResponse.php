@@ -12,8 +12,8 @@ class XMLResponse
   protected $debugFragment	= NULL;
 
   protected $view		= LX_DEFAULT_VIEW;
-  protected $layout		= 'index';
-  protected $template		= 'default';
+  protected $layout		= LX_DEFAULT_LAYOUT;
+  protected $template		= LX_DEFAULT_TEMPLATE;
 
   protected $date		= 0;
   protected $start_time		= 0;
