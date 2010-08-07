@@ -32,7 +32,7 @@
   <!--
      Modules, controllers and actions mapping.
      -->
-  <lx:controller name="home">
+  <lx:controller name="home" default="true">
     <lx:action name="home" default="true"/>
   </lx:controller>
 

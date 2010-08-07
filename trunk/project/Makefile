@@ -42,12 +42,12 @@ clean_models:
 
 %.php: %.xml
 	@echo -n "Generating model '$(ORANGE)$(basename $(notdir $@))$(RST)'..."
-	@cd ${LX_ROOT}/src/php/scripts && php lx-orm.php $< lx-php-orm.xsl > $(LX_APPLICATION)/$(LX_OUT)/models/$(notdir $@)
+	@cd ${LX_ROOT}/php/src/scripts && php lx-orm.php $< lx-php-orm.xsl > $(LX_APPLICATION)/$(LX_OUT)/models/$(notdir $@)
 	@echo " $(GREEN)OK$(RST)"
 
 $(LX_PROJECT):
 	@echo -n "Generating '$(ORANGE)$(notdir $(LX_PROJECT))$(RST)'..."
-	@cd $(LX_ROOT)/src/php/scripts && php lx-project.php $(LX_APPLICATION)/lx-project.xml > $@
+	@cd $(LX_ROOT)/php/src/scripts && php lx-project.php $(LX_APPLICATION)/lx-project.xml > $@
 	@echo " $(GREEN)OK$(RST)"
 
 project: $(LX_PROJECT)
