@@ -52,7 +52,7 @@
     <!-- SORT -->
     <xsl:call-template name="lx:for-each">
       <xsl:with-param name="begin" select="' ORDER BY '"/>
-      <xsl:with-param name="collection" select="lx:sort"/>
+      <xsl:with-param name="collection" select="lx:order-by"/>
       <xsl:with-param name="delimiter" select="', '"/>
     </xsl:call-template>
     <!-- LIMIT -->
@@ -163,7 +163,7 @@
     <xsl:text>)</xsl:text>
   </xsl:template>
 
-  <xsl:template match="lx:sort">
+  <xsl:template match="lx:order-by">
     <xsl:value-of select="@property"/>
     <xsl:if test="@desc">
       <xsl:text> DESC</xsl:text>

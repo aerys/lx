@@ -173,36 +173,42 @@
     <xsl:text>;</xsl:text>
 
     <!-- perform query -->
-    <xsl:if test="$isStatic">
-      <xsl:text>$n=array();$r=</xsl:text>
-    </xsl:if>
-    <xsl:text>self::db()->performQuery($q);</xsl:text>
-
-    <!-- fetch records -->
-    <xsl:if test="$isStatic">
-      <xsl:text>if(!is_array($r))return $r;foreach($r as $e)</xsl:text>
-      <xsl:text>{$m=new </xsl:text>
-      <xsl:value-of select="/lx:model/@name"/>
-      <xsl:text>();$m->loadArray($e);$n[]=$m;}</xsl:text>
-    </xsl:if>
+    <xsl:text>$r=self::db()->performQuery($q);</xsl:text>
 
     <!-- set record id -->
-    <xsl:if test="lx:insert and /lx:model/lx:property[@name='id'] and not($isStatic)">
+    <xsl:if test="lx:insert
+                  and /lx:model/lx:property[@name='id' and @read-only='true']
+                  and not($isStatic)">
       <xsl:text>$this->id=self::db()->getInsertId();</xsl:text>
     </xsl:if>
+
+    <!-- fetch records -->
+    <xsl:text>if(!is_array($r))return $r;</xsl:text>
+    <xsl:choose>
+      <xsl:when test="lx:select and lx:select/@limit = 1">
+        <xsl:text>if(count($r)){$m=new </xsl:text>
+        <xsl:value-of select="/lx:model/@name"/>
+        <xsl:text>();$m->loadArray($r[0]);return $m;}</xsl:text>
+      </xsl:when>
+      <xsl:when test="not(lx:insert or lx:update)">
+        <xsl:text>$n=array();foreach($r as $e){$m=new </xsl:text>
+        <xsl:value-of select="/lx:model/@name"/>
+        <xsl:text>();$m->loadArray($e);$n[]=$m;}</xsl:text>
+      </xsl:when>
+    </xsl:choose>
 
     <!-- return -->
     <xsl:text>return </xsl:text>
     <xsl:choose>
       <xsl:when test="lx:select/@limit=1">
-	<xsl:text>count($n)?$n[0]:NULL</xsl:text>
+	<xsl:text>null</xsl:text>
       </xsl:when>
       <xsl:when test="lx:insert">
 	<xsl:text>self::db()->getInsertId()</xsl:text>
       </xsl:when>
       <xsl:when test="lx:delete">
       </xsl:when>
-      <xsl:when test="$isStatic">
+      <xsl:when test="$isStatic or lx:select">
 	<xsl:text>$n</xsl:text>
       </xsl:when>
       <xsl:otherwise>

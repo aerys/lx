@@ -138,7 +138,8 @@ class XMLResponse
     $node->setAttribute('type', get_class($my_exception));
 
     $trace_node = $this->document->createElement('trace');
-    $trace_node->nodeValue = $my_exception->getTraceAsString();
+    $trace_cdata = $this->document->createCDATASection($my_exception->getTraceAsString());
+    $trace_node->appendChild($trace_cdata);
 
     $message = $this->document->createElement('message');
     $message->nodeValue = $my_exception->getMessage();
