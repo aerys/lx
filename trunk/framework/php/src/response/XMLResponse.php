@@ -50,10 +50,10 @@ class XMLResponse
 
     // lx:arguments
     $this->argumentsNode = $this->document->createElement('lx:arguments');
-    foreach ($_GET as $key => $value)
+    /*foreach ($_GET as $key => $value)
       $this->appendArgument($value, $key);
     foreach ($_POST as $key => $value)
-      $this->appendArgument($value, $key);
+    $this->appendArgument($value, $key);*/
 
     //lx:filter
     $this->filtersNode = $this->document->createElement('lx:filters');
@@ -82,43 +82,26 @@ class XMLResponse
     $this->debugFragment->appendXML($my_msg);
   }
 
-  public function appendArgument($value, $name = NULL)
+  public function appendArguments($value, $source)
   {
-    if (is_array($value))
-      $this->appendArgumentArrayValue($this->argumentsNode, $name, $value);
-    else
-    {
-      $valueNode = $this->document->createElement($name ? $name : 'lx:argument');
+    if (!count($value))
+      return ;
 
-      if (is_string($value) && get_magic_quotes_gpc())
-	$value = stripslashes($value);
+    $node = $this->document->createElement($source);
 
-      $valueNode->nodeValue = htmlentities($value);
-      $this->argumentsNode->appendChild($valueNode);
-    }
-  }
-
-  private function appendArgumentArrayValue($owner, $name, $value)
-  {
     foreach ($value as $k => $v)
     {
-      $nodeName = is_numeric($k) ? $name . '_' . $k : $k;
+      $nodeName = is_numeric($k) ? 'arg' . $k : $k;
       $valueNode = $this->document->createElement($nodeName);
 
-      if (is_array($v))
-      {
-	$this->appendArgumentArrayValue($valueNode, $nodeName, $v);
-      }
-      else
-      {
-	if (is_string($v) && get_magic_quotes_gpc())
-	  $v = stripslashes($v);
+      if (is_string($v) && get_magic_quotes_gpc())
+        $v = stripslashes($v);
 
-	$valueNode->nodeValue = $v;
-      }
-
-      $owner->appendChild($valueNode);
+      $valueNode->nodeValue = htmlentities($v);
+      $node->appendChild($valueNode);
     }
+
+    $this->argumentsNode->appendChild($node);
   }
 
   public function appendController($my_controller)

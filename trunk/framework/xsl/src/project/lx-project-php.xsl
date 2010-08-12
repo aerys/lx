@@ -15,6 +15,12 @@
     <xsl:value-of select="concat($LX_LT, '?php', $LX_LF, $LX_LF)"/>
 
     <xsl:apply-templates select="lx:const"/>
+    <xsl:text>define('LX_APPLICATION_ROOT',realpath('..'));</xsl:text>
+    <xsl:value-of select="$LX_LF"/>
+    <xsl:if test="not(lx:const[@name='LX_ROOT'])">
+      <xsl:text>define('LX_ROOT', realpath('../lib/lx'));</xsl:text>
+      <xsl:value-of select="$LX_LF"/>
+    </xsl:if>
 
     <!-- load LX -->
     <xsl:text>require_once (LX_ROOT . '/php/src/misc/lx-config.php');</xsl:text>
@@ -23,12 +29,16 @@
     <!-- set database configurations -->
     <xsl:apply-templates select="lx:database"/>
     <xsl:apply-templates select="lx:response"/>
-    <xsl:apply-templates select="lx:filter"/>
-    <xsl:apply-templates select="lx:controller"/>
-    <xsl:apply-templates select="lx:module"/>
+    <xsl:apply-templates select="lx:map"/>
 
     <xsl:value-of select="concat($LX_LF, '?', $LX_GT)"/>
     <!-- ?> -->
+  </xsl:template>
+
+  <xsl:template match="lx:map">
+    <xsl:apply-templates select="lx:filter"/>
+    <xsl:apply-templates select="lx:controller"/>
+    <xsl:apply-templates select="lx:module"/>
   </xsl:template>
 
   <xsl:template match="lx:project/lx:filter">

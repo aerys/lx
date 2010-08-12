@@ -2,6 +2,6 @@
 
 require_once ('../bin/lx-project.php');
 
-LX::dispatchHTTPRequest($_SERVER['REDIRECT_URL'], $_GET, $_POST);
+LX::dispatchHTTPRequest($_SERVER['REQUEST_URI'], $_GET, $_POST);
 
 ?>

@@ -11,10 +11,10 @@ if (!defined('LX_APPLICATION_ROOT'))
   define('LX_APPLICATION_ROOT', realpath('..'));
 
 if (!defined('LX_DEFAULT_MODULE'))
-  define('LX_DEFAULT_MODULE', 'home');
+  define('LX_DEFAULT_MODULE', 'default');
 
 if (!defined('LX_DEFAULT_CONTROLLER'))
-  define('LX_DEFAULT_CONTROLLER', 'home');
+  define('LX_DEFAULT_CONTROLLER', 'default');
 
 if (!defined('LX_DEFAULT_VIEW'))
   define('LX_DEFAULT_VIEW', 'default');

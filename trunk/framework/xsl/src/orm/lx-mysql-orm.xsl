@@ -133,7 +133,7 @@
 	</xsl:call-template>
       </xsl:when>
       <xsl:otherwise>
-	<xsl:for-each select="/lx:model/lx:property[not(@read-only)]">
+	<xsl:for-each select="/lx:model/lx:property">
 	  <xsl:if test="position() != 1">
 	    <xsl:text>, </xsl:text>
 	  </xsl:if>
@@ -152,7 +152,7 @@
 	</xsl:call-template>
       </xsl:when>
       <xsl:otherwise>
-	<xsl:for-each select="/lx:model/lx:property[not(@read-only)]">
+	<xsl:for-each select="/lx:model/lx:property">
 	  <xsl:if test="position() != 1">
 	    <xsl:text>, </xsl:text>
 	  </xsl:if>

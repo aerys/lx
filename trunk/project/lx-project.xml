@@ -1,39 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <lx:project xmlns:lx="http://lx.aerys.in">
+  <!-- Absolute path to the LX framework. -->
+  <!--<lx:const name="LX_ROOT" value="'/var/www/lx/trunk/framework'"/>-->
 
-  <!--
-     Absolute path to the LX framework.
-     -->
-  <lx:const name="LX_ROOT" value="'/var/www/lx/trunk/framework'"/>
-  <!--
-     Absolute path to the application.
-     -->
-  <lx:const name="LX_APPLICATION_ROOT" value="'/path/to/application'"/>
-  <!--
-     Enable/disable stack traces output in responses.
-     -->
+  <!-- Enable/disable stack traces output in responses. -->
   <lx:const name="LX_DEBUG" value="true"/>
 
-  <!--
-     Bind extensions to handlers.
-     -->
+  <!-- Bind extensions to handlers. -->
   <lx:response handler="XSLResponse" extension="xml+xsl" default="true"/>
   <lx:response handler="LXMLResponse" extension="lxml"/>
   <lx:response handler="XMLResponse" extension="xml"/>
 
-  <!--
-     Databases configuration.
-    -->
+  <!-- Databases configuration. -->
   <lx:database name="database" type="mysql"
 	       user="user" password="password"
 	       host="host"/>
 
-  <!--
-     Modules, controllers and actions mapping.
-     -->
-  <lx:controller name="home" default="true">
-    <lx:action name="home" default="true"/>
-  </lx:controller>
+  <!-- Modules, controllers and actions mapping. -->
+  <lx:map>
+    <lx:controller name="default" default="true">
+      <lx:action name="default" default="true"/>
+    </lx:controller>
+  </lx:map>
 
 </lx:project>

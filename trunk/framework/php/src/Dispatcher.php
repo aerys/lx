@@ -34,13 +34,16 @@ class Dispatcher
       $filters		= $_LX['map']['filters'];
       $extension	= NULL;
 
+      if (($pos = strpos($request, '?')) !== false)
+        $request = substr($request, 0, $pos);
+
       // delete document root from the URL
       if (LX_DOCUMENT_ROOT != '/')
 	$request = str_replace(LX_DOCUMENT_ROOT, '', $request);
 
       // response handler
-      $pos = strrpos($request, '.');
-      if (false != $pos)
+
+      if (($pos = strrpos($request, '.')) !== false)
       {
 	$extension = substr($request, $pos + 1);
 	$request = substr($request, 0, $pos);
@@ -103,6 +106,11 @@ class Dispatcher
       if (!isset($map[LX_CONTROLLER]))
 	throw new UnknownControllerException(LX_CONTROLLER);
 
+      // arguments
+      $this->response->appendArguments($params, 'url');
+      $this->response->appendArguments($get, 'get');
+      $this->response->appendArguments($post, 'post');
+
       //if (LX_MODULE)
       //LX::addApplicationDirectory('/src/controllers/' . LX_MODULE);
 
@@ -125,12 +133,7 @@ class Dispatcher
 
       // call the controller's action
       if ($action)
-      {
-	foreach ($params as $argv)
-	  $this->response->appendArgument($argv);
-
 	call_user_func_array(array($cont, $action), $params);
-      }
 
       $this->response->appendController($cont);
     }

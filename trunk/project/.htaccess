@@ -14,4 +14,4 @@ RewriteRule ^views/(.*)\.(xml|xsl)$ src/views/$1\.$2 [L]
 
 RewriteCond %{REQUEST_FILENAME} !/(public|src/views) [OR]
 RewriteCond %{REQUEST_FILENAME} !-f
-RewriteRule ^.*$ public/lx-dispatch.php [QSA,L]
+RewriteRule ^.*$ public/lx-dispatch.php [L]
