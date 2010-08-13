@@ -19,6 +19,10 @@
     </xsl:choose>
   </xsl:variable>
 
+  <xsl:template match="@name">
+    <xsl:value-of select="."/>
+  </xsl:template>
+
   <!--
       @template lx:select
       SELECT database request template.
@@ -37,7 +41,6 @@
 	  <xsl:with-param name="collection" select="//lx:property/@name"/>
 	  <xsl:with-param name="delimiter" select="', '"/>
 	</xsl:call-template>
-	<!--<xsl:text><![CDATA[*]]></xsl:text>-->
       </xsl:otherwise>
     </xsl:choose>
     <xsl:text> FROM </xsl:text>

@@ -30,6 +30,10 @@
     <xsl:text>self::$__db__:self::$__db__=DatabaseFactory::create('</xsl:text>
     <xsl:value-of select="@database"/>
     <xsl:text>');}</xsl:text>
+    <xsl:text>public static function getDatabase(){return self::db();}</xsl:text>
+    <xsl:text>public static function getTableName(){return '</xsl:text>
+    <xsl:value-of select="$LX_TABLE_NAME"/>
+    <xsl:text>';}</xsl:text>
 
     <!-- constants -->
     <xsl:apply-templates select="lx:const"/>
@@ -40,7 +44,7 @@
     <!-- constructor -->
     <xsl:text>public function </xsl:text>
     <xsl:value-of select="@name"/>
-    <xsl:text>(){parent::AbstractModel(self::db());}</xsl:text>
+    <xsl:text>($d=null){parent::AbstractModel($d);}</xsl:text>
 
     <!-- methods -->
     <xsl:apply-templates select="lx:static-method | lx:method"/>
@@ -191,14 +195,14 @@
     <xsl:text>if(!is_array($r))return $r;</xsl:text>
     <xsl:choose>
       <xsl:when test="lx:select and lx:select/@limit = 1">
-        <xsl:text>if(count($r)){$m=new </xsl:text>
+        <xsl:text>if(count($r))return new </xsl:text>
         <xsl:value-of select="/lx:model/@name"/>
-        <xsl:text>();$m->loadArray($r[0]);return $m;}</xsl:text>
+        <xsl:text>($r[0]);</xsl:text>
       </xsl:when>
       <xsl:when test="not(lx:insert or lx:update)">
-        <xsl:text>$n=array();foreach($r as $e){$m=new </xsl:text>
+        <xsl:text>$n=array();foreach($r as $e)$n[]=new </xsl:text>
         <xsl:value-of select="/lx:model/@name"/>
-        <xsl:text>();$m->loadArray($e);$n[]=$m;}</xsl:text>
+        <xsl:text>($e);</xsl:text>
       </xsl:when>
     </xsl:choose>
 

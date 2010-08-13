@@ -68,14 +68,10 @@ class Dispatcher
 
       // module
       if (count($params) && isset($map['modules'][$params[0]]))
-      {
-	$module = array_shift($params);
-      }
-      else if (!count($params) == 1 && isset($map['modules'][LX_DEFAULT_MODULE])
-	       && isset($map['modules'][LX_DEFAULT_MODULE]['controllers'][$params[0]]))
-      {
-	$module = LX_DEFAULT_MODULE;
-      }
+        $module = array_shift($params);
+      else if (isset($map['modules'][LX_DEFAULT_MODULE]))
+        $module = LX_DEFAULT_MODULE;
+
       if (isset($map['modules'][$module]))
       {
 	$map = $map['modules'][$module];
@@ -114,15 +110,25 @@ class Dispatcher
       //if (LX_MODULE)
       //LX::addApplicationDirectory('/src/controllers/' . LX_MODULE);
 
+      // start buffering
+      ob_start();
+
       // filters
       foreach ($filters as $filterName => $filterClass)
       {
         $this->filterName = $filterName;
 	$filter = new $filterClass();
 	$filter_result = $filter->filter();
+        $ob_output = ob_get_clean();
 
-	if (!(FilterResult::IGNORE === $filter_result))
+	if (FilterResult::IGNORE !== $filter_result)
+        {
+          if ($ob_output)
+            $filter->getFragment()->appendXML($ob_output);
+
 	  $this->response->appendFilter($filter, $filterName);
+        }
+
 	if (FilterResult::STOP === $filter_result)
 	  break ;
       }
@@ -135,10 +141,19 @@ class Dispatcher
       if ($action)
 	call_user_func_array(array($cont, $action), $params);
 
+      if (($ob_output = ob_get_clean()))
+        $cont->getFragment()->appendXML($ob_output);
       $this->response->appendController($cont);
+
+      // stop buffering
+      //ob_end_clean();
     }
     catch (FilterException $e)
     {
+      $ob_output = ob_get_clean();
+      if ($ob_output)
+        $e->getFilter()->getFragment()->appendXML($ob_output);
+
       $this->response->appendFilter($e->getFilter(), $this->filterName);
     }
     catch (ErrorException $e)

@@ -10,7 +10,7 @@
 		xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
 		xmlns:lx="http://lx.aerys.in"
 		xmlns:lx.html="http://lx.aerys.in/html"
-		xmlns:lx.html.flash="http://lx.aerys.in/html/flash">
+                exclude-result-prefixes="lx.html">
 
   <xsl:output method="html"
 	      version="4.0"
@@ -19,9 +19,6 @@
 	      doctype-system="http://www.w3.org/TR/html4/loose.dtd"
 	      indent="yes"
 	      encoding="unicode"/>
-
-  <xsl:include href="lx-std.xsl"/>
-  <xsl:include href="lx-response.xsl"/>
 
   <xsl:template match="/">
     <html>
@@ -57,28 +54,6 @@
       </body>
     </html>
   </xsl:template>
-
-  <!-- BEGIN IDENTITY -->
-  <xsl:template match="*">
-    <xsl:copy>
-      <xsl:apply-templates select="@*|node()"/>
-    </xsl:copy>
-  </xsl:template>
-
-  <xsl:template match="@*|comment()|processing-instruction()">
-    <xsl:copy>
-      <xsl:apply-templates select="@*|node()"/>
-    </xsl:copy>
-  </xsl:template>
-
-  <xsl:template match="text()">
-    <xsl:if test="normalize-space(.) != '' or not(following-sibling::lx:text or preceding-sibling::lx:text)">
-      <xsl:copy>
-	<xsl:apply-templates select="@*|node()"/>
-      </xsl:copy>
-    </xsl:if>
-  </xsl:template>
-  <!-- END IDENTITY -->
 
   <!--
       @template lx:template
@@ -319,124 +294,4 @@
       </xsl:choose>
     </xsl:element>
   </xsl:template>
-
-  <!--
-      @template lx.html.flash:flash
-      Insert Flash content.
-    -->
-  <xsl:template match="lx.html.flash:flash"
-                name="lx.html.flash:flash">
-    <!-- @param id of the application -->
-    <xsl:param name="id" select="@id"/>
-    <!-- @param ressource name (without 'flash/' and '.swf') of the SWF file -->
-    <xsl:param name="name">
-      <xsl:apply-templates select="@name" mode="lx:value-of"/>
-    </xsl:param>
-    <!-- @param javascript code to execute when the application is ready -->
-    <xsl:param name="script" select="text()"/>
-    <!-- @param width of the application -->
-    <xsl:param name="width" select="@width"/>
-    <!-- @param height of the application -->
-    <xsl:param name="height" select="@height"/>
-    <!-- @param flashvars -->
-    <xsl:param name="flashvars" select="lx.html.flash:flashvar"/>
-    <!-- @param wmode -->
-    <xsl:param name="wmode">
-      <xsl:choose>
-	<xsl:when test="@wmode!=''">
-	  <xsl:value-of select="@wmode"/>
-	</xsl:when>
-	<xsl:otherwise>
-	  <xsl:text>window</xsl:text>
-	</xsl:otherwise>
-      </xsl:choose>
-    </xsl:param>
-
-    <xsl:variable name="swf">
-      <!--<xsl:text>http://</xsl:text>
-      <xsl:value-of select="$LX_RESPONSE/@host"/>
-      <xsl:if test="$LX_RESPONSE/@document-root">
-	<xsl:value-of select="$LX_RESPONSE/@document-root"/>
-	<xsl:text>/</xsl:text>
-      </xsl:if>-->
-      <xsl:text>flash/</xsl:text>
-      <xsl:value-of select="$name"/>
-    </xsl:variable>
-
-    <xsl:variable name="flashvars_full">
-      <xsl:if test="normalize-space($script)">
-	<xsl:text>bridgeName=</xsl:text>
-	<xsl:value-of select="$id"/>
-	<xsl:if test="$flashvars">
-	  <xsl:text>&amp;</xsl:text>
-	</xsl:if>
-      </xsl:if>
-      <xsl:apply-templates select="$flashvars"/>
-    </xsl:variable>
-
-    <object type="application/x-shockwave-flash" data="{$swf}.swf" width="{$width}" height="{$height}"
-	    style="outline:none;display:block">
-      <xsl:if test="$id">
-	<xsl:attribute name="id">
-	  <xsl:value-of select="$id"/>
-	</xsl:attribute>
-      </xsl:if>
-      <param name="movie" value="{$swf}.swf" />
-      <param name="allowScriptAccess" value="sameDomain" />
-      <param name="allowFullscreen" value="true" />
-      <param name="flashvars" value="{$flashvars_full}" />
-      <param name="wmode" value="{$wmode}" />
-      <param name="name" value="{$name}"/>
-      <xsl:apply-templates select="lx.html.flash:alternative-content"/>
-    </object>
-    <xsl:apply-templates select="lx.html.flash:fabridge"/>
-  </xsl:template>
-
-  <xsl:template match="lx.html.flash:alternative-content">
-    <xsl:apply-templates select="node()"/>
-  </xsl:template>
-
-  <xsl:template match="lx.html.flash:fabridge">
-    <!-- FIXME -->
-  </xsl:template>
-
-  <!--
-      @template lx.html.flash:flashvar
-    -->
-  <xsl:template match="lx.html.flash:flashvar">
-    <xsl:variable name="value">
-      <xsl:apply-templates select="@value" mode="lx:value-of"/>
-    </xsl:variable>
-
-    <xsl:if test="preceding-sibling::lx.html.flash:flashvar">
-      <xsl:value-of select="$LX_AMP"/>
-    </xsl:if>
-    <xsl:value-of select="concat(@name, '=', $value)"/>
-  </xsl:template>
-
-  <!--
-      lx.html.flash:fabridge
-      Set a Flex-Ajax bridge using the FABridge library provided with the Flex SDK.
-      The content of this markup must be JavaScript code. The Flex application is
-      accessible using an object named by the id attribute specified in the parent
-      lx.html.flash:flash node.
-    -->
-  <xsl:template match="lx.html.flash:fabridge">
-    <xsl:param name="bridgeName" select="../@id"/>
-    <xsl:param name="script" select="node()"/>
-
-    <xsl:variable name="callback">
-      FABridge.addInitializationCallback('<xsl:value-of select="$bridgeName"/>',
-      function()
-      {
-        window.<xsl:value-of select="$bridgeName"/> = FABridge['<xsl:value-of select="$bridgeName"/>'].root();
-        <xsl:apply-templates select="$script"/>
-      });
-    </xsl:variable>
-
-    <xsl:call-template name="lx.html:javascript">
-      <xsl:with-param name="script" select="normalize-space($callback)"/>
-    </xsl:call-template>
-  </xsl:template>
-
 </xsl:stylesheet>

@@ -57,6 +57,28 @@
     </xsl:choose>
   </xsl:template>
 
+  <!-- BEGIN IDENTITY -->
+  <xsl:template match="*">
+    <xsl:copy>
+      <xsl:apply-templates select="@*|node()"/>
+    </xsl:copy>
+  </xsl:template>
+
+  <xsl:template match="@*|comment()|processing-instruction()">
+    <xsl:copy>
+      <xsl:apply-templates select="@*|node()"/>
+    </xsl:copy>
+  </xsl:template>
+
+  <xsl:template match="text()">
+    <xsl:if test="normalize-space(.) != '' or not(following-sibling::lx:text or preceding-sibling::lx:text)">
+      <xsl:copy>
+	<xsl:apply-templates select="@*|node()"/>
+      </xsl:copy>
+    </xsl:if>
+  </xsl:template>
+  <!-- END IDENTITY -->
+
   <!--
       @template lx:insert-controller
       Set where to insert the view generated output.
@@ -65,7 +87,7 @@
     <xsl:apply-templates select="$LX_CONTROLLER"/>
   </xsl:template>
 
-  <xsl:template match="lx:controller|lx:template">
+  <xsl:template match="lx:controller|lx:template|lx:layout">
     <xsl:apply-templates select="node()"/>
   </xsl:template>
 

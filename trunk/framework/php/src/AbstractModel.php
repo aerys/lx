@@ -5,51 +5,47 @@ abstract class AbstractModel
   const FLAG_DEFAULT	= 0;
   const FLAG_UPDATE	= 1;
 
-  private $database	= NULL;
   private $flags	= self::FLAG_DEFAULT;
 
-  public function getDatabase()		{return $this->database;}
-
-  public function setDatabase($my_db)	{$this->database = $my_db;}
-
   /* CONSTRUCTOR */
-  public function AbstractModel($my_database)
+  public function AbstractModel($myData = null)
   {
-    $this->setDatabase($my_database);
+    if ($myData)
+      $this->loadArray($myData);
   }
 
   /* METHODS */
-  public static function scaffold($my_model,
-				  $my_backend,
-				  $my_output)
+  public static function scaffold($myModel,
+				  $myBackend,
+				  $myOutput)
   {
     $xml = new DOMDocument();
-    $xml->load($my_model);
+    $xml->load($myModel);
 
     $xsl = new DOMDocument();
-    $xsl->load($my_backend);
+    $xsl->load($myBackend);
 
     $processor = new XSLTProcessor();
     $processor->importStyleSheet($xsl);
-    $processor->transformToURI($xml, $my_output);
+    $processor->transformToURI($xml, $myOutput);
   }
 
-  public function loadArray($my_data)
+  public function loadArray($myData)
   {
-    foreach ($my_data as $name => $value)
+    foreach ($myData as $name => $value)
       $this->$name = $value;
   }
 
-  public function __get($my_property)
+  public function __get($myProperty)
   {
-    return $this->$my_property;
+    return $this->$myProperty;
   }
 
-  public function __set($my_property, $my_value)
+  public function __set($myProperty, $myValue)
   {
-    if ($this->$my_property != $my_value)
+    if ($this->$myProperty != $myValue)
     {
-      $this->$my_property = $my_value;
+      $this->$myProperty = $myValue;
       $this->flags |= self::FLAG_UPDATE;
     }
   }
@@ -59,13 +55,13 @@ abstract class AbstractModel
     throw new UnknownMethodException(get_class($this) . '::' . $p, $a);
   }
 
-  public function serialize($my_exclude	= NULL,
-			    $my_escape	= NULL,
-			    $my_no_root	= false)
+  public function serialize($myExclude	= null,
+			    $myEscape	= null,
+			    $myNoRoot	= false)
   {
     $rClass	= new ReflectionClass(get_class($this));
     $className  = strtolower($rClass->getName());
-    $xml	= $my_no_root ? '' : '<' . $className . '>';
+    $xml	= $myNoRoot ? '' : '<' . $className . '>';
     $properties = $rClass->getProperties();
 
     foreach ($properties as $property)
@@ -73,11 +69,11 @@ abstract class AbstractModel
       $propertyName = $property->getName();
 
       if ($property->isProtected()
-	  && (!$my_exclude || false === array_search($propertyName, $my_exclude, true)))
+	  && (!$myExclude || false === array_search($propertyName, $myExclude, true)))
       {
 	$xml .= '<' . $propertyName . '>';
 
-	if ($my_escape && false !== array_search($propertyName, $my_escape, true))
+	if ($myEscape && false !== array_search($propertyName, $myEscape, true))
 	  $xml .= '<![CDATA[' . $this->$propertyName . ']]>';
 	else
 	  $xml .= $this->$propertyName;
@@ -86,7 +82,7 @@ abstract class AbstractModel
       }
     }
 
-    if (!$my_no_root)
+    if (!$myNoRoot)
       $xml .= '</' . $className . '>';
 
     return ($xml);

@@ -18,12 +18,12 @@
     <xsl:text>define('LX_APPLICATION_ROOT',realpath('..'));</xsl:text>
     <xsl:value-of select="$LX_LF"/>
     <xsl:if test="not(lx:const[@name='LX_ROOT'])">
-      <xsl:text>define('LX_ROOT', realpath('../lib/lx'));</xsl:text>
+      <xsl:text>define('LX_ROOT',realpath('../lib/lx'));</xsl:text>
       <xsl:value-of select="$LX_LF"/>
     </xsl:if>
 
     <!-- load LX -->
-    <xsl:text>require_once (LX_ROOT . '/php/src/misc/lx-config.php');</xsl:text>
+    <xsl:text>require_once(LX_ROOT . '/php/src/misc/lx-config.php');</xsl:text>
     <xsl:value-of select="$LX_LF"/>
 
     <!-- set database configurations -->
@@ -153,6 +153,7 @@
       <xsl:text>['controllers']['</xsl:text>
       <xsl:value-of select="@name"/>
       <xsl:text>'];</xsl:text>
+      <xsl:value-of select="$LX_LF"/>
     </xsl:if>
 
   </xsl:template>

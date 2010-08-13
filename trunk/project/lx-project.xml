@@ -20,7 +20,7 @@
   <!-- Modules, controllers and actions mapping. -->
   <lx:map>
     <lx:controller name="default" default="true">
-      <lx:action name="default" default="true"/>
+      <lx:action name="defaultAction" default="true"/>
     </lx:controller>
   </lx:map>
 
