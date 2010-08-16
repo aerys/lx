@@ -57,7 +57,6 @@ class XMLResponse
 
     //lx:filter
     $this->filtersNode = $this->document->createElement('lx:filters');
-    $this->rootNode->appendChild($this->filtersNode);
 
     //lx:debug
     if (LX_DEBUG)
@@ -173,6 +172,10 @@ class XMLResponse
       $this->requestNode->setAttribute('action', LX_ACTION);
     if ($this->argumentsNode->hasChildNodes())
       $this->requestNode->appendChild($this->argumentsNode);
+
+    if ($this->filtersNode->hasChildNodes())
+        $this->rootNode->insertBefore($this->filtersNode,
+                                      $this->requestNode->nextSibling);
 
     // insert view node
     $viewCfg = $this->document->createElement('lx:view');
