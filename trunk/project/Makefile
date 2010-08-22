@@ -1,6 +1,7 @@
 include Makefile.rules
 
-MODELS_PHP=$(LX_MODELS:.xml=.php)
+MODELS_XML=$(shell find $(LX_APPLICATION)/src/models -name '*.xml')
+MODELS_PHP=$(MODELS_XML:.xml=.php)
 LX_PROJECT=$(LX_APPLICATION)/$(LX_OUT)/lx-project.php
 
 # Colors
@@ -26,6 +27,7 @@ DK_PINK=\033[0;35m
 ORANGE=\033[0;33m
 
 all: chmod reload
+	@echo $(MODELS_XML)
 
 clean: clean_models
 	@echo -n "Cleaning up /$(LX_OUT)..."

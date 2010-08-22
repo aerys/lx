@@ -69,7 +69,7 @@ class MySQLDatabase extends AbstractDatabase
       return (true);
 
     $response = array();
-    while ($row = $result->fetch_assoc())
+    while (($row = $result->fetch_assoc()))
       $response[] = $row;
 
     return ($response);
