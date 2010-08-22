@@ -59,31 +59,28 @@ abstract class AbstractModel
 			    $myEscape	= null,
 			    $myNoRoot	= false)
   {
-    $rClass	= new ReflectionClass(get_class($this));
-    $className  = strtolower($rClass->getName());
-    $xml	= $myNoRoot ? '' : '<' . $className . '>';
-    $properties = $rClass->getProperties();
+    $class      = get_class($this);
+    $rootName   = strtolower($class);
+    $properties = $class::$__properties__;
+    $xml	= $myNoRoot ? '' : '<' . $rootName . '>';
 
     foreach ($properties as $property)
     {
-      $propertyName = $property->getName();
-
-      if ($property->isProtected()
-	  && (!$myExclude || false === array_search($propertyName, $myExclude, true)))
+      if (!$myExclude || false === array_search($property, $myExclude, true))
       {
-	$xml .= '<' . $propertyName . '>';
+	$xml .= '<' . $property . '>';
 
-	if ($myEscape && false !== array_search($propertyName, $myEscape, true))
-	  $xml .= '<![CDATA[' . $this->$propertyName . ']]>';
+	if ($myEscape && false !== array_search($property, $myEscape, true))
+	  $xml .= '<![CDATA[' . $this->$property . ']]>';
 	else
-	  $xml .= $this->$propertyName;
+	  $xml .= $this->$property;
 
-	$xml .= '</' . $propertyName . '>';
+	$xml .= '</' . $property . '>';
       }
     }
 
     if (!$myNoRoot)
-      $xml .= '</' . $className . '>';
+      $xml .= '</' . $rootName . '>';
 
     return ($xml);
   }

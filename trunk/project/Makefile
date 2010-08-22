@@ -27,7 +27,7 @@ DK_PINK=\033[0;35m
 ORANGE=\033[0;33m
 
 all: chmod reload
-	@echo $(MODELS_XML)
+
 
 clean: clean_models
 	@echo -n "Cleaning up /$(LX_OUT)..."

@@ -25,8 +25,16 @@
     <!-- class -->
     <xsl:text>class </xsl:text>
     <xsl:value-of select="@name"/>
-    <xsl:text> extends AbstractModel {private static $__db__;</xsl:text>
-    <xsl:text>private static function db(){return self::$__db__?</xsl:text>
+    <xsl:text> extends AbstractModel{</xsl:text>
+    <xsl:text>public static $__properties__ = array(</xsl:text>
+    <xsl:call-template name="lx:for-each">
+      <xsl:with-param name="collection" select="lx:property/@name"/>
+      <xsl:with-param name="begin" select="$LX_QUOTE"/>
+      <xsl:with-param name="delimiter" select="concat($LX_QUOTE, ',', $LX_QUOTE)"/>
+      <xsl:with-param name="end" select="$LX_QUOTE"/>
+    </xsl:call-template>
+    <xsl:text>);</xsl:text>
+    <xsl:text>private static $__db__;private static function db(){return self::$__db__?</xsl:text>
     <xsl:text>self::$__db__:self::$__db__=DatabaseFactory::create('</xsl:text>
     <xsl:value-of select="@database"/>
     <xsl:text>');}</xsl:text>
@@ -50,6 +58,10 @@
     <xsl:apply-templates select="lx:static-method | lx:method"/>
 
     <xsl:text>}</xsl:text>
+  </xsl:template>
+
+  <xsl:template match="@name">
+    <xsl:value-of select="."/>
   </xsl:template>
 
   <xsl:template match="lx:property">
@@ -194,7 +206,7 @@
     <!-- fetch records -->
     <xsl:text>if(!is_array($r))return $r;</xsl:text>
     <xsl:choose>
-      <xsl:when test="lx:select and lx:select/@limit = 1">
+      <xsl:when test="lx:select/@limit = 1">
         <xsl:text>if(count($r))return new </xsl:text>
         <xsl:value-of select="/lx:model/@name"/>
         <xsl:text>($r[0]);</xsl:text>

@@ -19,10 +19,6 @@
     </xsl:choose>
   </xsl:variable>
 
-  <xsl:template match="@name">
-    <xsl:value-of select="."/>
-  </xsl:template>
-
   <!--
       @template lx:select
       SELECT database request template.
@@ -50,7 +46,7 @@
     <xsl:call-template name="lx:for-each">
       <xsl:with-param name="begin" select="' WHERE '"/>
       <xsl:with-param name="collection" select="lx:where|lx:not"/>
-      <xsl:with-param name="delimiter" select="' AND '"/>
+      <xsl:with-param name="delimiter" select="' OR '"/>
     </xsl:call-template>
     <!-- SORT -->
     <xsl:call-template name="lx:for-each">
@@ -204,6 +200,11 @@
     </xsl:variable>
 
     <xsl:value-of select="concat($property, $operator, $value)"/>
+
+    <xsl:if test="lx:where">
+      <xsl:text> AND </xsl:text>
+      <xsl:apply-templates select="lx:where"/>
+    </xsl:if>
   </xsl:template>
 
   <xsl:template match="lx:not">
