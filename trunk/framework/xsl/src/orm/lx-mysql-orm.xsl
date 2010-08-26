@@ -29,13 +29,17 @@
       <xsl:when test="lx:get">
 	<xsl:call-template name="lx:for-each">
 	  <xsl:with-param name="collection" select="lx:get"/>
-	  <xsl:with-param name="delimiter" select="', '"/>
+	  <xsl:with-param name="begin" select="'`'"/>
+	  <xsl:with-param name="delimiter" select="'`, `'"/>
+	  <xsl:with-param name="end" select="'`'"/>
 	</xsl:call-template>
       </xsl:when>
       <xsl:otherwise>
 	<xsl:call-template name="lx:for-each">
 	  <xsl:with-param name="collection" select="//lx:property/@name"/>
-	  <xsl:with-param name="delimiter" select="', '"/>
+	  <xsl:with-param name="begin" select="'`'"/>
+	  <xsl:with-param name="delimiter" select="'`, `'"/>
+	  <xsl:with-param name="end" select="'`'"/>
 	</xsl:call-template>
       </xsl:otherwise>
     </xsl:choose>
@@ -102,8 +106,8 @@
 	    <xsl:text>,</xsl:text>
 	  </xsl:if>
 	  <xsl:text> </xsl:text>
-	  <xsl:value-of select="@name"/>
-	  <xsl:text>=:</xsl:text>
+	  <xsl:value-of select="concat('`', @name, '`')"/>
+	  <xsl:text> = :</xsl:text>
 	  <xsl:value-of select="concat(@name, '_', generate-id(.))"/>
 	</xsl:for-each>
       </xsl:otherwise>
@@ -136,7 +140,7 @@
 	  <xsl:if test="position() != 1">
 	    <xsl:text>, </xsl:text>
 	  </xsl:if>
-	  <xsl:value-of select="@name"/>
+	  <xsl:value-of select="concat('`', @name, '`')"/>
 	</xsl:for-each>
       </xsl:otherwise>
     </xsl:choose>
@@ -176,23 +180,35 @@
   <xsl:template match="lx:set">
     <xsl:choose>
       <xsl:when test="@value">
-	<xsl:value-of select="concat(@property, '=:', @value)"/>
+	<xsl:value-of select="concat('`', @property, '`', ' = :', @value)"/>
       </xsl:when>
       <xsl:otherwise>
-	<xsl:value-of select="concat(@property, '=:', @property, '_', generate-id(.))"/>
+	<xsl:value-of select="concat('`', @property, '`', ' = :', @property, '_', generate-id(.))"/>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
 
   <xsl:template match="lx:where">
-    <xsl:variable name="property" select="@property"/>
-    <xsl:variable name="value" select="concat(':', $property, '_', generate-id())"/>
+    <xsl:variable name="property" select="concat('`', @property, '`')"/>
+    <xsl:variable name="value" select="concat(':', @property, '_', generate-id())"/>
     <xsl:variable name="type" select="/lx:model/lx:property[@name = $property]/@type"/>
     <xsl:variable name="operator">
       <xsl:choose>
 	<xsl:when test="$type = 'string' and @operator = '='">
 	  <xsl:text> LIKE </xsl:text>
 	</xsl:when>
+        <xsl:when test="@operator = 'lt'">
+          <xsl:value-of select="' &lt; '"/>
+        </xsl:when>
+        <xsl:when test="@operator = 'le'">
+          <xsl:value-of select="' &lt;= '"/>
+        </xsl:when>
+        <xsl:when test="@operator = 'gt'">
+          <xsl:value-of select="' &gt; '"/>
+        </xsl:when>
+        <xsl:when test="@operator = 'ge'">
+          <xsl:value-of select="' &gt;= '"/>
+        </xsl:when>
 	<xsl:otherwise>
 	  <xsl:value-of select="concat(' ', @operator, ' ')"/>
 	</xsl:otherwise>

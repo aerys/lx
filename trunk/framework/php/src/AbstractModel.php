@@ -32,8 +32,12 @@ abstract class AbstractModel
 
   public function loadArray($myData)
   {
-    foreach ($myData as $name => $value)
-      $this->$name = $value;
+    $class      = get_class($this);
+    $properties = $class::$__properties__;
+
+    foreach ($properties as $name)
+      if (isset($myData[$name]))
+        $this->$name = $myData[$name];
   }
 
   public function __get($myProperty)
@@ -83,6 +87,11 @@ abstract class AbstractModel
       $xml .= '</' . $rootName . '>';
 
     return ($xml);
+  }
+
+  public function __toString()
+  {
+    return $this->serialize();
   }
 
 //   abstract public function save();
