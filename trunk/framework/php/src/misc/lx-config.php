@@ -4,12 +4,6 @@ define('LX_NAMESPACE',		'http://lx.aerys.in');
 define('LX_DEFAULT_TIMEZONE',	'Europe/Paris');
 define('LX_DEFAULT_EXTENSION',	'');
 
-if (!defined('LX_ROOT'))
-  define('LX_ROOT', realpath(dirname(__FILE__) . '/../../..'));
-
-if (!defined('LX_APPLICATION_ROOT'))
-  define('LX_APPLICATION_ROOT', realpath('..'));
-
 if (!defined('LX_DEFAULT_MODULE'))
   define('LX_DEFAULT_MODULE', 'default');
 
@@ -27,6 +21,9 @@ if (!defined('LX_DEFAULT_TEMPLATE'))
 
 if (!defined('LX_DEBUG'))
   define('LX_DEBUG', false);
+
+if (LX_DEBUG)
+  error_reporting(E_ALL);
 
 if (!defined('LX_TIMEZONE'))
   define('LX_TIMEZONE', LX_DEFAULT_TIMEZONE);
