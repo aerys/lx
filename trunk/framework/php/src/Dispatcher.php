@@ -139,10 +139,19 @@ class Dispatcher
 
       // call the controller's action
       if ($action)
-	call_user_func_array(array($cont, $action), $params);
+	$result = call_user_func_array(array($cont, $action), $params);
 
       if (($ob_output = ob_get_clean()))
         $cont->getFragment()->appendXML($ob_output);
+      if ($result)
+      {
+        if ($result instanceof XMLSerializable)
+          $cont->getFragment()->appendXML($result->__toString());
+        else if (is_array($result))
+          foreach ($result as $resultItem)
+            if ($resultItem instanceof XMLSerializable)
+              $cont->getFragment()->appendXML($resultItem->__toString());
+      }
       $this->response->appendController($cont);
 
       // stop buffering

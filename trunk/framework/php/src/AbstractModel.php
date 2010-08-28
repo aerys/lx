@@ -1,6 +1,6 @@
 <?php
 
-abstract class AbstractModel
+abstract class AbstractModel extends XMLSerializable
 {
   const FLAG_DEFAULT	= 0;
   const FLAG_UPDATE	= 1;
@@ -30,11 +30,6 @@ abstract class AbstractModel
     $processor->transformToURI($xml, $myOutput);
   }
 
-  protected function getProperties()
-  {
-    throw new ErrorException();
-  }
-
   public function loadArray($myData)
   {
     $class      = get_class($this);
@@ -62,43 +57,6 @@ abstract class AbstractModel
   {
     throw new UnknownMethodException(get_class($this) . '::' . $p, $a);
   }
-
-  public function serialize($myExclude	= null,
-			    $myEscape	= null,
-			    $myNoRoot	= false)
-  {
-    $class      = get_class($this);
-    $rootName   = strtolower($class);
-    $xml	= $myNoRoot ? '' : '<' . $rootName . '>';
-
-    foreach ($this->getProperties() as $property)
-    {
-      if (!$myExclude || false === array_search($property, $myExclude, true))
-      {
-	$xml .= '<' . $property . '>';
-
-	if ($myEscape && false !== array_search($property, $myEscape, true))
-	  $xml .= '<![CDATA[' . $this->$property . ']]>';
-	else
-	  $xml .= $this->$property;
-
-	$xml .= '</' . $property . '>';
-      }
-    }
-
-    if (!$myNoRoot)
-      $xml .= '</' . $rootName . '>';
-
-    return ($xml);
-  }
-
-  public function __toString()
-  {
-    return $this->serialize();
-  }
-
-//   abstract public function save();
-//   abstract public function update();
 }
 
 ?>
