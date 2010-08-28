@@ -26,14 +26,9 @@
     <xsl:text>class </xsl:text>
     <xsl:value-of select="@name"/>
     <xsl:text> extends AbstractModel{</xsl:text>
-    <xsl:text>public static $__properties__ = array(</xsl:text>
-    <xsl:call-template name="lx:for-each">
-      <xsl:with-param name="collection" select="lx:property/@name"/>
-      <xsl:with-param name="begin" select="$LX_QUOTE"/>
-      <xsl:with-param name="delimiter" select="concat($LX_QUOTE, ',', $LX_QUOTE)"/>
-      <xsl:with-param name="end" select="$LX_QUOTE"/>
-    </xsl:call-template>
-    <xsl:text>);</xsl:text>
+
+
+    <!-- database getters -->
     <xsl:text>private static $__db__;private static function db(){return self::$__db__?</xsl:text>
     <xsl:text>self::$__db__:self::$__db__=DatabaseFactory::create('</xsl:text>
     <xsl:value-of select="@database"/>
@@ -42,6 +37,16 @@
     <xsl:text>public static function getTableName(){return '</xsl:text>
     <xsl:value-of select="$LX_TABLE_NAME"/>
     <xsl:text>';}</xsl:text>
+
+    <!-- properties getter -->
+    <xsl:text>override protected getProperties(return array(</xsl:text>
+    <xsl:call-template name="lx:for-each">
+      <xsl:with-param name="collection" select="lx:property/@name"/>
+      <xsl:with-param name="begin" select="$LX_QUOTE"/>
+      <xsl:with-param name="delimiter" select="concat($LX_QUOTE, ',', $LX_QUOTE)"/>
+      <xsl:with-param name="end" select="$LX_QUOTE"/>
+    </xsl:call-template>
+    <xsl:text>);}</xsl:text>
 
     <!-- constants -->
     <xsl:apply-templates select="lx:const"/>

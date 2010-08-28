@@ -30,12 +30,16 @@ abstract class AbstractModel
     $processor->transformToURI($xml, $myOutput);
   }
 
+  protected function getProperties()
+  {
+    throw new ErrorException();
+  }
+
   public function loadArray($myData)
   {
     $class      = get_class($this);
-    $properties = $class::$__properties__;
 
-    foreach ($properties as $name)
+    foreach ($this->getProperties() as $name)
       if (isset($myData[$name]))
         $this->$name = $myData[$name];
   }
@@ -65,10 +69,9 @@ abstract class AbstractModel
   {
     $class      = get_class($this);
     $rootName   = strtolower($class);
-    $properties = $class::$__properties__;
     $xml	= $myNoRoot ? '' : '<' . $rootName . '>';
 
-    foreach ($properties as $property)
+    foreach ($this->getProperties() as $property)
     {
       if (!$myExclude || false === array_search($property, $myExclude, true))
       {
