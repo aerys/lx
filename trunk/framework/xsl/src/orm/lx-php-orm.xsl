@@ -39,7 +39,7 @@
     <xsl:text>';}</xsl:text>
 
     <!-- properties getter -->
-    <xsl:text>override protected getProperties(return array(</xsl:text>
+    <xsl:text>protected function getProperties(){return array(</xsl:text>
     <xsl:call-template name="lx:for-each">
       <xsl:with-param name="collection" select="lx:property/@name"/>
       <xsl:with-param name="begin" select="$LX_QUOTE"/>
