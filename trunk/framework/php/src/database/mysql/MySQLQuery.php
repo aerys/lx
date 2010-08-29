@@ -32,24 +32,19 @@ class MySQLQuery extends AbstractQuery
   public function setInteger($myArg,
 			     $myValue)
   {
-    // sql injection fix
     if (is_array($myValue))
     {
-      $value = '(';
-
       for ($i = 0; $i < count($myValue); ++$i)
-        $value .= (!!$i ? ', ' : '') . (int)$myValue[$i];
+        $myValue[$i] = (int)$myValue[$i];
 
-      $value .= ')';
-    }
-    else
-    {
-      $value = (int)$myValue;
+      return $this->setTuple($myArg, $myValue);
     }
 
+
+    $myValue = (int)$myValue;
 
     $this->request = str_replace($this->arguments[$myArg],
-				 $value,
+				 $myValue,
 				 $this->request);
 
     return $this;
@@ -58,23 +53,18 @@ class MySQLQuery extends AbstractQuery
   public function setFloat($myArg,
 			   $myValue)
   {
-    // sql injection fix
     if (is_array($myValue))
     {
-      $value = '(';
-
       for ($i = 0; $i < count($myValue); ++$i)
-        $value .= (!!$i ? ', ' : '') . (float)$myValue[$i];
+        $myValue[$i] = (float)$myValue[$i];
 
-      $value .= ')';
+      return $this->setTuple($myArg, $myValue);
     }
-    else
-    {
-      $value = (float)$myValue;
-    }
+
+    $myValue = (float)$myValue;
 
     $this->request = str_replace($this->arguments[$myArg],
-				 $value,
+				 $myValue,
 				 $this->request);
 
     return $this;
@@ -83,24 +73,18 @@ class MySQLQuery extends AbstractQuery
   public function setString($myArg,
 			    $myValue)
   {
-    // sql injection fix
     if (is_array($myValue))
     {
-      $value = '(';
-
       for ($i = 0; $i < count($myValue); ++$i)
-        $value .= (!!$i ? ', ' : '')
-                    . $this->database->escapeString($myValue[$i]);
+        $myValue[$i] = $this->database->escapeString($myValue[$i]);
 
-      $value .= ')';
+      return $this->setTuple($myArg, $myValue);
     }
-    else
-    {
-      $value = $this->database->escapeString($myValue);
-    }
+
+    $myValue = $this->database->escapeString($myValue);
 
     $this->request = str_replace($this->arguments[$myArg],
-				 "'" . $value . "'",
+				 "'" . $myValue . "'",
 				 $this->request);
 
     return $this;
@@ -111,17 +95,30 @@ class MySQLQuery extends AbstractQuery
   {
     if (is_array($myValue))
     {
-      $value = '(';
-
       for ($i = 0; $i < count($myValue); ++$i)
-        $value .= (!!$i ? ', ' : '') . (boolean)$myValue[$i];
+        $myValue[$i] = (boolean)$myValue[$i];
 
-      $value .= ')';
+      return $this->setTuple($myArg, $myValue);
     }
-    else
-    {
-      $value = (boolean)$myValue;
-    }
+
+    $myValue = (boolean)$myValue;
+
+    $this->request = str_replace($this->arguments[$myArg],
+				 $myValue,
+				 $this->request);
+
+    return $this;
+  }
+
+  private function setTuple($myArg,
+                            $myValue)
+  {
+    $value = '(';
+
+    for ($i = 0; $i < count($myValue); ++$i)
+      $value .= (!!$i ? ', ' : '') . $myValue[$i];
+
+    $value .= ')';
 
     $this->request = str_replace($this->arguments[$myArg],
 				 $value,
