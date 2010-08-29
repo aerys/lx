@@ -6,7 +6,7 @@ abstract class AbstractDatabase
   abstract public function disconnect();
 
   abstract public function createQuery($my_query);
-  abstract public function performQuery($my_query);
+  abstract public function performQuery($my_query, $type = null);
 
   abstract public function getInsertId();
 

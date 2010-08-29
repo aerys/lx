@@ -22,7 +22,7 @@ class MySQLDatabase extends AbstractDatabase
   {
     $this->connect();
 
-    return ($this->mysqli->insert_id);
+    return $this->mysqli->insert_id;
   }
 
   public function connect()
@@ -50,7 +50,7 @@ class MySQLDatabase extends AbstractDatabase
     return (new MySQLQuery($this, $my_request));
   }
 
-  public function performQuery($my_query)
+  public function performQuery($my_query, $type = null)
   {
     $this->connect();
 
@@ -66,13 +66,13 @@ class MySQLDatabase extends AbstractDatabase
       throw new ErrorException($this->mysqli->error);
 
     if (true === $result)
-      return (true);
+      return true;
 
     $response = array();
     while (($row = $result->fetch_assoc()))
-      $response[] = $row;
+      $response[] = $type ? new $type($row) : $row;
 
-    return ($response);
+    return $response;
   }
 
   public function escapeString($my_str)
@@ -82,7 +82,7 @@ class MySQLDatabase extends AbstractDatabase
     if (get_magic_quotes_gpc())
       $my_str = stripslashes($my_str);
 
-    return ($this->mysqli->real_escape_string($my_str));
+    return $this->mysqli->real_escape_string($my_str);
   }
 
 }

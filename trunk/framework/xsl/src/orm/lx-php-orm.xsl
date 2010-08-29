@@ -27,8 +27,10 @@
     <xsl:value-of select="@name"/>
     <xsl:text> extends AbstractModel{</xsl:text>
 
+    <xsl:text>const TYPE=__CLASS__;</xsl:text>
+
     <!-- table name const -->
-    <xsl:text>const TABLE_NAME='</xsl:text>
+    <xsl:text>const TABLE='</xsl:text>
     <xsl:value-of select="$LX_TABLE_NAME"/>
     <xsl:text>';</xsl:text>
 
@@ -200,7 +202,7 @@
     <xsl:text>;</xsl:text>
 
     <!-- perform query -->
-    <xsl:text>$r=self::db()->performQuery($q);</xsl:text>
+    <xsl:text>$r=self::db()->performQuery($q,__CLASS__);</xsl:text>
 
     <!-- set record id -->
     <xsl:if test="lx:insert
@@ -211,18 +213,11 @@
 
     <!-- fetch records -->
     <xsl:text>if(!is_array($r))return $r;</xsl:text>
-    <xsl:choose>
-      <xsl:when test="lx:select/@limit = 1">
-        <xsl:text>if(count($r))return new </xsl:text>
-        <xsl:value-of select="/lx:model/@name"/>
-        <xsl:text>($r[0]);</xsl:text>
-      </xsl:when>
-      <xsl:when test="not(lx:insert or lx:update)">
-        <xsl:text>$n=array();foreach($r as $e)$n[]=new </xsl:text>
-        <xsl:value-of select="/lx:model/@name"/>
-        <xsl:text>($e);</xsl:text>
-      </xsl:when>
-    </xsl:choose>
+    <xsl:if test="lx:select/@limit = 1">
+      <xsl:text>if(count($r))return new </xsl:text>
+      <xsl:value-of select="/lx:model/@name"/>
+      <xsl:text>($r[0]);</xsl:text>
+    </xsl:if>
 
     <!-- return -->
     <xsl:text>return </xsl:text>
@@ -236,7 +231,8 @@
       <xsl:when test="lx:delete">
       </xsl:when>
       <xsl:when test="$isStatic or lx:select">
-	<xsl:text>$n</xsl:text>
+	<!--<xsl:text>$n</xsl:text>-->
+        <xsl:text>$r</xsl:text>
       </xsl:when>
       <xsl:otherwise>
 	<xsl:text>$this</xsl:text>
