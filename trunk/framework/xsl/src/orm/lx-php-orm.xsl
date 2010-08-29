@@ -27,6 +27,10 @@
     <xsl:value-of select="@name"/>
     <xsl:text> extends AbstractModel{</xsl:text>
 
+    <!-- table name const -->
+    <xsl:text>const TABLE_NAME='</xsl:text>
+    <xsl:value-of select="$LX_TABLE_NAME"/>
+    <xsl:text>';</xsl:text>
 
     <!-- database getters -->
     <xsl:text>private static $__db__;private static function db(){return self::$__db__?</xsl:text>
@@ -34,9 +38,6 @@
     <xsl:value-of select="@database"/>
     <xsl:text>');}</xsl:text>
     <xsl:text>public static function getDatabase(){return self::db();}</xsl:text>
-    <xsl:text>public static function getTableName(){return '</xsl:text>
-    <xsl:value-of select="$LX_TABLE_NAME"/>
-    <xsl:text>';}</xsl:text>
 
     <!-- properties getter -->
     <xsl:text>protected function getProperties(){return array(</xsl:text>
