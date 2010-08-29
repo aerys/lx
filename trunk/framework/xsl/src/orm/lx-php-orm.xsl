@@ -175,7 +175,14 @@
   </xsl:template>
 
   <xsl:template match="lx:argument">
-    <xsl:value-of select="concat('$', @name)"/>
+    <xsl:variable name="name" select="@name"/>
+
+    <!-- force array type -->
+    <xsl:if test="..//lx:where[@operator = 'in' and @value = $name]">
+      <xsl:text>array </xsl:text>
+    </xsl:if>
+
+    <xsl:value-of select="concat('$', $name)"/>
   </xsl:template>
 
   <xsl:template match="lx:method | lx:static-method">

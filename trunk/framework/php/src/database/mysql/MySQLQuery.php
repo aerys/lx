@@ -35,21 +35,21 @@ class MySQLQuery extends AbstractQuery
     // sql injection fix
     if (is_array($myValue))
     {
-      $myValue = '(';
+      $value = '(';
 
       for ($i = 0; $i < count($myValue); ++$i)
-        $myValue .= (!!$i ? ', ' : ' ') . (int)$myValue[$i];
+        $value .= (!!$i ? ', ' : ' ') . (int)$myValue[$i];
 
-      $myValue .= ')';
+      $value .= ')';
     }
     else
     {
-      $myValue = (int)$myValue;
+      $value = (int)$myValue;
     }
 
 
     $this->request = str_replace($this->arguments[$myArg],
-				 $myValue,
+				 $value,
 				 $this->request);
 
     return $this;
@@ -61,20 +61,20 @@ class MySQLQuery extends AbstractQuery
     // sql injection fix
     if (is_array($myValue))
     {
-      $myValue = '(';
+      $value = '(';
 
       for ($i = 0; $i < count($myValue); ++$i)
-        $myValue .= (!!$i ? ', ' : ' ') . (float)$myValue[$i];
+        $value .= (!!$i ? ', ' : ' ') . (float)$myValue[$i];
 
-      $myValue .= ')';
+      $value .= ')';
     }
     else
     {
-      $myValue = (float)$myValue;
+      $value = (float)$myValue;
     }
 
     $this->request = str_replace($this->arguments[$myArg],
-				 $myValue,
+				 $value,
 				 $this->request);
 
     return $this;
@@ -86,21 +86,21 @@ class MySQLQuery extends AbstractQuery
     // sql injection fix
     if (is_array($myValue))
     {
-      $myValue = '(';
+      $value = '(';
 
       for ($i = 0; $i < count($myValue); ++$i)
-        $myValue .= (!!$i ? ', ' : ' ')
+        $value .= (!!$i ? ', ' : ' ')
                     . $this->database->escapeString($myValue[$i]);
 
-      $myValue .= ')';
+      $value .= ')';
     }
     else
     {
-      $myValue = $this->database->escapeString($myValue);
+      $value = $this->database->escapeString($myValue);
     }
 
     $this->request = str_replace($this->arguments[$myArg],
-				 "'" . $myValue . "'",
+				 "'" . $value . "'",
 				 $this->request);
 
     return $this;
@@ -111,20 +111,20 @@ class MySQLQuery extends AbstractQuery
   {
     if (is_array($myValue))
     {
-      $myValue = '(';
+      $value = '(';
 
       for ($i = 0; $i < count($myValue); ++$i)
-        $myValue .= (!!$i ? ', ' : ' ') . (boolean)$myValue[$i];
+        $value .= (!!$i ? ', ' : ' ') . (boolean)$myValue[$i];
 
-      $myValue .= ')';
+      $value .= ')';
     }
     else
     {
-      $myValue = (boolean)$myValue;
+      $value = (boolean)$myValue;
     }
 
     $this->request = str_replace($this->arguments[$myArg],
-				 $myValue,
+				 $value,
 				 $this->request);
 
     return $this;
