@@ -38,7 +38,7 @@ class MySQLQuery extends AbstractQuery
       $value = '(';
 
       for ($i = 0; $i < count($myValue); ++$i)
-        $value .= (!!$i ? ', ' : ' ') . (int)$myValue[$i];
+        $value .= (!!$i ? ', ' : '') . (int)$myValue[$i];
 
       $value .= ')';
     }
@@ -64,7 +64,7 @@ class MySQLQuery extends AbstractQuery
       $value = '(';
 
       for ($i = 0; $i < count($myValue); ++$i)
-        $value .= (!!$i ? ', ' : ' ') . (float)$myValue[$i];
+        $value .= (!!$i ? ', ' : '') . (float)$myValue[$i];
 
       $value .= ')';
     }
@@ -89,7 +89,7 @@ class MySQLQuery extends AbstractQuery
       $value = '(';
 
       for ($i = 0; $i < count($myValue); ++$i)
-        $value .= (!!$i ? ', ' : ' ')
+        $value .= (!!$i ? ', ' : '')
                     . $this->database->escapeString($myValue[$i]);
 
       $value .= ')';
@@ -114,7 +114,7 @@ class MySQLQuery extends AbstractQuery
       $value = '(';
 
       for ($i = 0; $i < count($myValue); ++$i)
-        $value .= (!!$i ? ', ' : ' ') . (boolean)$myValue[$i];
+        $value .= (!!$i ? ', ' : '') . (boolean)$myValue[$i];
 
       $value .= ')';
     }
