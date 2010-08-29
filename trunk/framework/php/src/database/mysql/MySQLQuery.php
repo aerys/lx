@@ -29,52 +29,102 @@ class MySQLQuery extends AbstractQuery
     }
   }
 
-  public function setInteger($my_arg,
-			     $my_value)
+  public function setInteger($myArg,
+			     $myValue)
   {
     // sql injection fix
-    $my_value = (int)$my_value;
+    if (is_array($myValue))
+    {
+      $myValue = '(';
 
-    $this->request = str_replace($this->arguments[$my_arg],
-				 $my_value,
+      for ($i = 0; $i < count($myValue); ++$i)
+        $myValue .= (!!$i ? ', ' : ' ') . (int)$myValue[$i];
+
+      $myValue .= ')';
+    }
+    else
+    {
+      $myValue = (int)$myValue;
+    }
+
+
+    $this->request = str_replace($this->arguments[$myArg],
+				 $myValue,
 				 $this->request);
 
     return $this;
   }
 
-  public function setFloat($my_arg,
-			   $my_value)
+  public function setFloat($myArg,
+			   $myValue)
   {
     // sql injection fix
-    $my_value = (float)$my_value;
+    if (is_array($myValue))
+    {
+      $myValue = '(';
 
-    $this->request = str_replace($this->arguments[$my_arg],
-				 $my_value,
+      for ($i = 0; $i < count($myValue); ++$i)
+        $myValue .= (!!$i ? ', ' : ' ') . (float)$myValue[$i];
+
+      $myValue .= ')';
+    }
+    else
+    {
+      $myValue = (float)$myValue;
+    }
+
+    $this->request = str_replace($this->arguments[$myArg],
+				 $myValue,
 				 $this->request);
 
     return $this;
   }
 
-  public function setString($my_arg,
-			    $my_value)
+  public function setString($myArg,
+			    $myValue)
   {
-    // sql injections fix
-    $my_value = $this->database->escapeString($my_value);
+    // sql injection fix
+    if (is_array($myValue))
+    {
+      $myValue = '(';
 
-    $this->request = str_replace($this->arguments[$my_arg],
-				 "'" . $my_value . "'",
+      for ($i = 0; $i < count($myValue); ++$i)
+        $myValue .= (!!$i ? ', ' : ' ')
+                    . $this->database->escapeString($myValue[$i]);
+
+      $myValue .= ')';
+    }
+    else
+    {
+      $myValue = $this->database->escapeString($myValue);
+    }
+
+    $this->request = str_replace($this->arguments[$myArg],
+				 "'" . $myValue . "'",
 				 $this->request);
 
     return $this;
   }
 
-  public function setBoolean($my_arg,
-			     $my_value)
+  public function setBoolean($myArg,
+			     $myValue)
   {
-    $my_value = (boolean)$my_value;// ? 'true' : 'false';
+    if (is_array($myValue))
+    {
+      $myValue = '(';
 
-    $this->request = str_replace($this->arguments[$my_arg],
-				 $my_value,
+      for ($i = 0; $i < count($myValue); ++$i)
+        $myValue .= (!!$i ? ', ' : ' ') . (boolean)$myValue[$i];
+
+      $myValue .= ')';
+    }
+    else
+    {
+      $myValue = (boolean)$myValue;
+    }
+
+    $this->request = str_replace($this->arguments[$myArg],
+				 $myValue,
 				 $this->request);
 
     return $this;

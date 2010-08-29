@@ -194,20 +194,26 @@
     <xsl:variable name="type" select="/lx:model/lx:property[@name = $property]/@type"/>
     <xsl:variable name="operator">
       <xsl:choose>
-	<xsl:when test="$type = 'string' and @operator = '='">
+	<xsl:when test="$type = 'string' and @operator = 'eq'">
 	  <xsl:text> LIKE </xsl:text>
 	</xsl:when>
+	<xsl:when test="$type = 'string' and @operator = 'ne'">
+	  <xsl:text> NOT LIKE </xsl:text>
+	</xsl:when>
         <xsl:when test="@operator = 'lt'">
-          <xsl:value-of select="' &lt; '"/>
+          <xsl:text> &lt; </xsl:text>
         </xsl:when>
         <xsl:when test="@operator = 'le'">
-          <xsl:value-of select="' &lt;= '"/>
+          <xsl:text> &lt;= </xsl:text>
         </xsl:when>
         <xsl:when test="@operator = 'gt'">
-          <xsl:value-of select="' &gt; '"/>
+          <xsl:text> &gt; </xsl:text>
         </xsl:when>
         <xsl:when test="@operator = 'ge'">
-          <xsl:value-of select="' &gt;= '"/>
+          <xsl:text> &gt;= </xsl:text>
+        </xsl:when>
+        <xsl:when test="@operator = 'in'">
+          <xsl:text> IN </xsl:text>
         </xsl:when>
 	<xsl:otherwise>
 	  <xsl:value-of select="concat(' ', @operator, ' ')"/>
