@@ -215,7 +215,7 @@
     <xsl:if test="lx:insert
                   and /lx:model/lx:property[@name='id' and @read-only='true']
                   and not($isStatic)">
-      <xsl:text>$this->id=self::db()->getInsertId();</xsl:text>
+      <xsl:text>if(!$this->id)$this->id=self::db()->getInsertId();</xsl:text>
     </xsl:if>
 
     <!-- fetch records -->

@@ -200,6 +200,9 @@
 	<xsl:when test="$type = 'string' and @operator = 'ne'">
 	  <xsl:text> NOT LIKE </xsl:text>
 	</xsl:when>
+        <xsl:when test="@operator = 'eq'">
+          <xsl:text> = </xsl:text>
+        </xsl:when>
         <xsl:when test="@operator = 'lt'">
           <xsl:text> &lt; </xsl:text>
         </xsl:when>
