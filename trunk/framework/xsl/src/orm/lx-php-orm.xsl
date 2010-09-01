@@ -221,9 +221,7 @@
     <!-- fetch records -->
     <xsl:text>if(!is_array($r))return $r;</xsl:text>
     <xsl:if test="lx:select/@limit = 1">
-      <xsl:text>if(count($r))return new </xsl:text>
-      <xsl:value-of select="/lx:model/@name"/>
-      <xsl:text>($r[0]);</xsl:text>
+      <xsl:text>if(count($r))return $r[0];</xsl:text>
     </xsl:if>
 
     <!-- return -->
