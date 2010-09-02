@@ -41,7 +41,7 @@
     <xsl:apply-templates select="lx:module"/>
   </xsl:template>
 
-  <xsl:template match="lx:project/lx:filter">
+  <xsl:template match="lx:map/lx:filter">
     <xsl:text>$_LX['map']['filters']['</xsl:text>
     <xsl:value-of select="@name"/>
     <xsl:text>']='</xsl:text>

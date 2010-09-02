@@ -51,6 +51,7 @@ class Dispatcher
 
       if ($extension && isset($_LX['responses'][$extension]))
       {
+          define('LX_REQUEST_EXTENSION', $extension);
       	  $this->response = new $_LX['responses'][$extension]();
       }
       else
@@ -58,6 +59,7 @@ class Dispatcher
 	if ($extension)
 	  $request .= '.' . $extension;
 
+        define('LX_REQUEST_EXTENSION', LX_DEFAULT_EXTENSION);
 	$this->response = new $_LX['responses'][LX_DEFAULT_EXTENSION]();
       }
       LX::setResponse($this->response);

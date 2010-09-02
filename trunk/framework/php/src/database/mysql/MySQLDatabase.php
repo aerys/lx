@@ -59,8 +59,8 @@ class MySQLDatabase extends AbstractDatabase
     $time = LX_DEBUG ? microtime() : 0;
     $result = $this->mysqli->query($sql_str);
     if (LX_DEBUG)
-      LX::appendDebugMessage('<mysql-query time="' . ((microtime() - $time) * 1000)
-			     . '"><![CDATA[' . $sql_str . ']]></mysql-query>');
+      LX::appendDebugMessage('<mysqlQuery time="' . ((microtime() - $time) * 1000)
+			     . '"><![CDATA[' . $sql_str . ']]></mysqlQuery>');
 
     if (!$result)
       throw new ErrorException($this->mysqli->error);

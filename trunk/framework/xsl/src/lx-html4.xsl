@@ -35,8 +35,8 @@
 	  <xsl:attribute name="href">
 	    <xsl:text>http://</xsl:text>
 	    <xsl:value-of select="$LX_RESPONSE/@host"/>
-	    <xsl:if test="$LX_RESPONSE/@document-root != '/'">
-	      <xsl:value-of select="$LX_RESPONSE/@document-root"/>
+	    <xsl:if test="$LX_RESPONSE/@documentRoot != '/'">
+	      <xsl:value-of select="$LX_RESPONSE/@documentRoot"/>
 	    </xsl:if>
 	    <xsl:text>/</xsl:text>
 	  </xsl:attribute>
