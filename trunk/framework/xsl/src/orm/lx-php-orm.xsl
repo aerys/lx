@@ -165,11 +165,11 @@
   <xsl:template name="lx:set-query-properties">
     <xsl:apply-templates select="descendant::node()[@property]" mode="set"/>
     <xsl:if test="not(descendant::lx:set)">
+      <xsl:if test="(lx:insert or lx:insert-or-update) and not(descendant::lx:set)">
+        <xsl:apply-templates select="/lx:model/lx:property" mode="set"/>
+      </xsl:if>
       <xsl:if test="lx:update">
         <xsl:apply-templates select="/lx:model/lx:property[not(@read-only)]" mode="set"/>
-      </xsl:if>
-      <xsl:if test="lx:insert and not(descendant::lx:set)">
-        <xsl:apply-templates select="/lx:model/lx:property" mode="set"/>
       </xsl:if>
     </xsl:if>
   </xsl:template>

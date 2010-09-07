@@ -21,11 +21,14 @@ class MySQLQuery extends AbstractQuery
 
     foreach ($args[0] as $i => $arg)
     {
-      $pos = strpos($this->request, $arg);
-      $hash = self::ARGUMENT_PREFIX . md5(rand());
+      if (empty($this->arguments[$args[1][$i]]))
+      {
+        $pos = strpos($this->request, $arg);
+        $hash = self::ARGUMENT_PREFIX . md5(rand());
 
-      $this->arguments[$args[1][$i]] = $hash;
-      $this->request = substr_replace($this->request, $hash, $pos, strlen($arg));
+        $this->arguments[$args[1][$i]] = $hash;
+        $this->request = substr_replace($this->request, $hash, $pos, strlen($arg));
+      }
     }
   }
 

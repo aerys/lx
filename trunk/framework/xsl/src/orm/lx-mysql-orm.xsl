@@ -156,6 +156,10 @@
     <xsl:text>)</xsl:text>
   </xsl:template>
 
+  <!--
+      @template lx:insert-or-update
+      INSERT INTO ... ON DUPLICATE ENTRY request template.
+    -->
   <xsl:template match="lx:insert-or-update">
     <xsl:call-template name="lx:insert"/>
     <xsl:text> ON DUPLICATE KEY </xsl:text>
