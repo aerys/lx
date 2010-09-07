@@ -45,13 +45,9 @@
     </xsl:choose>
     <xsl:text> FROM </xsl:text>
     <!-- TABLE -->
-    <xsl:value-of select="$LX_TABLE_NAME"/>
+    <xsl:value-of select="concat('`', $LX_TABLE_NAME, '`')"/>
     <!-- WHERE -->
-    <xsl:call-template name="lx:for-each">
-      <xsl:with-param name="begin" select="' WHERE '"/>
-      <xsl:with-param name="collection" select="lx:where|lx:not"/>
-      <xsl:with-param name="delimiter" select="' OR '"/>
-    </xsl:call-template>
+    <xsl:apply-templates select="lx:where|lx:not"/>
     <!-- SORT -->
     <xsl:call-template name="lx:for-each">
       <xsl:with-param name="begin" select="' ORDER BY '"/>
@@ -74,13 +70,9 @@
     -->
   <xsl:template match="lx:delete">
     <xsl:text>DELETE FROM </xsl:text>
-    <xsl:value-of select="$LX_TABLE_NAME"/>
+    <xsl:value-of select="concat('`', $LX_TABLE_NAME, '`')"/>
     <!-- WHERE -->
-    <xsl:call-template name="lx:for-each">
-      <xsl:with-param name="begin" select="' WHERE '"/>
-      <xsl:with-param name="collection" select="lx:where|lx:not"/>
-      <xsl:with-param name="delimiter" select="' AND '"/>
-    </xsl:call-template>
+    <xsl:apply-templates select="lx:where|lx:not"/>
   </xsl:template>
 
   <!--
@@ -89,7 +81,7 @@
     -->
   <xsl:template match="lx:update">
     <xsl:text>UPDATE </xsl:text>
-    <xsl:value-of select="$LX_TABLE_NAME"/>
+    <xsl:value-of select="concat('`', $LX_TABLE_NAME, '`')"/>
     <!-- SET -->
     <xsl:text> SET</xsl:text>
     <xsl:choose>
@@ -113,11 +105,7 @@
       </xsl:otherwise>
     </xsl:choose>
     <!-- WHERE -->
-    <xsl:call-template name="lx:for-each">
-      <xsl:with-param name="begin" select="' WHERE '"/>
-      <xsl:with-param name="collection" select="lx:where|lx:not"/>
-      <xsl:with-param name="delimiter" select="' AND '"/>
-    </xsl:call-template>
+    <xsl:apply-templates select="lx:where|lx:not"/>
   </xsl:template>
 
   <!--
@@ -126,7 +114,7 @@
     -->
   <xsl:template match="lx:insert">
     <xsl:text>INSERT INTO </xsl:text>
-    <xsl:value-of select="$LX_TABLE_NAME"/>
+    <xsl:value-of select="concat('`', $LX_TABLE_NAME, '`')"/>
     <xsl:text> (</xsl:text>
     <xsl:choose>
       <xsl:when test="lx:set">
@@ -192,6 +180,15 @@
     <xsl:variable name="property" select="concat('`', @property, '`')"/>
     <xsl:variable name="value" select="concat(':', @property, '_', generate-id())"/>
     <xsl:variable name="type" select="/lx:model/lx:property[@name = $property]/@type"/>
+
+    <xsl:if test="not(ancestor::lx:where or preceding-sibling::lx:where)">
+      <xsl:text> WHERE </xsl:text>
+    </xsl:if>
+
+    <xsl:if test="preceding-sibling::lx:where">
+      <xsl:text> OR </xsl:text>
+    </xsl:if>
+
     <xsl:variable name="operator">
       <xsl:choose>
 	<xsl:when test="$type = 'string' and @operator = 'eq'">
@@ -228,7 +225,13 @@
 
     <xsl:if test="lx:where">
       <xsl:text> AND </xsl:text>
+      <xsl:if test="count(lx:where) > 1">
+        <xsl:text>(</xsl:text>
+      </xsl:if>
       <xsl:apply-templates select="lx:where"/>
+      <xsl:if test="count(lx:where) > 1">
+        <xsl:text>)</xsl:text>
+      </xsl:if>
     </xsl:if>
   </xsl:template>
 

@@ -96,12 +96,12 @@ class MySQLQuery extends AbstractQuery
     if (is_array($myValue))
     {
       for ($i = 0; $i < count($myValue); ++$i)
-        $myValue[$i] = (boolean)$myValue[$i];
+        $myValue[$i] = (boolean)$myValue[$i] ? 'true' : 'false';
 
       return $this->setTuple($myArg, $myValue);
     }
 
-    $myValue = (boolean)$myValue;
+    $myValue = (boolean)$myValue ? 'true' : 'false';
 
     $this->request = str_replace($this->arguments[$myArg],
 				 $myValue,
