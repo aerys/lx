@@ -203,7 +203,9 @@
 
     <!-- prepary query -->
     <xsl:text>$q=self::db()->createQuery('</xsl:text>
-    <xsl:apply-templates select="lx:select | lx:delete | lx:update | lx:insert"/>
+    <xsl:apply-templates select="lx:select
+                                 | lx:delete
+                                 | lx:update | lx:insert | lx:insert-or-update"/>
     <xsl:text>')</xsl:text>
     <xsl:call-template name="lx:set-query-properties"/>
     <xsl:text>;</xsl:text>

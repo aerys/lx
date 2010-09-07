@@ -79,7 +79,8 @@
       @template lx:update
       UPDATE database request template.
     -->
-  <xsl:template match="lx:update">
+  <xsl:template match="lx:update"
+                name="lx:update">
     <xsl:text>UPDATE </xsl:text>
     <xsl:value-of select="concat('`', $LX_TABLE_NAME, '`')"/>
     <!-- SET -->
@@ -112,7 +113,8 @@
       @template lx:insert
       INSERT database request template.
     -->
-  <xsl:template match="lx:insert">
+  <xsl:template match="lx:insert"
+                name="lx:insert">
     <xsl:text>INSERT INTO </xsl:text>
     <xsl:value-of select="concat('`', $LX_TABLE_NAME, '`')"/>
     <xsl:text> (</xsl:text>
@@ -152,6 +154,12 @@
       </xsl:otherwise>
     </xsl:choose>
     <xsl:text>)</xsl:text>
+  </xsl:template>
+
+  <xsl:template match="lx:insert-or-update">
+    <xsl:call-template name="lx:insert"/>
+    <xsl:text> ON DUPLICATE KEY </xsl:text>
+    <xsl:call-template name="lx:update"/>
   </xsl:template>
 
   <xsl:template match="lx:order-by">
