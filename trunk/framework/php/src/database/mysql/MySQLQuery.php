@@ -27,7 +27,7 @@ class MySQLQuery extends AbstractQuery
         $hash = self::ARGUMENT_PREFIX . md5(rand());
 
         $this->arguments[$args[1][$i]] = $hash;
-        $this->request = substr_replace($this->request, $hash, $pos, strlen($arg));
+        $this->request = str_replace($this->request, $arg, $hash);
       }
     }
   }
@@ -42,7 +42,6 @@ class MySQLQuery extends AbstractQuery
 
       return $this->setTuple($myArg, $myValue);
     }
-
 
     $myValue = (int)$myValue;
 

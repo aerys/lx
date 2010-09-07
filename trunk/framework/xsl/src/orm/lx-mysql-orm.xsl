@@ -81,8 +81,8 @@
     -->
   <xsl:template match="lx:update"
                 name="lx:update">
-    <xsl:text>UPDATE </xsl:text>
-    <xsl:value-of select="concat('`', $LX_TABLE_NAME, '`')"/>
+    <xsl:text>UPDATE</xsl:text>
+    <xsl:value-of select="concat(' `', $LX_TABLE_NAME, '`')"/>
     <!-- SET -->
     <xsl:text> SET</xsl:text>
     <xsl:choose>
@@ -100,7 +100,7 @@
 	  </xsl:if>
 	  <xsl:text> </xsl:text>
 	  <xsl:value-of select="concat('`', @name, '`')"/>
-	  <xsl:text> = :</xsl:text>
+	  <xsl:text>=:</xsl:text>
 	  <xsl:value-of select="concat(@name, '_', generate-id(.))"/>
 	</xsl:for-each>
       </xsl:otherwise>
@@ -162,8 +162,27 @@
     -->
   <xsl:template match="lx:insert-or-update">
     <xsl:call-template name="lx:insert"/>
-    <xsl:text> ON DUPLICATE KEY </xsl:text>
-    <xsl:call-template name="lx:update"/>
+    <xsl:text> ON DUPLICATE KEY UPDATE </xsl:text>
+    <xsl:choose>
+      <xsl:when test="lx:set">
+	<xsl:call-template name="lx:for-each">
+	  <xsl:with-param name="begin" select="' '"/>
+	  <xsl:with-param name="collection" select="lx:set"/>
+	  <xsl:with-param name="delimiter" select="', '"/>
+	</xsl:call-template>
+      </xsl:when>
+      <xsl:otherwise>
+	<xsl:for-each select="/lx:model/lx:property[not(@read-only)]">
+	  <xsl:if test="position() != 1">
+	    <xsl:text>,</xsl:text>
+	  </xsl:if>
+	  <xsl:text> </xsl:text>
+	  <xsl:value-of select="concat('`', @name, '`')"/>
+	  <xsl:text>=:</xsl:text>
+	  <xsl:value-of select="concat(@name, '_', generate-id(.))"/>
+	</xsl:for-each>
+      </xsl:otherwise>
+    </xsl:choose>
   </xsl:template>
 
   <xsl:template match="lx:order-by">
@@ -210,19 +229,19 @@
 	  <xsl:text> NOT LIKE </xsl:text>
 	</xsl:when>
         <xsl:when test="@operator = 'eq'">
-          <xsl:text> = </xsl:text>
+          <xsl:text>=</xsl:text>
         </xsl:when>
         <xsl:when test="@operator = 'lt'">
-          <xsl:text> &lt; </xsl:text>
+          <xsl:text>&lt;</xsl:text>
         </xsl:when>
         <xsl:when test="@operator = 'le'">
-          <xsl:text> &lt;= </xsl:text>
+          <xsl:text>&lt;=</xsl:text>
         </xsl:when>
         <xsl:when test="@operator = 'gt'">
-          <xsl:text> &gt; </xsl:text>
+          <xsl:text>&gt;</xsl:text>
         </xsl:when>
         <xsl:when test="@operator = 'ge'">
-          <xsl:text> &gt;= </xsl:text>
+          <xsl:text>&gt;=</xsl:text>
         </xsl:when>
         <xsl:when test="@operator = 'in'">
           <xsl:text> IN </xsl:text>
