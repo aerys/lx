@@ -201,8 +201,21 @@
     </xsl:call-template>
     <xsl:text>){</xsl:text>
 
+    <!-- get database -->
+    <xsl:text>$db=</xsl:text>
+    <xsl:choose>
+      <xsl:when test="@database">
+        <xsl:text>DatabaseFactory::create('</xsl:text>
+        <xsl:value-of select="@database"/>
+        <xsl:text>');</xsl:text>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:text>self::db();</xsl:text>
+      </xsl:otherwise>
+    </xsl:choose>
+
     <!-- prepary query -->
-    <xsl:text>$q=self::db()->createQuery('</xsl:text>
+    <xsl:text>$q=$db->createQuery('</xsl:text>
     <xsl:apply-templates select="lx:select
                                  | lx:delete
                                  | lx:update | lx:insert | lx:insert-or-update"/>
@@ -211,13 +224,13 @@
     <xsl:text>;</xsl:text>
 
     <!-- perform query -->
-    <xsl:text>$r=self::db()->performQuery($q,__CLASS__);</xsl:text>
+    <xsl:text>$r=$db->performQuery($q,__CLASS__);</xsl:text>
 
     <!-- set record id -->
     <xsl:if test="lx:insert
                   and /lx:model/lx:property[@name='id' and @read-only='true']
                   and not($isStatic)">
-      <xsl:text>if(!$this->id)$this->id=self::db()->getInsertId();</xsl:text>
+      <xsl:text>if(!$this->id)$this->id=$db->getInsertId();</xsl:text>
     </xsl:if>
 
     <!-- fetch records -->
@@ -233,7 +246,7 @@
 	<xsl:text>null</xsl:text>
       </xsl:when>
       <xsl:when test="lx:insert">
-	<xsl:text>self::db()->getInsertId()</xsl:text>
+	<xsl:text>$db->getInsertId()</xsl:text>
       </xsl:when>
       <xsl:when test="lx:delete">
       </xsl:when>

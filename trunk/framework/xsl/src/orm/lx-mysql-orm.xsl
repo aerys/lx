@@ -162,7 +162,7 @@
     -->
   <xsl:template match="lx:insert-or-update">
     <xsl:call-template name="lx:insert"/>
-    <xsl:text> ON DUPLICATE KEY UPDATE </xsl:text>
+    <xsl:text> ON DUPLICATE KEY UPDATE</xsl:text>
     <xsl:choose>
       <xsl:when test="lx:set">
 	<xsl:call-template name="lx:for-each">
