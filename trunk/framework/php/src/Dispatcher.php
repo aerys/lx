@@ -140,6 +140,7 @@ class Dispatcher
       $cont = new $class();
 
       // call the controller's action
+      $result = null;
       if ($action)
 	$result = call_user_func_array(array($cont, $action), $params);
 

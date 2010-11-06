@@ -17,7 +17,7 @@
   <!-- XPath constants -->
   <xsl:variable name="LX_XPATH_START">{</xsl:variable>
   <xsl:variable name="LX_XPATH_STOP">}</xsl:variable>
-  <xsl:variable name="LX_XPATH_OPERATORS">/@[]!=</xsl:variable>
+  <xsl:variable name="LX_XPATH_OPERATORS">/@[]#</xsl:variable>
 
   <!-- @const quote (') character -->
   <xsl:variable name="LX_QUOTE">'</xsl:variable>
@@ -213,33 +213,47 @@
   </xsl:template>
 
   <xsl:template match="@*">
-    <xsl:variable name="xpath" select="substring-after(substring-before(., $LX_XPATH_STOP), $LX_XPATH_START)"/>
-
     <xsl:attribute name="{name()}">
       <xsl:apply-templates select="." mode="lx:value-of"/>
+    </xsl:attribute>
+  </xsl:template>
+
+  <xsl:template match="/lx:layout//@* | /lx:template//@*">
+    <xsl:attribute name="{name()}">
+      <xsl:apply-templates select="." mode="lx:value-of">
+        <xsl:with-param name="root" select="/ | . | $LX_RESPONSE"/>
+      </xsl:apply-templates>
     </xsl:attribute>
   </xsl:template>
 
   <xsl:template match="@*" mode="lx:value-of"
 		name="lx:value-of-attribute">
     <xsl:param name="value" select="."/>
+    <xsl:param name="root" select="/ | .. | $LX_RESPONSE"/>
 
     <xsl:variable name="xpath"
 		  select="substring-after(substring-before($value, $LX_XPATH_STOP), $LX_XPATH_START)"/>
 
     <xsl:choose>
+
       <xsl:when test="$xpath != ''">
 	<xsl:value-of select="substring-before($value, $LX_XPATH_START)"/>
+
 	<xsl:call-template name="lx.xpath:expression-to-value">
 	  <xsl:with-param name="expression" select="$xpath"/>
+          <xsl:with-param name="root" select="$root"/>
 	</xsl:call-template>
+
 	<xsl:call-template name="lx:value-of-attribute">
 	  <xsl:with-param name="value" select="substring-after($value, $LX_XPATH_STOP)"/>
+          <xsl:with-param name="root" select="$root"/>
 	</xsl:call-template>
       </xsl:when>
+
       <xsl:otherwise>
 	<xsl:value-of select="$value"/>
       </xsl:otherwise>
+
     </xsl:choose>
   </xsl:template>
 
@@ -252,9 +266,19 @@
     <!-- @param The XPath expression to evaluate. -->
     <xsl:param name="xpath" select="@select"/>
 
-    <xsl:call-template name="lx.xpath:expression-to-value">
-      <xsl:with-param name="expression" select="$xpath"/>
-    </xsl:call-template>
+    <xsl:choose>
+      <xsl:when test="/lx:layout or /lx:template">
+        <xsl:call-template name="lx.xpath:expression-to-value">
+          <xsl:with-param name="expression" select="$xpath"/>
+          <xsl:with-param name="root" select="/ | $LX_RESPONSE"/>
+        </xsl:call-template>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:call-template name="lx.xpath:expression-to-value">
+          <xsl:with-param name="expression" select="$xpath"/>
+        </xsl:call-template>
+      </xsl:otherwise>
+    </xsl:choose>
   </xsl:template>
 
   <!--
@@ -275,7 +299,7 @@
     <!-- @param The XPath expression to evaluate. -->
     <xsl:param name="expression"/>
     <!-- @param The root node (/) to use. -->
-    <xsl:param name="root" select="$LX_RESPONSE"/>
+    <xsl:param name="root" select="/ | .. | $LX_RESPONSE"/>
 
    <xsl:variable name="operator">
       <xsl:call-template name="lx.xpath:get-operator">
@@ -295,19 +319,31 @@
       <xsl:when test="$operator = '//'">
 	<xsl:call-template name="lx.xpath:expression-to-value">
 	  <xsl:with-param name="expression" select="$new_path"/>
-	  <xsl:with-param name="root" select="$root//node()[name()=$node]"/>
+          <xsl:with-param name="root" select="$root//node()[(name()=$node and $node!='') or $node='']"/>
 	</xsl:call-template>
       </xsl:when>
-      <xsl:when test="$operator = '@' or $operator = '/@' or $operator = '//@'">
+      <xsl:when test="$operator = '@'">
 	<xsl:call-template name="lx.xpath:expression-to-value">
 	  <xsl:with-param name="expression" select="$new_path"/>
 	  <xsl:with-param name="root" select="$root/@*[$node='*']|$root/@*[name()=$node]"/>
 	</xsl:call-template>
       </xsl:when>
-      <xsl:when test="$operator = '/' or ($operator = '' and $node != '')">
+      <xsl:when test="$operator = '#'">
 	<xsl:call-template name="lx.xpath:expression-to-value">
 	  <xsl:with-param name="expression" select="$new_path"/>
-	  <xsl:with-param name="root" select="$root/node()[$node='*']|$root/node()[name()=$node]"/>
+	  <xsl:with-param name="root" select="$root/node()[@id=$node]"/>
+	</xsl:call-template>
+      </xsl:when>
+      <xsl:when test="$operator = '/'">
+	<xsl:call-template name="lx.xpath:expression-to-value">
+	  <xsl:with-param name="expression" select="$new_path"/>
+          <xsl:with-param name="root" select="$root/*[(name()=$node and $node!='') or $node='']|$root"/>
+	</xsl:call-template>
+      </xsl:when>
+      <xsl:when test="$operator = '..'">
+        <xsl:call-template name="lx.xpath:expression-to-value">
+	  <xsl:with-param name="expression" select="$new_path"/>
+          <xsl:with-param name="root" select="$root/parent::*[(name()=$node and $node!='') or $node='']"/>
 	</xsl:call-template>
       </xsl:when>
       <xsl:when test="$operator = '['">
@@ -346,25 +382,31 @@
       <xsl:when test="$operator = '//'">
 	<xsl:call-template name="lx.xpath:expression-to-templates">
 	  <xsl:with-param name="expression" select="$new_path"/>
-	  <xsl:with-param name="root" select="$root//node()[name()=$node]"/>
+          <xsl:with-param name="root" select="$root//node()[(name()=$node and $node!='') or $node='']"/>
 	</xsl:call-template>
       </xsl:when>
-      <xsl:when test="$operator = '@' or $operator = '/@' or $operator = '//@'">
+      <xsl:when test="$operator = '@'">
 	<xsl:call-template name="lx.xpath:expression-to-templates">
 	  <xsl:with-param name="expression" select="$new_path"/>
 	  <xsl:with-param name="root" select="$root/@*[$node='*']|$root/@*[name()=$node]"/>
 	</xsl:call-template>
       </xsl:when>
-      <xsl:when test="$operator = '/' or ($operator = '' and $node != '')">
+      <xsl:when test="$operator = '/'">
 	<xsl:call-template name="lx.xpath:expression-to-templates">
 	  <xsl:with-param name="expression" select="$new_path"/>
-	  <xsl:with-param name="root" select="$root/node()[$node='*']|$root/node()[name()=$node]"/>
+          <xsl:with-param name="root" select="$root/*[(name()=$node and $node!='') or $node='']|$root"/>
 	</xsl:call-template>
       </xsl:when>
       <xsl:when test="$operator = '['">
 	<xsl:call-template name="lx.xpath:expression-to-templates">
 	  <xsl:with-param name="expression" select="substring-after($new_path, ']')"/>
 	  <xsl:with-param name="root" select="$root[position()=$node]"/>
+	</xsl:call-template>
+      </xsl:when>
+      <xsl:when test="$operator = '#'">
+	<xsl:call-template name="lx.xpath:expression-to-templates">
+	  <xsl:with-param name="expression" select="$new_path"/>
+	  <xsl:with-param name="root" select="$root/node()[id=$node]"/>
 	</xsl:call-template>
       </xsl:when>
       <xsl:otherwise>
@@ -392,24 +434,31 @@
   <xsl:template name="lx.xpath:get-operator">
     <xsl:param name="expression"/>
 
-    <xsl:variable name="char" select="substring($expression, 1, 1)"/>
-
     <xsl:choose>
-      <xsl:when test="$char = ' '">
-	<xsl:call-template name="lx.xpath:get-operator">
-	  <xsl:with-param name="expression" select="normalize-space($expression)"/>
-	</xsl:call-template>
-      </xsl:when>
-      <xsl:when test="$char != '' and contains($LX_XPATH_OPERATORS, $char)">
-	<xsl:value-of select="$char"/>
 
-	<xsl:if test="$char = '/' or $char = '!'">
-	  <xsl:call-template name="lx.xpath:get-operator">
-	    <xsl:with-param name="expression" select="substring($expression, 2)"/>
-	  </xsl:call-template>
-	</xsl:if>
+      <xsl:when test="starts-with($expression, '//')">
+        <xsl:value-of select="'//'"/>
       </xsl:when>
+
+      <xsl:when test="starts-with($expression, '..')">
+        <xsl:value-of select="'..'"/>
+      </xsl:when>
+
+      <xsl:otherwise>
+        <xsl:variable name="char" select="substring($expression, 1, 1)"/>
+        <xsl:choose>
+          <xsl:when test="$char = ' '">
+	    <xsl:call-template name="lx.xpath:get-operator">
+	      <xsl:with-param name="expression" select="normalize-space($expression)"/>
+	    </xsl:call-template>
+          </xsl:when>
+          <xsl:when test="$char != '' and contains($LX_XPATH_OPERATORS, $char)">
+	    <xsl:value-of select="$char"/>
+          </xsl:when>
+        </xsl:choose>
+      </xsl:otherwise>
     </xsl:choose>
+
   </xsl:template>
 
 </xsl:stylesheet>

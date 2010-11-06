@@ -186,7 +186,7 @@
   </xsl:template>
 
   <xsl:template match="lx:method | lx:static-method">
-    <xsl:variable name="isStatic" select="name() = 'lx:static-method'"/>
+    <xsl:variable name="isStatic" select="local-name() = 'static-method'"/>
 
     <!-- prototype -->
     <xsl:text>public </xsl:text>

@@ -1,7 +1,8 @@
-include Makefile.rules
-
 MODELS_XML=$(shell find $(LX_APPLICATION)/src/models -name '*.xml')
 MODELS_PHP=$(MODELS_XML:.xml=.php)
+
+LX_APPLICATION=$(PWD)
+LX_OUT=bin
 LX_PROJECT=$(LX_APPLICATION)/$(LX_OUT)/lx-project.php
 
 # Colors
@@ -44,12 +45,12 @@ clean_models:
 
 %.php: %.xml
 	@echo -n "Generating model '$(ORANGE)$(basename $(notdir $@))$(RST)'..."
-	@cd ${LX_ROOT}/php/src/scripts && php lx-orm.php $< lx-php-orm.xsl > $(LX_APPLICATION)/$(LX_OUT)/models/$(notdir $@)
+	@cd ${LX_HOME}/php/src/scripts && php lx-orm.php $< lx-php-orm.xsl > $(LX_APPLICATION)/$(LX_OUT)/models/$(notdir $@)
 	@echo " $(GREEN)OK$(RST)"
 
 $(LX_PROJECT):
 	@echo -n "Generating '$(ORANGE)$(notdir $(LX_PROJECT))$(RST)'..."
-	@cd $(LX_ROOT)/php/src/scripts && php lx-project.php $(LX_APPLICATION)/lx-project.xml > $@
+	@cd $(LX_HOME)/php/src/scripts && php lx-project.php $(LX_APPLICATION)/lx-project.xml > $@
 	@echo " $(GREEN)OK$(RST)"
 
 project: $(LX_PROJECT)
