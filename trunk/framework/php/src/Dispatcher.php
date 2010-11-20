@@ -142,10 +142,15 @@ class Dispatcher
       // call the controller's action
       $result = null;
       if ($action)
-	$result = call_user_func_array(array($cont, $action), $params);
+      {
+	$result = call_user_func_array(array($cont,
+                                             $actionsMap[$action]['method']),
+                                       $params);
+      }
 
       if (($ob_output = ob_get_clean()))
         $cont->getFragment()->appendXML($ob_output);
+
       if ($result)
       {
         if ($result instanceof XMLSerializable)

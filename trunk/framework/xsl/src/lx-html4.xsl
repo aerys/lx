@@ -190,7 +190,7 @@
       @template lx.html:link-controller
       Create a link to a controller.
     -->
-  <xsl:template match="lx.html:link[@controller] | lx.html:link[@module] | lx.html:link[@action]"
+  <xsl:template match="lx.html:a[@controller] | lx.html:a[@module] | lx.html:a[@action]"
 		name="lx.html:link-controller">
     <!-- @param module name -->
     <xsl:param name="module">
