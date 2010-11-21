@@ -337,7 +337,7 @@
       <xsl:when test="$operator = '/'">
 	<xsl:call-template name="lx.xpath:expression-to-value">
 	  <xsl:with-param name="expression" select="$new_path"/>
-          <xsl:with-param name="root" select="$root/*[(name()=$node and $node!='') or $node='']|$root"/>
+          <xsl:with-param name="root" select="$root/node()[name()=$node or $node='*']"/>
 	</xsl:call-template>
       </xsl:when>
       <xsl:when test="$operator = '..'">
@@ -394,7 +394,7 @@
       <xsl:when test="$operator = '/'">
 	<xsl:call-template name="lx.xpath:expression-to-templates">
 	  <xsl:with-param name="expression" select="$new_path"/>
-          <xsl:with-param name="root" select="$root/*[(name()=$node and $node!='') or $node='']|$root"/>
+          <xsl:with-param name="root" select="$root/node()[(name()=$node or $node='*')]"/>
 	</xsl:call-template>
       </xsl:when>
       <xsl:when test="$operator = '['">

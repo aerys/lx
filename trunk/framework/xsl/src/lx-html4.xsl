@@ -238,7 +238,7 @@
     <a href="{$url}">
       <xsl:choose>
 	<xsl:when test="not($content)">
-	  <xsl:apply-templates select="node()[name()!='lx.html:argument']"/>
+	  <xsl:apply-templates select="node()[local-name()!='argument']"/>
 	</xsl:when>
 	<xsl:otherwise>
 	  <xsl:value-of select="normalize-space($content)"/>

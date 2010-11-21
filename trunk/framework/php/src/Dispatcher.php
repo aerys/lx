@@ -153,6 +153,8 @@ class Dispatcher
 
       if ($result)
       {
+        if (is_string($result))
+          $cont->getFragment()->appendXML($result);
         if ($result instanceof XMLSerializable)
           $cont->getFragment()->appendXML($result->__toString());
         else if (is_array($result))
