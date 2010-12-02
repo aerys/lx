@@ -37,26 +37,36 @@ class LX
     set_error_handler('lx_error_handler');
   }
 
-  static public function redirect($myURL, $myExternal = false)
+  static public function redirect($url)
   {
-    header('Location: ' . ($myExternal ? '' : LX_DOCUMENT_ROOT) . $myURL);
+    $external = !!preg_match('/^http:\/\/.*$/s', $url);
+
+    if (!$external)
+    {
+      if ($url[0] != '/' && LX_DOCUMENT_ROOT != '/')
+        $url = '/' . $url;
+
+      $url = LX_DOCUMENT_ROOT . $url;
+    }
+
+    header('Location: ' . $url);
 
     exit ;
   }
 
-  static public function setView($my_view)
+  static public function setView($view)
   {
-    self::$response->setView($my_view);
+    self::$response->setView($view);
   }
 
-  static public function setLayout($my_layout)
+  static public function setLayout($layout)
   {
-    self::$response->setLayout($my_layout);
+    self::$response->setLayout($layout);
   }
 
-  static public function setTemplate($my_template)
+  static public function setTemplate($template)
   {
-    self::$response->setTemplate($my_template);
+    self::$response->setTemplate($template);
   }
 
   static public function autoload($class_name)
@@ -86,15 +96,15 @@ class LX
     }
   }
 
-  static public function appendDebugMessage($my_msg)
+  static public function appendDebugMessage($msg)
   {
     if (self::$response)
-      self::$response->appendDebugMessage($my_msg);
+      self::$response->appendDebugMessage($msg);
   }
 
-  static public function addApplicationDirectory($my_directory)
+  static public function addApplicationDirectory($directory)
   {
-    self::$app_directories[] = $my_directory;
+    self::$app_directories[] = $directory;
   }
 
   static public function dispatchHTTPRequest($url, $get, $post)
@@ -115,14 +125,14 @@ function __autoload($class_name)
   LX::autoload($class_name);
 }
 
-function lx_error_handler($my_errno,
-			  $my_errstr,
-			  $my_errfile,
-			  $my_errline,
-			  $my_context)
+function lx_error_handler($errno,
+			  $errstr,
+			  $errfile,
+			  $errline,
+			  $context)
 {
   // FIXME
-  throw new ErrorException($my_errstr, 0, $my_errno, $my_errfile, $my_errline);
+  throw new ErrorException($errstr, 0, $errno, $errfile, $errline);
 
   /* Don't execute PHP internal error handler */
   return (true);
