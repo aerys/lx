@@ -91,12 +91,25 @@ class XMLResponse
     foreach ($value as $k => $v)
     {
       $nodeName = is_numeric($k) ? 'arg' . $k : $k;
-      $valueNode = $this->document->createElement($nodeName);
 
-      if (is_string($v) && get_magic_quotes_gpc())
-        $v = stripslashes($v);
 
-      $valueNode->nodeValue = htmlentities($v);
+      if (is_string($v))
+      {
+        $valueNode = $this->document->createDocumentFragment();
+
+        if (get_magic_quotes_gpc())
+          $v = stripslashes($v);
+
+        $valueNode->appendXML('<' . $nodeName . '><![CDATA['
+                              . htmlentities($v)
+                              . ']]></' . $nodeName . '>');
+      }
+      else
+      {
+        $valueNode = $this->document->createElement($nodeName);
+        $valueNode->nodeValue = $v;
+      }
+
       $node->appendChild($valueNode);
     }
 
