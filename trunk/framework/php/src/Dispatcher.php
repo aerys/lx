@@ -126,7 +126,7 @@ class Dispatcher
 	if (FilterResult::IGNORE !== $filter_result)
         {
           if ($ob_output)
-            $filter->getFragment()->appendXML($ob_output);
+            $filter->getFragment()->appendXML('<![CDATA[' . $ob_output . ']]>');
 
 	  $this->response->appendFilter($filter, $filterName);
         }
@@ -149,7 +149,7 @@ class Dispatcher
       }
 
       if (($ob_output = ob_get_clean()))
-        $cont->getFragment()->appendXML($ob_output);
+        $cont->getFragment()->appendXML('<![CDATA[' . $ob_output . ']]>');
 
       if ($result)
       {

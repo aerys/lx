@@ -28,6 +28,8 @@ if (!defined('LX_DEFAULT_TEMPLATE'))
 if (!defined('LX_DEBUG'))
   define('LX_DEBUG', false);
 
+define('LX_HOST', $_SERVER['HTTP_HOST']);
+
 if (LX_DEBUG)
   error_reporting(E_ALL);
 

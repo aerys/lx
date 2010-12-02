@@ -38,7 +38,7 @@ class XMLResponse
     // lx:response
     $this->rootNode = $this->document->createElement('lx:response');
     $this->rootNode->setAttribute('xmlns:lx', LX_NAMESPACE);
-    $this->rootNode->setAttribute('host', $_SERVER['HTTP_HOST']);
+    $this->rootNode->setAttribute('host', LX_HOST);
     $this->rootNode->setAttribute('date', $this->date);
     $this->rootNode->setAttribute('documentRoot', LX_DOCUMENT_ROOT);
     $this->rootNode->setAttribute('debug', LX_DEBUG ? 'true' : 'false');
