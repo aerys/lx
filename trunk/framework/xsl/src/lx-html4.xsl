@@ -294,4 +294,17 @@
       </xsl:choose>
     </xsl:element>
   </xsl:template>
+
+  <!--
+     @template lx.html:keywords
+     Insert an SEO compliant META keyword node.
+    -->
+  <xsl:template match="head/lx.html:keywords">
+    <xsl:variable name="content">
+        <xsl:apply-templates select="node()"/>
+    </xsl:variable>
+
+    <meta name="keywords" content="{normalize-space($content)}"/>
+    <xsl:value-of select="$LX_LF"/>
+  </xsl:template>
 </xsl:stylesheet>
