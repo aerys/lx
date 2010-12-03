@@ -39,7 +39,10 @@ class LX
 
   static public function redirect($url)
   {
-    $external = !preg_match('/^[a-z]+:\/\/' . LX_HOST . LX_DOCUMENT_ROOT . '/.*$/s', $url);
+    $root = LX_DOCUMENT_ROOT == '/' ? '/'
+                                    : LX_DOCUMENT_ROOT . '/';
+    $pattern = '/^[a-z]+:\/\/' . LX_HOST . str_replace($root, '/', '\/') . '.*$/s';
+    $external = !preg_match($pattern, $url);
 
     if (!$external)
     {
