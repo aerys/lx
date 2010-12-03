@@ -64,10 +64,18 @@
     </xsl:copy>
   </xsl:template>
 
-  <xsl:template match="@*|comment()|processing-instruction()">
+  <xsl:template match="@*|processing-instruction()">
     <xsl:copy>
       <xsl:apply-templates select="@*|node()"/>
     </xsl:copy>
+  </xsl:template>
+
+  <xsl:template match="comment()|">
+    <xsl:if test="$LX_RESPONSE/@debug = 'true'">
+      <xsl:copy>
+        <xsl:apply-templates select="node()"/>
+      </xsl:copy>
+    </xsl:if>
   </xsl:template>
 
   <xsl:template match="text()">

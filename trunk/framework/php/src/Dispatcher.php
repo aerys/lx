@@ -51,16 +51,18 @@ class Dispatcher
 
       if ($extension && isset($_LX['responses'][$extension]))
       {
-          define('LX_REQUEST_EXTENSION', $extension);
-      	  $this->response = new $_LX['responses'][$extension]();
+        $this->response = new $_LX['responses'][$extension]();
       }
       else
       {
 	if ($extension)
 	  $request .= '.' . $extension;
 
-        define('LX_REQUEST_EXTENSION', LX_DEFAULT_EXTENSION);
-	$this->response = new $_LX['responses'][LX_DEFAULT_EXTENSION]();
+        $response = new $_LX['responses'][LX_DEFAULT_EXTENSION]();
+        if (!LX_CLIENT_XSL_SUPPORT && !($response instanceof LXMLResponse))
+          $response = new LXMLResponse();
+
+	$this->response = $response;
       }
       LX::setResponse($this->response);
 

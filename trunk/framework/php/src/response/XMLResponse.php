@@ -46,6 +46,9 @@ class XMLResponse
 
     // lx:request
     $this->requestNode = $this->document->createElement('lx:request');
+    if (is_bool(LX_CLIENT_XSL_SUPPORT))
+      $this->requestNode->setAttribute('clientXslSupport',
+                                       LX_CLIENT_XSL_SUPPORT ? 'true' : 'false');
     $this->rootNode->appendChild($this->requestNode);
 
     // lx:arguments

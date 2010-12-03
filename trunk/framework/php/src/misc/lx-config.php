@@ -1,5 +1,22 @@
 <?php
 
+// XSL activation
+if (isset($_REQUEST['LX_DISABLE_CLIENT_XSL_SUPPORT']))
+{
+  setcookie('LX_XSL_SUPPORT', false, time() + 31536000);
+  exit ;
+}
+if (isset($_REQUEST['LX_ENABLE_CLIENT_XSL_SUPPORT']))
+{
+  setcookie('LX_CLIENT_XSL_SUPPORT', true, time() + 31536000);
+  exit ;
+}
+
+// constants definition
+define('LX_CLIENT_XSL_SUPPORT', isset($_COOKIE['LX_CLIENT_XSL_SUPPORT'])
+                                ? !!$_COOKIE['LX_CLIENT_XSL_SUPPORT']
+                                : null);
+
 define('LX_NAMESPACE',		'http://lx.aerys.in');
 define('LX_DEFAULT_TIMEZONE',	'Europe/Paris');
 define('LX_DEFAULT_EXTENSION',	'');
@@ -28,7 +45,7 @@ if (!defined('LX_DEFAULT_TEMPLATE'))
 if (!defined('LX_DEBUG'))
   define('LX_DEBUG', false);
 
-define('LX_HOST', $_SERVER['HTTP_HOST']);
+define('LX_HOST', isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : null);
 
 if (LX_DEBUG)
   error_reporting(E_ALL);
