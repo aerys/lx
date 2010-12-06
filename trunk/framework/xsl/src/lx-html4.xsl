@@ -147,11 +147,11 @@
 
     <script language="javascript" type="text/javascript">
       <xsl:choose>
-        <xsl:when test="$script != ''">
-          <xsl:value-of select="$script"/>
+        <xsl:when test="node() = $script">
+          <xsl:apply-templates select="$script"/>
         </xsl:when>
         <xsl:otherwise>
-          <xsl:apply-templates select="$script"/>
+          <xsl:value-of select="$script"/>
         </xsl:otherwise>
       </xsl:choose>
     </script>
