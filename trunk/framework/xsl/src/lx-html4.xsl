@@ -147,7 +147,7 @@
 
     <script language="javascript" type="text/javascript">
       <xsl:choose>
-        <xsl:when test="count($script) = 0">
+        <xsl:when test="$script != ''">
           <xsl:value-of select="$script"/>
         </xsl:when>
         <xsl:otherwise>
