@@ -61,6 +61,10 @@ define('LX_SRC',	LX_ROOT . '/php/src');
 define('LX_SCRIPTS',	LX_ROOT . '/scripts');
 define('LX_XSL',	LX_ROOT . '/xsl/src');
 
+set_include_path(get_include_path()
+                 . PATH_SEPARATOR . LX_APPLICATION_ROOT
+                 . PATH_SEPARATOR . LX_APPLICATION_ROOT . '/lib');
+
 require_once (LX_SRC . '/LX.php');
 
 $_LX['databases'] = array();
