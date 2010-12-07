@@ -70,7 +70,7 @@
     </xsl:copy>
   </xsl:template>
 
-  <xsl:template match="comment()|">
+  <xsl:template match="comment()">
     <xsl:if test="$LX_RESPONSE/@debug = 'true'">
       <xsl:copy>
         <xsl:apply-templates select="node()"/>
