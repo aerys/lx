@@ -18,15 +18,19 @@ class XMLResponse
   protected $date		= 0;
   protected $start_time		= 0;
 
-  public function setView($my_view)		{$this->view = $my_view;}
-  public function setLayout($my_layout)		{$this->layout = $my_layout;}
-  public function setTemplate($my_temp)		{$this->template = $my_temp;}
+  protected $filters            = array();
 
-  public function getDocument()			{return ($this->document);}
-  public function getView()			{return ($this->view);}
-  public function getLayout()			{return ($this->layout);}
-  public function getTemplate()			{return ($this->template);}
-  public function getDate()			{return ($this->date);}
+  public function setView($view)		{$this->view = $view;}
+  public function setLayout($layout)		{$this->layout = $layout;}
+  public function setTemplate($temp)		{$this->template = $temp;}
+
+  public function getDocument()			{return $this->document;}
+  public function getView()			{return $this->view;}
+  public function getLayout()			{return $this->layout;}
+  public function getTemplate()			{return $this->template;}
+  public function getDate()			{return $this->date;}
+
+  public function getFilter($name)              {return $this->filters[$name];}
 
   public function XMLResponse()
   {
@@ -158,10 +162,12 @@ class XMLResponse
     $this->rootNode->appendChild($node);
   }
 
-  public function appendFilter($my_filter, $my_name)
+  public function appendFilter($filter, $name)
   {
-    $node = $this->document->createElement($my_name);
-    $fragment = $my_filter->getFragment();
+    $this->filters[$name] = $filter;
+
+    $node = $this->document->createElement($name);
+    $fragment = $filter->getFragment();
 
     if ($fragment->hasAttributes() || $fragment->hasChildNodes())
       $node->appendChild($fragment);
