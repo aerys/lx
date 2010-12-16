@@ -9,6 +9,7 @@ class LX
 						'/database/mysql',
 						'/exception',
 						'/filter',
+                                                '/xml',
 						'/response');
   static private $app_directories	= array('/src',
 						'/src/models',
