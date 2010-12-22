@@ -6,6 +6,8 @@ class XML
   {
     if (is_array($value))
       return self::serializeArray($value, $name);
+    else if (is_object($value))
+      return self::serializeObject($value);
     else if (is_string($value))
       return '<![CDATA[' . $value . ']]>';
     else if (is_numeric($value))
@@ -31,7 +33,7 @@ class XML
     return $result;
   }
 
-  private static function serializeObject($object, $name = '')
+  private static function serializeObject($object)
   {
     if ($object instanceof XMLSerializable)
       return $object->__toString();
