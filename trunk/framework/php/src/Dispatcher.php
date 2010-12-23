@@ -179,11 +179,15 @@ class Dispatcher
     }
     catch (ErrorException $e)
     {
+      ob_end_clean();
+
       if (LX_DEBUG)
 	LX::getResponse()->appendErrorException($e);
     }
     catch (Exception $e)
     {
+      ob_end_clean();
+
       LX::getResponse()->appendException($e);
     }
 
