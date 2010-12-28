@@ -2,6 +2,13 @@
 
 class XML
 {
+  public static function node($nodeName, $value)
+  {
+    echo '<' . $nodeName . '>'
+         . self::serialize($value, $nodeName)
+         . '</' . $nodeName . '>';
+  }
+
   public static function serialize($value, $name = null)
   {
     if (is_array($value))
@@ -9,7 +16,12 @@ class XML
     else if (is_object($value))
       return self::serializeObject($value);
     else if (is_string($value))
-      return '<![CDATA[' . $value . ']]>';
+    {
+      if (preg_match('/[&<>]+/', $value) != 0)
+	return '<![CDATA[' . $value . ']]>';
+      else
+	return $value;
+    }
     else if (is_numeric($value))
       return '' . $k;
     else if (is_bool($value))

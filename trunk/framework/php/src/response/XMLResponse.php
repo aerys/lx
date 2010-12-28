@@ -99,6 +99,10 @@ class XMLResponse
     {
       $nodeName = is_numeric($k) ? 'arg' . $k : $k;
 
+      if (is_array($v))
+      {
+	$v = join(',', $v);
+      }
 
       if (is_string($v))
       {
