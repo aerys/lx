@@ -42,7 +42,7 @@
     <xsl:text>public static function getDatabase(){return self::db();}</xsl:text>
 
     <!-- properties getter -->
-    <xsl:text>protected function getProperties(){return array(</xsl:text>
+    <xsl:text>public function getProperties(){return array(</xsl:text>
     <xsl:call-template name="lx:for-each">
       <xsl:with-param name="collection" select="lx:property/@name"/>
       <xsl:with-param name="begin" select="$LX_QUOTE"/>
@@ -213,6 +213,12 @@
         <xsl:text>self::db();</xsl:text>
       </xsl:otherwise>
     </xsl:choose>
+
+    <!--<xsl:if test="lx:update">
+      <xsl:text>if(!($this->flags</xsl:text>
+      <xsl:value-of select="$LX_AMP"/>
+      <xsl:text>AbstractModel::FLAG_UPDATE))return false;</xsl:text>
+    </xsl:if>-->
 
     <!-- prepary query -->
     <xsl:text>$q=$db->createQuery('</xsl:text>

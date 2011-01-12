@@ -2,11 +2,25 @@
 
 class XML
 {
-  public static function node($nodeName, $value)
+  public static function node($nodeName, $value, $attributes = null)
   {
-    echo '<' . $nodeName . '>'
-         . self::serialize($value, $nodeName)
-         . '</' . $nodeName . '>';
+    $result = '';
+    $xml = self::serialize($value, $nodeName);
+
+    if ($xml)
+    {
+      $result = '<' . $nodeName;
+      foreach ($attributes as $name => $attribute)
+        $result .= ' ' . self::attribute($name, $attribute);
+      $result .=  '>' . $xml . '</' . $nodeName . '>';
+    }
+
+    return $result;
+  }
+
+  public static function attribute($name, $value)
+  {
+    return $name . '="' . self::serialize($value . '') . '"';
   }
 
   public static function serialize($value, $name = null)
@@ -23,9 +37,11 @@ class XML
 	return $value;
     }
     else if (is_numeric($value))
-      return '' . $k;
+      return '' . $value;
     else if (is_bool($value))
       return $value ? 'true' : 'false';
+
+    return false;
   }
 
   private static function serializeArray($array, $name = null)
@@ -34,33 +50,62 @@ class XML
 
     foreach ($array as $key => $value)
     {
-      $nodeName = is_numeric($key) ? ($name ? $name : '_' . $key)
-                                   : $key;
+      if (is_object($value))
+      {
+        $result .= self::serializeObject($value);
+      }
+      else
+      {
+        $nodeName = is_numeric($key)
+                    ? ($name ? $name : '_' . $key)
+                    : $key;
 
-      $result .= '<' . $nodeName . '>'
-                 . self::serialize($value)
-                 . '</' . $nodeName . '>';
+        $result .= '<' . $nodeName . '>'
+                   . self::serialize($value)
+                   . '</' . $nodeName . '>';
+      }
     }
 
     return $result;
   }
 
-  private static function serializeObject($object)
+  public static function serializeObject($object,
+                                         $exclude       = null,
+                                         $noRoot	= false)
   {
-    if ($object instanceof XMLSerializable)
-      return $object->__toString();
+    if (method_exists($object, 'toXML'))
+      return $object->toXML($exclude, $noRoot);
 
-    $rClass = new ReflectionClass($object);
-    $rMethods = $rClass->getMethods(ReflectionMethod::IS_PUBLIC);
+    if (method_exists($object, 'getProperties'))
+    {
+      $properties = $object->getProperties();
+    }
+    else
+    {
+      $rClass     = new ReflectionClass($object);
+      $properties = $rClass->getProperties(ReflectionProperty::IS_PUBLIC);
+    }
 
-    if (array_search('toXML', $rMethods))
-      return $object->toXML($name);
+    $rootName    = $noRoot ? '' : strtolower(get_class($object));
+    $result	 = $noRoot ? '' : '<' . $rootName . '>';
 
-    $rProperties = $rClass->getProperties(ReflectionProperty::IS_PUBLIC);
-    $result = '';
+    foreach ($properties as $propertyName)
+    {
+      if (!$exclude || false === array_search($propertyName, $exclude, true))
+      {
+        $str = self::serialize($object->$propertyName);
 
-    foreach ($rProperties as $propertyName)
-      $result .= self::serialize($object->$propertyName, $propertyName);
+        if ($str)
+        {
+          $result .= '<' . $propertyName . '>'
+                     . $str
+                     . '</' . $propertyName . '>';
+        }
+      }
+    }
+
+    if (!$noRoot)
+      $result .= '</' . $rootName . '>';
 
     return $result;
   }

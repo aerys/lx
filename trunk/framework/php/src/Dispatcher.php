@@ -108,8 +108,6 @@ class Dispatcher
 
       // arguments
       $this->response->appendArguments($params, 'url');
-      $this->response->appendArguments($get, 'get');
-      $this->response->appendArguments($post, 'post');
 
       //if (LX_MODULE)
       //LX::addApplicationDirectory('/src/controllers/' . LX_MODULE);
@@ -150,20 +148,12 @@ class Dispatcher
                                        $params);
       }
 
+      if ($result)
+        echo XML::serialize($result);
+
       if (($ob_output = ob_get_clean()))
         $cont->getFragment()->appendXML($ob_output);
 
-      if ($result)
-      {
-        if (is_string($result))
-          $cont->getFragment()->appendXML($result);
-        if ($result instanceof XMLSerializable)
-          $cont->getFragment()->appendXML($result->__toString());
-        else if (is_array($result))
-          foreach ($result as $resultItem)
-            if ($resultItem instanceof XMLSerializable)
-              $cont->getFragment()->appendXML($resultItem->__toString());
-      }
       $this->response->appendController($cont);
 
       // stop buffering
@@ -179,7 +169,7 @@ class Dispatcher
     }
     catch (ErrorException $e)
     {
-      ob_end_clean();
+      //ob_end_clean();
 
       if (LX_DEBUG)
 	LX::getResponse()->appendErrorException($e);

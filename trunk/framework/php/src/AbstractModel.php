@@ -5,50 +5,73 @@ abstract class AbstractModel extends XMLSerializable
   const FLAG_DEFAULT	= 0;
   const FLAG_UPDATE	= 1;
 
-  private $flags	= self::FLAG_DEFAULT;
+  protected $flags	= self::FLAG_DEFAULT;
 
   /* CONSTRUCTOR */
-  public function AbstractModel($myData = null)
+  public function AbstractModel($data = null)
   {
-    if ($myData)
-      $this->loadArray($myData);
+    if ($data)
+      $this->loadArray($data);
   }
 
   /* METHODS */
-  public static function scaffold($myModel,
-				  $myBackend,
-				  $myOutput)
+  public static function scaffold($model,
+				  $backend,
+				  $output)
   {
     $xml = new DOMDocument();
-    $xml->load($myModel);
+    $xml->load($model);
 
     $xsl = new DOMDocument();
-    $xsl->load($myBackend);
+    $xsl->load($backend);
 
     $processor = new XSLTProcessor();
     $processor->importStyleSheet($xsl);
-    $processor->transformToURI($xml, $myOutput);
+    $processor->transformToURI($xml, $output);
   }
 
-  public function loadArray($myData)
+  public function loadArray($data)
   {
-    $class      = get_class($this);
+    $class = get_class($this);
 
     foreach ($this->getProperties() as $name)
-      if (isset($myData[$name]))
-        $this->$name = $myData[$name];
+      if (isset($data[$name]))
+        $this->$name = $data[$name];
   }
 
-  public function __get($myProperty)
+  /*public function loadXML($filename)
   {
-    return $this->$myProperty;
+    $doc = new DOMDocument();
+    $doc->load($filename);
+
+
   }
 
-  public function __set($myProperty, $myValue)
+  public function saveXML($filename = null)
   {
-    if ($this->$myProperty != $myValue)
+    $xml = XML::serialize($this);
+
+    if (!$filename)
+      return $xml;
+
+    $doc = new DOMDocument();
+
+    $fragment = $doc->createDocumentFragment();
+    $fragment->appendXML($xml);
+
+    // FIXME: open file and save XML
+    }*/
+
+  public function __get($propertyName)
+  {
+    return $this->$propertyName;
+  }
+
+  public function __set($propertyName, $value)
+  {
+    if ($this->$property != $value)
     {
-      $this->$myProperty = $myValue;
+      $this->$property = $value;
       $this->flags |= self::FLAG_UPDATE;
     }
   }

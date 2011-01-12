@@ -57,10 +57,12 @@ class XMLResponse
 
     // lx:arguments
     $this->argumentsNode = $this->document->createElement('lx:arguments');
-    /*foreach ($_GET as $key => $value)
-      $this->appendArgument($value, $key);
-    foreach ($_POST as $key => $value)
-    $this->appendArgument($value, $key);*/
+    if (($xml = XML::node('get', $_GET) . XML::node('post', $_POST)))
+    {
+      $argsFragment = $this->document->createDocumentFragment();
+      $argsFragment->appendXML($xml);
+      $this->argumentsNode->appendChild($argsFragment);
+    }
 
     //lx:filter
     $this->filtersNode = $this->document->createElement('lx:filters');
@@ -93,38 +95,10 @@ class XMLResponse
     if (!count($value))
       return ;
 
-    $node = $this->document->createElement($source);
+    $f = $this->document->createDocumentFragment();
+    $f->appendXML(XML::serialize($value, $source));
 
-    foreach ($value as $k => $v)
-    {
-      $nodeName = is_numeric($k) ? 'arg' . $k : $k;
-
-      if (is_array($v))
-      {
-	$v = join(',', $v);
-      }
-
-      if (is_string($v))
-      {
-        $valueNode = $this->document->createDocumentFragment();
-
-        if (get_magic_quotes_gpc())
-          $v = stripslashes($v);
-
-        $valueNode->appendXML('<' . $nodeName . '><![CDATA['
-                              . htmlentities($v)
-                              . ']]></' . $nodeName . '>');
-      }
-      else
-      {
-        $valueNode = $this->document->createElement($nodeName);
-        $valueNode->nodeValue = $v;
-      }
-
-      $node->appendChild($valueNode);
-    }
-
-    $this->argumentsNode->appendChild($node);
+    $this->argumentsNode->appendChild($f);
   }
 
   public function appendController($my_controller)
