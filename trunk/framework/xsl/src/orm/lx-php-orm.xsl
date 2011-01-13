@@ -234,8 +234,7 @@
     <!-- cache -->
     <xsl:if test="lx:select and lx:select/@ttl != 0">
       <xsl:text>$c=Cache::getCache();</xsl:text>
-      <xsl:text>$k=md5($q);</xsl:text>
-      <xsl:text>if(($r=$c->get($k)))</xsl:text>
+      <xsl:text>if($c and ($r=$c->get($k=md5($q))))</xsl:text>
       <xsl:text>return $r;</xsl:text>
     </xsl:if>
 
@@ -256,7 +255,7 @@
 
     <!-- cache update -->
     <xsl:if test="lx:select and lx:select/@ttl != 0">
-     <xsl:text>$c->set($k,$r,</xsl:text>
+     <xsl:text>$c and $c->set($k,$r,</xsl:text>
      <xsl:value-of select="lx:select/@ttl"/>
      <xsl:text>);</xsl:text>
     </xsl:if>

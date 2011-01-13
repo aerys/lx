@@ -1,11 +1,8 @@
 <?php
 
-class XMLSerializable
+abstract class XMLSerializable
 {
-  protected function getProperties()
-  {
-    throw new ErrorException();
-  }
+  abstract protected function getProperties();
 
   public function serialize($exclude	= null,
 			    $noRoot	= false)

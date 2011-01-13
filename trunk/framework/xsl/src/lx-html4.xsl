@@ -24,8 +24,6 @@
     <html>
       <head>
 
-	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/>
-
 	<base>
 	  <xsl:attribute name="href">
 	    <xsl:text>http://</xsl:text>
@@ -41,6 +39,8 @@
 	  <xsl:apply-templates select="$LX_LAYOUT/head/title/node()"/>
 	  <xsl:apply-templates select="$LX_TEMPLATE/head/title/node()"/>
 	</title>
+
+	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/>
 
         <!-- Client XSL support detection -->
         <xsl:call-template name="lx.html:detect-client-xsl-support"/>
