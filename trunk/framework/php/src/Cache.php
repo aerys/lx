@@ -55,10 +55,16 @@ class Cache
 
   public function get($key)
   {
-    LX::appendDebugMessage('<cache-get>' . $key . '</cache-get>');
+    $time = microtime();
+    $result = $this->connect() ? $this->memcache->get($key)
+                               : null;
 
-    return $this->connect() ? $this->memcache->get($key)
-                            : null;
+    $time = (microtime() - $time) * 1000.;
+    LX::appendDebugMessage('<cache-get time="' . $time . '">'
+                           . $key
+                           . '</cache-get>');
+
+    return $result;
   }
 
   public function set($key, $value, $ttl = 0, $compressed = false)
