@@ -12,7 +12,7 @@ abstract class AbstractQuery
   abstract public function setFloat($my_arg,
 				    $my_value);
 
-  abstract public function toString();
+  abstract public function getQueryString();
 }
 
 ?>

@@ -3,12 +3,14 @@
 class MySQLQuery extends AbstractQuery
 {
   const ARGUMENT_PREFIX	= ':';
+  const KEY_LENGTH      = 8;
 
   protected $database	= NULL;
   protected $request	= '';
   protected $arguments	= array();
 
-  public function toString()	{return ($this->request);}
+  public function __toString()          { return $this->request; }
+  public function getQueryString()      { return $this->request; }
 
   public function MySQLQuery($my_database,
 			     $my_request)
@@ -24,7 +26,7 @@ class MySQLQuery extends AbstractQuery
       if (empty($this->arguments[$args[1][$i]]))
       {
         $pos = strpos($this->request, $arg);
-        $hash = self::ARGUMENT_PREFIX . md5(rand());
+        $hash = substr(self::ARGUMENT_PREFIX . md5(rand()), self::KEY_LENGTH);
 
         $this->arguments[$args[1][$i]] = $hash;
         $this->request = str_replace($arg, $hash, $this->request);

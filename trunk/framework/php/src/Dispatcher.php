@@ -172,13 +172,18 @@ class Dispatcher
       //ob_end_clean();
 
       if (LX_DEBUG)
-	LX::getResponse()->appendErrorException($e);
+      {
+	if ($this->response)
+          $this->response->appendErrorException($e);
+        else
+          echo $e->getMessage();
+      }
     }
     catch (Exception $e)
     {
       ob_end_clean();
 
-      LX::getResponse()->appendException($e);
+      $this->response->appendException($e);
     }
 
     // send response

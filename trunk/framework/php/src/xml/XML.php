@@ -10,8 +10,9 @@ class XML
     if ($xml)
     {
       $result = '<' . $nodeName;
-      foreach ($attributes as $name => $attribute)
-        $result .= ' ' . self::attribute($name, $attribute);
+      if ($attributes)
+        foreach ($attributes as $name => $attribute)
+          $result .= ' ' . self::attribute($name, $attribute);
       $result .=  '>' . $xml . '</' . $nodeName . '>';
     }
 
@@ -31,10 +32,24 @@ class XML
       return self::serializeObject($value);
     else if (is_string($value))
     {
-      if (preg_match('/[&<>]+/', $value) != 0)
-	return '<![CDATA[' . $value . ']]>';
-      else
-	return $value;
+      if (get_magic_quotes_gpc())
+        $value = stripslashes($value);
+
+      if (preg_match('/[&<>]+/', $value))
+      {
+        try
+        {
+          @simplexml_load_string('<root>' . $value . '</root>');
+
+          return $value;
+        }
+        catch (Exception $e)
+        {
+          return '<![CDATA[' . $value . ']]>';
+        }
+      }
+
+      return $value;
     }
     else if (is_numeric($value))
       return '' . $value;
@@ -56,13 +71,18 @@ class XML
       }
       else
       {
-        $nodeName = is_numeric($key)
-                    ? ($name ? $name : '_' . $key)
-                    : $key;
+        $xml = self::serialize($value);
 
-        $result .= '<' . $nodeName . '>'
-                   . self::serialize($value)
-                   . '</' . $nodeName . '>';
+        if ($xml)
+        {
+          $nodeName = is_numeric($key)
+                      ? ($name ? $name : '_' . $key)
+                      : $key;
+
+          $result .= '<' . $nodeName . '>'
+                     . $xml
+                     . '</' . $nodeName . '>';
+        }
       }
     }
 
@@ -86,7 +106,7 @@ class XML
       $properties = $rClass->getProperties(ReflectionProperty::IS_PUBLIC);
     }
 
-    $rootName    = $noRoot ? '' : strtolower(get_class($object));
+    $rootName    = $noRoot ? '' : lcfirst(get_class($object));
     $result	 = $noRoot ? '' : '<' . $rootName . '>';
 
     foreach ($properties as $propertyName)
@@ -95,7 +115,7 @@ class XML
       {
         $str = self::serialize($object->$propertyName);
 
-        if ($str)
+        if ($str !== false)
         {
           $result .= '<' . $propertyName . '>'
                      . $str

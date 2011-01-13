@@ -30,6 +30,7 @@ class MySQLDatabase extends AbstractDatabase
     if ($this->isConnected)
       return ;
 
+    $time = microtime();
     $this->mysqli = new mysqli($this->host,
 			       $this->user,
 			       $this->password,
@@ -54,14 +55,16 @@ class MySQLDatabase extends AbstractDatabase
   {
     $this->connect();
 
-    $sql_str = $my_query->toString();
+    $sql_str = $my_query->getQueryString();
 
     $time = LX_DEBUG ? microtime() : 0;
     $result = $this->mysqli->query($sql_str);
     if (LX_DEBUG)
+    {
       LX::appendDebugMessage(XML::node('mysqlQuery',
                                        $sql_str,
                                        array('time' => ((microtime() - $time) * 1000))));
+    }
 
     if (!$result)
       throw new ErrorException($this->mysqli->error);

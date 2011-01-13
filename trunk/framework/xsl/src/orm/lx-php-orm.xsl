@@ -201,6 +201,12 @@
     </xsl:call-template>
     <xsl:text>){</xsl:text>
 
+    <xsl:text>$q='</xsl:text>
+    <xsl:apply-templates select="lx:select
+                                 | lx:delete
+                                 | lx:update | lx:insert | lx:insert-or-update"/>
+    <xsl:text>';</xsl:text>
+
     <!-- get database -->
     <xsl:text>$db=</xsl:text>
     <xsl:choose>
@@ -221,13 +227,17 @@
     </xsl:if>-->
 
     <!-- prepary query -->
-    <xsl:text>$q=$db->createQuery('</xsl:text>
-    <xsl:apply-templates select="lx:select
-                                 | lx:delete
-                                 | lx:update | lx:insert | lx:insert-or-update"/>
-    <xsl:text>')</xsl:text>
+    <xsl:text>$q=$db->createQuery($q)</xsl:text>
     <xsl:call-template name="lx:set-query-properties"/>
     <xsl:text>;</xsl:text>
+
+    <!-- cache -->
+    <xsl:if test="lx:select and lx:select/@ttl != 0">
+      <xsl:text>$c=Cache::getCache();</xsl:text>
+      <xsl:text>$k=md5($q);</xsl:text>
+      <xsl:text>if(($r=$c->get($k)))</xsl:text>
+      <xsl:text>return $r;</xsl:text>
+    </xsl:if>
 
     <!-- perform query -->
     <xsl:text>$r=$db->performQuery($q,__CLASS__);</xsl:text>
@@ -240,19 +250,20 @@
     </xsl:if>
 
     <!-- fetch records -->
-    <xsl:if test="lx:select/@limit != 1">
-      <xsl:text>if(!is_array($r))return $r;</xsl:text>
-    </xsl:if>
     <xsl:if test="lx:select/@limit = 1">
-      <xsl:text>if(count($r))return $r[0];</xsl:text>
+      <xsl:text>if(is_array($r) and count($r))$r=$r[0];</xsl:text>
     </xsl:if>
 
-    <!-- return -->
+    <!-- cache update -->
+    <xsl:if test="lx:select and lx:select/@ttl != 0">
+     <xsl:text>$c->set($k,$r,</xsl:text>
+     <xsl:value-of select="lx:select/@ttl"/>
+     <xsl:text>);</xsl:text>
+    </xsl:if>
+
+    <!-- result -->
     <xsl:text>return </xsl:text>
     <xsl:choose>
-      <xsl:when test="lx:select/@limit=1">
-	<xsl:text>null</xsl:text>
-      </xsl:when>
       <xsl:when test="lx:insert">
 	<xsl:text>$db->getInsertId()</xsl:text>
       </xsl:when>
@@ -267,5 +278,6 @@
       </xsl:otherwise>
     </xsl:choose>
     <xsl:text>;}</xsl:text>
+
   </xsl:template>
 </xsl:stylesheet>

@@ -39,12 +39,36 @@ abstract class AbstractModel extends XMLSerializable
         $this->$name = $data[$name];
   }
 
-  /*public function loadXML($filename)
+  public function copy($model)
   {
-    $doc = new DOMDocument();
-    $doc->load($filename);
+    foreach ($this->getProperties() as $name)
+      $this->$name = $model->$name;
+  }
 
+  public function loadXML($filename)
+  {
+    $cache = Cache::getCache();
+    $object = $cache->get($filename);
 
+    if ($object)
+    {
+      $this->copy($object);
+    }
+    else
+    {
+      $xml = simplexml_load_file($filename);
+
+      foreach ($xml->children() as $child)
+      {
+        $nodeName = $child->getName();
+        $l = strlen($nodeName) + 2;
+        $xml = $child->asXML();
+
+        $this->$nodeName = substr($xml, $l, strlen($xml) - ($l * 2 + 1));
+      }
+
+      $cache->set($filename, $this);
+    }
   }
 
   public function saveXML($filename = null)
@@ -54,13 +78,14 @@ abstract class AbstractModel extends XMLSerializable
     if (!$filename)
       return $xml;
 
-    $doc = new DOMDocument();
+    $doc = new DOMDocument('1.0', 'utf-8');
 
     $fragment = $doc->createDocumentFragment();
     $fragment->appendXML($xml);
+    $doc->appendChild($fragment);
 
-    // FIXME: open file and save XML
-    }*/
+    $doc->save($filename);
+  }
 
   public function __get($propertyName)
   {
@@ -69,9 +94,9 @@ abstract class AbstractModel extends XMLSerializable
 
   public function __set($propertyName, $value)
   {
-    if ($this->$property != $value)
+    if ($this->$propertyName != $value)
     {
-      $this->$property = $value;
+      $this->$propertyName = $value;
       $this->flags |= self::FLAG_UPDATE;
     }
   }

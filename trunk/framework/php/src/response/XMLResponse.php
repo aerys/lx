@@ -20,17 +20,17 @@ class XMLResponse
 
   protected $filters            = array();
 
-  public function setView($view)		{$this->view = $view;}
-  public function setLayout($layout)		{$this->layout = $layout;}
-  public function setTemplate($temp)		{$this->template = $temp;}
+  public function setView($view)		{ $this->view = $view; }
+  public function setLayout($layout)		{ $this->layout = $layout; }
+  public function setTemplate($temp)		{ $this->template = $temp; }
 
-  public function getDocument()			{return $this->document;}
-  public function getView()			{return $this->view;}
-  public function getLayout()			{return $this->layout;}
-  public function getTemplate()			{return $this->template;}
-  public function getDate()			{return $this->date;}
+  public function getDocument()			{ return $this->document; }
+  public function getView()			{ return $this->view; }
+  public function getLayout()			{ return $this->layout; }
+  public function getTemplate()			{ return $this->template; }
+  public function getDate()			{ return $this->date; }
 
-  public function getFilter($name)              {return $this->filters[$name];}
+  public function getFilter($name)              { return $this->filters[$name]; }
 
   public function XMLResponse()
   {
@@ -63,7 +63,6 @@ class XMLResponse
       $argsFragment->appendXML($xml);
       $this->argumentsNode->appendChild($argsFragment);
     }
-
     //lx:filter
     $this->filtersNode = $this->document->createElement('lx:filters');
 
@@ -161,7 +160,8 @@ class XMLResponse
   protected function finalize()
   {
     // lx:response
-    $this->rootNode->setAttribute('time', abs(microtime() - $this->start_time) * 1000);
+    $time = max(0., (microtime() - $this->start_time)) * 1000;
+    $this->rootNode->setAttribute('time', $time);
 
     // lx:request
     if (defined('LX_MODULE') && LX_MODULE)
