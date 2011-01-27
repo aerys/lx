@@ -8,6 +8,7 @@
 	import flash.net.URLRequestMethod;
 	import flash.net.URLVariables;
 	import flash.utils.Proxy;
+	import flash.utils.escapeMultiByte;
 	import flash.utils.flash_proxy;
 	
 	/**
@@ -26,17 +27,13 @@
 			_url = myURL;
 		}
 		
-		private function loaderCompleteHandler(e : Event) : void 
-		{
-			dispatchEvent(new LXEvent(LXEvent.RESPONSE, new XML((e.target as URLLoader).data)));
-		}
-		
 		override flash_proxy function callProperty(name : *, ...rest) : *
 		{
 			var url : String = _url + "/" + name;
 			var numArguments : int = rest.length;
 			var request : URLRequest = new URLRequest();
 			var loader : URLLoader = new URLLoader();
+			var data : URLVariables = new URLVariables();
 			
 			if (rest[numArguments - 1] is Function)
 			{
@@ -52,25 +49,35 @@
 			
 			if (typeof rest[0] == "object")
 			{
-				var data : URLVariables = new URLVariables();
+				
 				var obj : Object = rest[0];
 				
 				for (var propertyName : String in obj)
 					data[propertyName] = obj[propertyName];
 				
 				request.method = URLRequestMethod.POST;
-				request.data = data;
+				
 			}
 			else
 			{
 				for (var i : int = 0; i < numArguments; ++i)
-					url += "/" + encodeURIComponent(rest[i]);
+					url += "/" + escapeMultiByte(rest[i]);
 			}
 			
+			data[int(Math.random() * int.MAX_VALUE).toString()] = int(Math.random() * int.MAX_VALUE);
+			
 			request.url = url;
+			request.data = data;
 						
 			loader.addEventListener(Event.COMPLETE, loaderCompleteHandler);
 			loader.load(request);
+			
+			return new LXAction(request, this);
+		}
+		
+		private function loaderCompleteHandler(e : Event) : void 
+		{
+			dispatchEvent(new LXEvent(LXEvent.RESPONSE, new XML((e.target as URLLoader).data)));
 		}
 		
 		public function toString() : String
