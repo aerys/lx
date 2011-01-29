@@ -42,7 +42,6 @@ class Dispatcher
 	$request = str_replace(LX_DOCUMENT_ROOT, '', $request);
 
       // response handler
-
       if (($pos = strrpos($request, '.')) !== false)
       {
 	$extension = substr($request, $pos + 1);
@@ -66,6 +65,7 @@ class Dispatcher
       }
       LX::setResponse($this->response);
 
+      /*
       // cut the request
       preg_match_all("/\/([^\/]+)/", $request, $params);
       $params = $params[1];
@@ -78,32 +78,35 @@ class Dispatcher
 
       if (isset($map['modules'][$module]))
       {
-	$map = $map['modules'][$module];
-	$filters = array_merge($filters, $map['filters']);
+        $map = $map['modules'][$module];
+        $filters = array_merge($filters, $map['filters']);
       }
 
       // controller
       $map = $map['controllers'];
       if (count($params) && isset($map[$params[0]]))
-	$controller = array_shift($params);
+        $controller = array_shift($params);
       if (isset($map[$controller]))
       {
-	$action = $map[$controller]['default_action'];
-	$filters = array_merge($filters, $map[$controller]['filters']);
+        $action = $map[$controller]['default_action'];
+        $filters = array_merge($filters, $map[$controller]['filters']);
       }
 
       // action
       $actionsMap = $map[$controller]['actions'];
       if (count($params) && isset($actionsMap[$params[0]]))
-	$action = array_shift($params);
+        $action = array_shift($params);
       if (isset($actionsMap[$action]))
-	$filters = array_merge($filters, $actionsMap[$action]['filters']);
+        $filters = array_merge($filters, $actionsMap[$action]['filters']);
+      */
+
+      list($module, $controller, $action, $params) = $this->response->handleRequest($request);
 
       define('LX_MODULE', $module);
       define('LX_CONTROLLER', $controller);
       define('LX_ACTION', $action);
 
-      if (!isset($map[LX_CONTROLLER]))
+      if (!isset($map['controllers'][LX_CONTROLLER]))
 	throw new UnknownControllerException(LX_CONTROLLER);
 
       // arguments
@@ -136,7 +139,10 @@ class Dispatcher
       }
 
       // create a new controller instance
-      $class = $map[LX_CONTROLLER]['class'];
+      if (LX_MODULE)
+        $map = $map['modules'][LX_MODULE];
+      $class = $map['controllers'][LX_CONTROLLER]['class'];
+      $actionsMap = $map['controllers'][LX_CONTROLLER]['actions'];
       $cont = new $class();
 
       // call the controller's action

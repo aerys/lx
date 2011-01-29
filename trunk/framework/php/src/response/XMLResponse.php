@@ -57,12 +57,12 @@ class XMLResponse
 
     // lx:arguments
     $this->argumentsNode = $this->document->createElement('lx:arguments');
-    if (($xml = XML::node('get', $_GET) . XML::node('post', $_POST)))
+    /*if (($xml = XML::node('get', $_GET) . XML::node('post', $_POST)))
     {
       $argsFragment = $this->document->createDocumentFragment();
       $argsFragment->appendXML($xml);
       $this->argumentsNode->appendChild($argsFragment);
-    }
+      }*/
     //lx:filter
     $this->filtersNode = $this->document->createElement('lx:filters');
 
@@ -167,15 +167,15 @@ class XMLResponse
     if (defined('LX_MODULE') && LX_MODULE)
       $this->requestNode->setAttribute('module', LX_MODULE);
     if (defined('LX_CONTROLLER') && LX_CONTROLLER)
-    $this->requestNode->setAttribute('controller', LX_CONTROLLER);
+      $this->requestNode->setAttribute('controller', LX_CONTROLLER);
     if (defined('LX_ACTION') && LX_ACTION)
       $this->requestNode->setAttribute('action', LX_ACTION);
     if ($this->argumentsNode->hasChildNodes())
       $this->requestNode->appendChild($this->argumentsNode);
 
     if ($this->filtersNode->hasChildNodes())
-        $this->rootNode->insertBefore($this->filtersNode,
-                                      $this->requestNode->nextSibling);
+      $this->rootNode->insertBefore($this->filtersNode,
+                                    $this->requestNode->nextSibling);
 
     // insert view node
     $viewCfg = $this->document->createElement('lx:view');
@@ -198,6 +198,52 @@ class XMLResponse
     $this->document->save('php://output');
   }
 
+  public function handleRequest($request)
+  {
+    global $_LX;
+
+    $map	= $_LX['map'];
+    $module	= '';
+    $controller	= LX_DEFAULT_CONTROLLER;
+    $action	= '';
+    $filters	= $_LX['map']['filters'];
+    $extension	= NULL;
+
+    // cut the request
+    preg_match_all("/\/([^\/]+)/", $request, $params);
+    $params = $params[1];
+
+    // module
+    if (count($params) && isset($map['modules'][$params[0]]))
+      $module = array_shift($params);
+    else if (isset($map['modules'][LX_DEFAULT_MODULE]))
+      $module = LX_DEFAULT_MODULE;
+
+    if (isset($map['modules'][$module]))
+    {
+      $map = $map['modules'][$module];
+      $filters = array_merge($filters, $map['filters']);
+    }
+
+    // controller
+    $map = $map['controllers'];
+    if (count($params) && isset($map[$params[0]]))
+      $controller = array_shift($params);
+    if (isset($map[$controller]))
+    {
+      $action = $map[$controller]['default_action'];
+      $filters = array_merge($filters, $map[$controller]['filters']);
+    }
+
+    // action
+    $actionsMap = $map[$controller]['actions'];
+    if (count($params) && isset($actionsMap[$params[0]]))
+      $action = array_shift($params);
+    if (isset($actionsMap[$action]))
+      $filters = array_merge($filters, $actionsMap[$action]['filters']);
+
+    return array($module, $controller, $action, $params);
+  }
 }
 
 ?>
