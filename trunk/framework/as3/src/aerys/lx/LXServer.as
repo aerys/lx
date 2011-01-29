@@ -12,7 +12,12 @@
 	{
 		private var _url	: String	= null;
 		
-		public function LXServer(myURL : String)
+		public function get url() : String
+		{
+			return _url;
+		}
+		
+		public function LXServer(myURL : String = "")
 		{
 			super();
 			
