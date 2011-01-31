@@ -46,7 +46,6 @@ class LX
 
     if (!$external)
     {
-
       if ($url[0] != '/' && LX_DOCUMENT_ROOT != '/')
         $url = '/' . $url;
 
