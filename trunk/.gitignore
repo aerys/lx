@@ -1,5 +1,2 @@
-.actionScriptProperties
-.flexLibProperties
-.project
-.settings
-bin
+bin/*.php
+bin/models/*.php

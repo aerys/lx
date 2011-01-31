@@ -35,6 +35,12 @@ class Cache
     $this->enabled = true;
   }
 
+  public function flush()
+  {
+    if ($this->connected)
+      $this->memcache->flush();
+  }
+
   private function connect()
   {
     if ($this->enabled && !$this->connected)
