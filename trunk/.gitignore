@@ -1,2 +1,7 @@
+framework/as3/.actionScriptProperties
+framework/as3/.flexLibProperties
+framework/as3/.project
+framework/as3/.settings/
+framework/as3/bin/
 bin/*.php
 bin/models/*.php
