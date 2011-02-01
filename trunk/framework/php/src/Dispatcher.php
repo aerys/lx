@@ -100,16 +100,16 @@ class Dispatcher
         $filters = array_merge($filters, $actionsMap[$action]['filters']);
       */
 
-      list($module, $controller, $action, $params) = $this->response->handleRequest($request);
+      list($filters, $module, $controller, $action, $params) = $this->response->handleRequest($request);
 
       define('LX_MODULE', $module);
       define('LX_CONTROLLER', $controller);
       define('LX_ACTION', $action);
 
+      // create a new controller instance
       if (!isset($map['controllers'][LX_CONTROLLER]))
 	throw new UnknownControllerException(LX_CONTROLLER);
 
-      // create a new controller instance
       if (LX_MODULE)
         $map = $map['modules'][LX_MODULE];
       $class = $map['controllers'][LX_CONTROLLER]['class'];
@@ -118,24 +118,18 @@ class Dispatcher
       // arguments
       $this->response->appendArguments($params, 'url');
 
-      //if (LX_MODULE)
-      //LX::addApplicationDirectory('/src/controllers/' . LX_MODULE);
-
       // start buffering
       ob_start();
 
       // filters
-      if (LX_MODULE)
-        $filters = array_merge($filters, $map['filters']);
-      $filters = array_merge($filters, $map['controllers'][LX_CONTROLLER]['filters']);
-      $filters = array_merge($filters, $actionsMap[LX_ACTION]['filters']);
-
       foreach ($filters as $filterName => $filterClass)
       {
         $this->filterName = $filterName;
 	$filter = new $filterClass();
 	$filter_result = $filter->filter();
-        $ob_output = ob_get_clean();
+        $ob_output = ob_get_contents();
+
+        ob_clean();
 
 	if (FilterResult::IGNORE !== $filter_result)
         {
@@ -149,9 +143,8 @@ class Dispatcher
 	  break ;
       }
 
-      $cont = new $class();
-
       // call the controller's action
+      $cont = new $class();
       $result = null;
       if ($action)
       {

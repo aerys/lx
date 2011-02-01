@@ -242,7 +242,7 @@ class XMLResponse
     if (isset($actionsMap[$action]))
       $filters = array_merge($filters, $actionsMap[$action]['filters']);
 
-    return array($module, $controller, $action, $params);
+    return array($filters, $module, $controller, $action, $params);
   }
 }
 
