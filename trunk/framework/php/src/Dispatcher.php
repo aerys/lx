@@ -109,6 +109,12 @@ class Dispatcher
       if (!isset($map['controllers'][LX_CONTROLLER]))
 	throw new UnknownControllerException(LX_CONTROLLER);
 
+      // create a new controller instance
+      if (LX_MODULE)
+        $map = $map['modules'][LX_MODULE];
+      $class = $map['controllers'][LX_CONTROLLER]['class'];
+      $actionsMap = $map['controllers'][LX_CONTROLLER]['actions'];
+
       // arguments
       $this->response->appendArguments($params, 'url');
 
@@ -119,6 +125,11 @@ class Dispatcher
       ob_start();
 
       // filters
+      if (LX_MODULE)
+        $filters = array_merge($filters, $map['filters']);
+      $filters = array_merge($filters, $map['controllers'][LX_CONTROLLER]['filters']);
+      $filters = array_merge($filters, $actionsMap[LX_ACTION]['filters']);
+
       foreach ($filters as $filterName => $filterClass)
       {
         $this->filterName = $filterName;
@@ -138,11 +149,6 @@ class Dispatcher
 	  break ;
       }
 
-      // create a new controller instance
-      if (LX_MODULE)
-        $map = $map['modules'][LX_MODULE];
-      $class = $map['controllers'][LX_CONTROLLER]['class'];
-      $actionsMap = $map['controllers'][LX_CONTROLLER]['actions'];
       $cont = new $class();
 
       // call the controller's action
