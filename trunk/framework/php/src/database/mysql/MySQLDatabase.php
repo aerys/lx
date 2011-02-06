@@ -51,7 +51,7 @@ class MySQLDatabase extends AbstractDatabase
     return (new MySQLQuery($this, $my_request));
   }
 
-  public function performQuery($my_query, $type = null)
+  public function performQuery($my_query, $modelClass = null)
   {
     $this->connect();
 
@@ -74,7 +74,7 @@ class MySQLDatabase extends AbstractDatabase
 
     $response = array();
     while (($row = $result->fetch_assoc()))
-      $response[] = $type ? new $type($row) : $row;
+      $response[] = $modelClass ? new $modelClass($row) : $row;
 
     return $response;
   }

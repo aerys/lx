@@ -45,12 +45,12 @@ abstract class AbstractModel extends XMLSerializable
       $this->$name = $model->$name;
   }
 
-  public function loadXML($filename)
+  public function loadXML($filename, $useCache = true)
   {
-    $cache = Cache::getCache();
-    $object = $cache->get($filename);
+    $cache = $useCache ? $cache = Cache::getCache() : null;
+    $key = $useCache ? md5(realpath($filename)) : null;
 
-    if ($object)
+    if ($useCache && $cache && ($object = $cache->get($key)))
     {
       $this->copy($object);
     }
@@ -67,17 +67,14 @@ abstract class AbstractModel extends XMLSerializable
         $this->$nodeName = substr($xml, $l, strlen($xml) - ($l * 2 + 1));
       }
 
-      $cache->set($filename, $this);
+      if ($useCache && $cache)
+        $cache->set($key, $this);
     }
   }
 
-  public function saveXML($filename = null)
+  public function saveXML($filename, $useCache = true)
   {
     $xml = XML::serialize($this);
-
-    if (!$filename)
-      return $xml;
-
     $doc = new DOMDocument('1.0', 'utf-8');
 
     $fragment = $doc->createDocumentFragment();
@@ -85,6 +82,9 @@ abstract class AbstractModel extends XMLSerializable
     $doc->appendChild($fragment);
 
     $doc->save($filename);
+
+    if ($useCache && ($cache = Cache::getCache()))
+      $cache->set(md5(realpath($filename)), $this);
   }
 
   public function __get($propertyName)

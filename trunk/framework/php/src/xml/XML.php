@@ -19,6 +19,11 @@ class XML
     return $result;
   }
 
+  public static function cdata($str)
+  {
+    return '<![CDATA[' . $str . ']]>';
+  }
+
   public static function attribute($name, $value)
   {
     return $name . '="' . self::serialize($value . '') . '"';

@@ -23,24 +23,31 @@
       @template lx:select
       SELECT database request template.
     -->
-  <xsl:template match="lx:select">
+  <xsl:template match="lx:select | lx:count">
     <xsl:text>SELECT </xsl:text>
     <xsl:choose>
-      <xsl:when test="lx:get">
-	<xsl:call-template name="lx:for-each">
-	  <xsl:with-param name="collection" select="lx:get"/>
-	  <xsl:with-param name="begin" select="'`'"/>
-	  <xsl:with-param name="delimiter" select="'`, `'"/>
-	  <xsl:with-param name="end" select="'`'"/>
-	</xsl:call-template>
+      <xsl:when test="local-name() = 'count'">
+        <xsl:text>COUNT(*)</xsl:text>
       </xsl:when>
       <xsl:otherwise>
-	<xsl:call-template name="lx:for-each">
-	  <xsl:with-param name="collection" select="//lx:property/@name"/>
-	  <xsl:with-param name="begin" select="'`'"/>
-	  <xsl:with-param name="delimiter" select="'`, `'"/>
-	  <xsl:with-param name="end" select="'`'"/>
-	</xsl:call-template>
+        <xsl:choose>
+          <xsl:when test="lx:get">
+	    <xsl:call-template name="lx:for-each">
+	      <xsl:with-param name="collection" select="lx:get"/>
+	      <xsl:with-param name="begin" select="'`'"/>
+	      <xsl:with-param name="delimiter" select="'`, `'"/>
+	      <xsl:with-param name="end" select="'`'"/>
+	    </xsl:call-template>
+          </xsl:when>
+          <xsl:otherwise>
+	    <xsl:call-template name="lx:for-each">
+	      <xsl:with-param name="collection" select="//lx:property/@name"/>
+	      <xsl:with-param name="begin" select="'`'"/>
+	      <xsl:with-param name="delimiter" select="'`, `'"/>
+	      <xsl:with-param name="end" select="'`'"/>
+	    </xsl:call-template>
+          </xsl:otherwise>
+        </xsl:choose>
       </xsl:otherwise>
     </xsl:choose>
     <xsl:text> FROM </xsl:text>

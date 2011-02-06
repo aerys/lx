@@ -202,7 +202,7 @@
     <xsl:text>){</xsl:text>
 
     <xsl:text>$q='</xsl:text>
-    <xsl:apply-templates select="lx:select
+    <xsl:apply-templates select="lx:select | lx:count
                                  | lx:delete
                                  | lx:update | lx:insert | lx:insert-or-update"/>
     <xsl:text>';</xsl:text>
@@ -232,14 +232,18 @@
     <xsl:text>;</xsl:text>
 
     <!-- cache -->
-    <xsl:if test="lx:select and lx:select/@ttl != 0">
+    <xsl:if test="lx:select and lx:select/@ttl">
       <xsl:text>$c=Cache::getCache();</xsl:text>
       <xsl:text>if($c and ($r=$c->get($k=md5($q))))</xsl:text>
       <xsl:text>return $r;</xsl:text>
     </xsl:if>
 
     <!-- perform query -->
-    <xsl:text>$r=$db->performQuery($q,__CLASS__);</xsl:text>
+    <xsl:text>$r=$db->performQuery($q</xsl:text>
+    <xsl:if test="lx:select">
+      <xsl:text>,__CLASS__</xsl:text>
+    </xsl:if>
+    <xsl:text>);</xsl:text>
 
     <!-- set record id -->
     <xsl:if test="lx:insert
@@ -254,7 +258,7 @@
     </xsl:if>
 
     <!-- cache update -->
-    <xsl:if test="lx:select and lx:select/@ttl != 0">
+    <xsl:if test="lx:select and lx:select/@ttl">
      <xsl:text>$c and $c->set($k,$r,</xsl:text>
      <xsl:value-of select="lx:select/@ttl"/>
      <xsl:text>);</xsl:text>
@@ -267,6 +271,9 @@
 	<xsl:text>$db->getInsertId()</xsl:text>
       </xsl:when>
       <xsl:when test="lx:delete">
+      </xsl:when>
+      <xsl:when test="lx:count">
+        <xsl:text>(int)$r[0]['COUNT(*)']</xsl:text>
       </xsl:when>
       <xsl:when test="$isStatic or lx:select">
 	<!--<xsl:text>$n</xsl:text>-->

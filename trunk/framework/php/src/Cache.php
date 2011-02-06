@@ -80,6 +80,13 @@ class Cache
                                   $ttl)
            : false;
   }
+
+  public function delete($key)
+  {
+    return $this->connect()
+           ? $this->memcache->delete($key)
+           : false;
+  }
 }
 
 ?>
