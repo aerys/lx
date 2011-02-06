@@ -17,7 +17,8 @@ class Cache
 
   public static function getCache($name = self::DEFAULT_CACHE_NAME)
   {
-    return self::$caches[$name];
+    return isset(self::$caches[$name]) ? self::$caches[$name]
+                                       : null;
   }
 
   public function Cache($name,
@@ -85,6 +86,13 @@ class Cache
   {
     return $this->connect()
            ? $this->memcache->delete($key)
+           : false;
+  }
+
+  public function flush()
+  {
+    return $this->connect()
+           ? $this->memcache->flush()
            : false;
   }
 }
