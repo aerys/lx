@@ -4,6 +4,8 @@
   <!-- Absolute path to the LX framework. -->
   <!--<lx:const name="LX_ROOT" value="'/var/www/lx/trunk/framework'"/>-->
 
+  <!--<lx:const name="LX_DOCUMENT_ROOT" value="'/'"/>-->
+
   <!-- Enable/disable stack traces output in responses. -->
   <lx:const name="LX_DEBUG" value="true"/>
 

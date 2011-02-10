@@ -93,6 +93,16 @@
     </xsl:call-template>
   </xsl:template>
 
+  <xsl:template match="lx:select/@offset | lx:select/@limit" mode="set">
+    <xsl:if test="ancestor::lx:static-method/lx:argument/@name = .">
+      <xsl:call-template name="lx:set-property">
+        <xsl:with-param name="property" select="name()"/>
+        <xsl:with-param name="value" select="."/>
+        <xsl:with-param name="type" select="'integer'"/>
+      </xsl:call-template>
+    </xsl:if>
+  </xsl:template>
+
   <xsl:template match="lx:set | lx:where"
 		name="lx:set-property"
 		mode="set">
@@ -107,6 +117,7 @@
 	</xsl:otherwise>
       </xsl:choose>
     </xsl:param>
+    <xsl:param name="type"/>
 
     <xsl:variable name="method" select="ancestor::lx:method | ancestor::lx:static-method"/>
     <xsl:variable name="isArgument" select="boolean($method/lx:argument[@name = $value])"/>
@@ -127,9 +138,12 @@
       </xsl:choose>
     </xsl:variable>
 
-    <!-- variable type -->
+    <!-- parameter type -->
     <xsl:variable name="set_type">
       <xsl:choose>
+        <xsl:when test="$type != ''">
+          <xsl:value-of select="$type"/>
+        </xsl:when>
 	<xsl:when test="$isArgument or $isProperty">
 	  <xsl:value-of select="/lx:model/lx:property[@name = $property]/@type"/>
 	</xsl:when>
@@ -164,10 +178,14 @@
 
   <xsl:template name="lx:set-query-properties">
     <xsl:apply-templates select="descendant::node()[@property]" mode="set"/>
+
+    <xsl:apply-templates select=".//@offset | .//@limit" mode="set"/>
+
     <xsl:if test="not(descendant::lx:set)">
       <xsl:if test="(lx:insert or lx:insert-or-update) and not(descendant::lx:set)">
         <xsl:apply-templates select="/lx:model/lx:property" mode="set"/>
       </xsl:if>
+
       <xsl:if test="lx:update">
         <xsl:apply-templates select="/lx:model/lx:property[not(@read-only)]" mode="set"/>
       </xsl:if>
@@ -202,7 +220,7 @@
     <xsl:text>){</xsl:text>
 
     <xsl:text>$q='</xsl:text>
-    <xsl:apply-templates select="lx:select
+    <xsl:apply-templates select="lx:select | lx:count
                                  | lx:delete
                                  | lx:update | lx:insert | lx:insert-or-update"/>
     <xsl:text>';</xsl:text>
@@ -239,7 +257,11 @@
     </xsl:if>
 
     <!-- perform query -->
-    <xsl:text>$r=$db->performQuery($q,__CLASS__);</xsl:text>
+    <xsl:text>$r=$db->performQuery($q</xsl:text>
+    <xsl:if test="not(lx:count)">
+      <xsl:text>,__CLASS__</xsl:text>
+    </xsl:if>
+    <xsl:text>);</xsl:text>
 
     <!-- set record id -->
     <xsl:if test="lx:insert
@@ -267,6 +289,9 @@
 	<xsl:text>$db->getInsertId()</xsl:text>
       </xsl:when>
       <xsl:when test="lx:delete">
+      </xsl:when>
+      <xsl:when test="lx:count">
+        <xsl:text>(int)$r[0]['COUNT(*)']</xsl:text>
       </xsl:when>
       <xsl:when test="$isStatic or lx:select">
 	<!--<xsl:text>$n</xsl:text>-->
