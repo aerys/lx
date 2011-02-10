@@ -71,7 +71,9 @@
         <xsl:value-of select="string(.)"/>
       </xsl:otherwise>
     </xsl:choose>
-    <xsl:text>, </xsl:text>
+    <xsl:if test="name() = 'offset'">
+      <xsl:text>, </xsl:text>
+    </xsl:if>
   </xsl:template>
 
   <!--
