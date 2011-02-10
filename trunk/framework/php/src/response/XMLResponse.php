@@ -160,7 +160,7 @@ class XMLResponse
   protected function finalize()
   {
     // lx:response
-    $time = max(0., (microtime() - $this->start_time)) * 1000;
+    $time = abs((microtime() - $this->start_time)) * 1000;
     $this->rootNode->setAttribute('time', $time);
 
     // lx:request

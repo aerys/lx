@@ -264,7 +264,7 @@
     <xsl:text>);</xsl:text>
 
     <!-- set record id -->
-    <xsl:if test="lx:insert
+    <xsl:if test="(lx:insert or lx:insert-or-update)
                   and /lx:model/lx:property[@name='id' and @read-only='true']
                   and not($isStatic)">
       <xsl:text>$this->id=$db->getInsertId();</xsl:text>
