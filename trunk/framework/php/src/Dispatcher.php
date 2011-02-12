@@ -65,41 +65,6 @@ class Dispatcher
       }
       LX::setResponse($this->response);
 
-      /*
-      // cut the request
-      preg_match_all("/\/([^\/]+)/", $request, $params);
-      $params = $params[1];
-
-      // module
-      if (count($params) && isset($map['modules'][$params[0]]))
-        $module = array_shift($params);
-      else if (isset($map['modules'][LX_DEFAULT_MODULE]))
-        $module = LX_DEFAULT_MODULE;
-
-      if (isset($map['modules'][$module]))
-      {
-        $map = $map['modules'][$module];
-        $filters = array_merge($filters, $map['filters']);
-      }
-
-      // controller
-      $map = $map['controllers'];
-      if (count($params) && isset($map[$params[0]]))
-        $controller = array_shift($params);
-      if (isset($map[$controller]))
-      {
-        $action = $map[$controller]['default_action'];
-        $filters = array_merge($filters, $map[$controller]['filters']);
-      }
-
-      // action
-      $actionsMap = $map[$controller]['actions'];
-      if (count($params) && isset($actionsMap[$params[0]]))
-        $action = array_shift($params);
-      if (isset($actionsMap[$action]))
-        $filters = array_merge($filters, $actionsMap[$action]['filters']);
-      */
-
       list($filters, $module, $controller, $action, $params) = $this->response->handleRequest($request);
 
       define('LX_MODULE', $module);
@@ -178,10 +143,10 @@ class Dispatcher
 
       if (LX_DEBUG)
       {
-	if ($this->response)
-          $this->response->appendErrorException($e);
+		if ($this->response)
+			$this->response->appendErrorException($e);
         else
-          echo $e->getMessage();
+			echo $e->getMessage();
       }
     }
     catch (Exception $e)
