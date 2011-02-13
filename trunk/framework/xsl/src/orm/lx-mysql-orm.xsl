@@ -64,10 +64,22 @@
     <!-- LIMIT -->
     <xsl:if test="@limit">
       <xsl:text> LIMIT </xsl:text>
-      <xsl:if test="@offset">
-	<xsl:value-of select="@offset"/>,
-      </xsl:if>
-      <xsl:value-of select="@limit"/>
+      <xsl:apply-templates select="@offset"/>
+      <xsl:apply-templates select="@limit"/>
+    </xsl:if>
+  </xsl:template>
+
+  <xsl:template match="lx:select/@offset | lx:select/@limit">
+    <xsl:choose>
+      <xsl:when test="ancestor::lx:static-method/lx:argument/@name = .">
+        <xsl:value-of select="concat(':', ., '_', generate-id())"/>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:value-of select="string(.)"/>
+      </xsl:otherwise>
+    </xsl:choose>
+    <xsl:if test="name() = 'offset'">
+      <xsl:text>, </xsl:text>
     </xsl:if>
   </xsl:template>
 
@@ -190,6 +202,11 @@
 	</xsl:for-each>
       </xsl:otherwise>
     </xsl:choose>
+  </xsl:template>
+
+  <xsl:template match="lx:count">
+    <xsl:text>SELECT COUNT(*)</xsl:text>
+    <xsl:apply-templates select="node()"/>
   </xsl:template>
 
   <xsl:template match="lx:order-by">
