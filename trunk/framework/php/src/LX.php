@@ -123,8 +123,9 @@ class LX
   {
     if (($pos = strpos($url, '?')) !== false)
       $url = substr($url, 0, $pos);
-    if (LX_DOCUMENT_ROOT != '/')
-      $url = str_replace(LX_DOCUMENT_ROOT, '', $url);
+    if (LX_DOCUMENT_ROOT != '/'
+        && ($pos = strpos($url, LX_DOCUMENT_ROOT)) !== false)
+      $url = substr($url, $pos + strlen(LX_DOCUMENT_ROOT));
 
     if ((preg_match('#^/views/(.*)\.(xsl|xml)$#', $url)
          && file_exists($filename = LX_APPLICATION_ROOT . '/src' . $url))

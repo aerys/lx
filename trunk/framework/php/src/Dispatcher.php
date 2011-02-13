@@ -34,13 +34,6 @@ class Dispatcher
       $filters		= $_LX['map']['filters'];
       $extension	= NULL;
 
-      if (($pos = strpos($request, '?')) !== false)
-        $request = substr($request, 0, $pos);
-
-      // delete document root from the URL
-      if (LX_DOCUMENT_ROOT != '/')
-	$request = str_replace(LX_DOCUMENT_ROOT, '', $request);
-
       // response handler
       if (($pos = strrpos($request, '.')) !== false)
       {
