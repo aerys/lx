@@ -35,7 +35,9 @@ class XMLResponse
   public function XMLResponse()
   {
     $this->start_time = microtime();
-    $this->date = time();
+    $this->date = isset($_SERVER['REQUEST_TIME'])
+                  ? (int)$_SERVER['REQUEST_TIME']
+                  : time();
 
     $this->document = new DOMDocument('1.0', 'utf-8');
 

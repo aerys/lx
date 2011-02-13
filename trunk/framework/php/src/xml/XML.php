@@ -111,7 +111,8 @@ class XML
       $properties = $rClass->getProperties(ReflectionProperty::IS_PUBLIC);
     }
 
-    $rootName    = $noRoot ? '' : lcfirst(get_class($object));
+    $className   = get_class($object);
+    $rootName    = $noRoot ? '' : strtolower($className[0]) . substr($className, 1);
     $result	 = $noRoot ? '' : '<' . $rootName . '>';
 
     foreach ($properties as $propertyName)
