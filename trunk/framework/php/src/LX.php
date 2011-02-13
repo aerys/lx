@@ -21,7 +21,10 @@ class LX
 
   static private $extensionToMime       = array('css'   => 'text/css',
                                                 'xml'   => 'text/xml',
-                                                'xsl'   => 'text/xsl');
+                                                'xsl'   => 'text/xsl',
+                                                'png'   => 'image/png',
+                                                'jpg'   => 'image/jpg',
+                                                'js'    => 'text/javascript');
 
   static public function setResponse($my_response)	{self::$response = $my_response;}
   static public function getResponse()			{return (self::$response);}
@@ -129,8 +132,25 @@ class LX
             && !is_dir($filename)))
     {
       $extension = substr($url, strrpos($url, '.') + 1);
+      $lastModified = filemtime($filename);
+
       if (isset(self::$extensionToMime[$extension]))
         header('Content-Type: ' . self::$extensionToMime[$extension]);
+
+      if (isset($_SERVER['HTTP_IF_MODIFIED_SINCE'])
+          && strtotime($_SERVER['HTTP_IF_MODIFIED_SINCE']) >= $lastModified)
+      {
+        if (php_sapi_name() == 'CGI')
+          header('Status: 304 Not Modified');
+        else
+          header('HTTP/1.0 304 Not Modified');
+
+        return ;
+      }
+
+      header('Cache-Control: max-age=' . LX_HTTP_CACHE . ', must-revalidate');
+      header('Last-Modified: ' . gmdate("D, d M Y H:i:s\G\M\T", $lastModified));
+
       echo file_get_contents($filename);
     }
     else

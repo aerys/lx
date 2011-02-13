@@ -20,6 +20,7 @@ define('LX_CLIENT_XSL_SUPPORT', isset($_COOKIE['LX_CLIENT_XSL_SUPPORT'])
 define('LX_NAMESPACE',		'http://lx.aerys.in');
 define('LX_DEFAULT_TIMEZONE',	'Europe/Paris');
 define('LX_DEFAULT_EXTENSION',	'');
+define('LX_DEFAULT_HTTP_CACHE', 3600 * 24 * 365);
 
 if (!defined('LX_ROOT'))
   define('LX_ROOT', realpath(dirname(__FILE__) . '/../../..'));
@@ -44,6 +45,9 @@ if (!defined('LX_DEFAULT_TEMPLATE'))
 
 if (!defined('LX_DEBUG'))
   define('LX_DEBUG', false);
+
+if (!defined('LX_HTTP_CACHE'))
+  define('LX_HTTP_CACHE', LX_DEFAULT_HTTP_CACHE);
 
 define('LX_HOST', isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : null);
 
