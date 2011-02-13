@@ -2,16 +2,4 @@ Options +FollowSymLinks
 
 RewriteEngine On
 
-RewriteCond %{REQUEST_FILENAME} !/public
-RewriteCond %{REQUEST_URI} (/[^/]+)?/(.*)\.(.*)
-RewriteCond %{DOCUMENT_ROOT}%1/public/%2\.%3 -f [OR]
-RewriteCond %{DOCUMENT_ROOT}/public%1/%2\.%3 -f
-RewriteRule ^(.*)$ public/$1 [L]
-
-RewriteCond %{REQUEST_URI} (/[^/]+)?/views/(.*)\.(xml|xsl)
-RewriteCond %{DOCUMENT_ROOT}%1/src/views/%2\.%3 -f
-RewriteRule ^views/(.*)\.(xml|xsl)$ src/views/$1\.$2 [L]
-
-RewriteCond %{REQUEST_FILENAME} !/(public|src/views) [OR]
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteRule ^.*$ public/lx-dispatch.php [L]
+RewriteRule ^.*$ index.php [L]

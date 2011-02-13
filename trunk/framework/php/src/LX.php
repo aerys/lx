@@ -19,6 +19,10 @@ class LX
 						'/bin',
 						'/bin/models');
 
+  static private $extensionToMime       = array('css'   => 'text/css',
+                                                'xml'   => 'text/xml',
+                                                'xsl'   => 'text/xsl');
+
   static public function setResponse($my_response)	{self::$response = $my_response;}
   static public function getResponse()			{return (self::$response);}
 
@@ -26,7 +30,9 @@ class LX
   {
     global $_LX;
 
-    return (isset($_LX['databases'][$my_name]) ? $_LX['databases'][$my_name] : NULL);
+    return isset($_LX['databases'][$my_name])
+           ? $_LX['databases'][$my_name]
+           : null;
   }
 
   static public function disableErrors()
@@ -112,7 +118,25 @@ class LX
 
   static public function dispatchHTTPRequest($url, $get, $post)
   {
-    Dispatcher::get()->dispatchHTTPRequest($url, $get, $post);
+    if (($pos = strpos($url, '?')) !== false)
+      $url = substr($url, 0, $pos);
+    if (LX_DOCUMENT_ROOT != '/')
+      $url = str_replace(LX_DOCUMENT_ROOT, '', $url);
+
+    if ((preg_match('#^/views/(.*)\.(xsl|xml)$#', $url)
+         && file_exists($filename = LX_APPLICATION_ROOT . '/src' . $url))
+        || (file_exists($filename = LX_APPLICATION_ROOT . '/public' . $url)
+            && !is_dir($filename)))
+    {
+      $extension = substr($url, strrpos($url, '.') + 1);
+      if (isset(self::$extensionToMime[$extension]))
+        header('Content-Type: ' . self::$extensionToMime[$extension]);
+      echo file_get_contents($filename);
+    }
+    else
+    {
+      Dispatcher::get()->dispatchHTTPRequest($url, $get, $post);
+    }
   }
 
   static public function print_r($myVariable)
