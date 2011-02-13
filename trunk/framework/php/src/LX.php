@@ -144,14 +144,15 @@ class LX
           header('Status: 304 Not Modified');
         else
           header('HTTP/1.0 304 Not Modified');
-
-        return ;
       }
+      else
+      {
+        header('Cache-Control: max-age=' . LX_HTTP_CACHE . ', must-revalidate');
+        header('Last-Modified: ' . gmdate("D, d M Y H:i:s\G\M\T", $lastModified));
+        header('Content-Length: ' . filesize($filename));
 
-      header('Cache-Control: max-age=' . LX_HTTP_CACHE . ', must-revalidate');
-      header('Last-Modified: ' . gmdate("D, d M Y H:i:s\G\M\T", $lastModified));
-
-      echo file_get_contents($filename);
+        readfile($filename);
+      }
     }
     else
     {
