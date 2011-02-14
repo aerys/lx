@@ -236,6 +236,11 @@ class XMLResponse
       $action = $map[$controller]['default_action'];
       $filters = array_merge($filters, $map[$controller]['filters']);
     }
+    else
+    {
+      throw new Exception('No suitable controller could be found.'
+                          . ' Check your lx:map in the project file.');
+    }
 
     // action
     $actionsMap = $map[$controller]['actions'];

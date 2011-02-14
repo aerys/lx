@@ -61,5 +61,5 @@ reload: clean $(LX_PROJECT) models
 	@echo "$(LT_GREEN)The application is ready!$(RST)"
 
 chmod:
-	chgrp -R www-data *
-	chmod -R 770 *
+	find . -type d -exec chmod 755 "{}" \;
+	find . -type f -exec chmod 644 "{}" \;
