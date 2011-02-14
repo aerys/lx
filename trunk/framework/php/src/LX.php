@@ -108,7 +108,7 @@ class LX
     }
   }
 
-  static public function appendDebugMessage($msg)
+  static public function debug($msg)
   {
     if (self::$response)
       self::$response->appendDebugMessage($msg);
@@ -168,25 +168,5 @@ class LX
     return $str;
   }
 }
-
-function __autoload($class_name)
-{
-  LX::autoload($class_name);
-}
-
-function lx_error_handler($errno,
-			  $errstr,
-			  $errfile,
-			  $errline,
-			  $context)
-{
-  // FIXME
-  throw new ErrorException($errstr, 0, $errno, $errfile, $errline);
-
-  /* Don't execute PHP internal error handler */
-  return (true);
-}
-
-set_error_handler('lx_error_handler');
 
 ?>

@@ -71,6 +71,26 @@ set_include_path(get_include_path()
 
 require_once (LX_SRC . '/LX.php');
 
+function __autoload($class_name)
+{
+  LX::autoload($class_name);
+}
+
+function lx_error_handler($errno,
+			  $errstr,
+			  $errfile,
+			  $errline,
+			  $context)
+{
+  // FIXME
+  throw new ErrorException($errstr, 0, $errno, $errfile, $errline);
+
+  /* Don't execute PHP internal error handler */
+  return true;
+}
+
+set_error_handler('lx_error_handler');
+
 $_LX['databases'] = array();
 $_LX['map'] = array('filters'		=> array(),
 		    'modules'		=> array(),
