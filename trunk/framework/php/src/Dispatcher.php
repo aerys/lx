@@ -64,14 +64,14 @@ class Dispatcher
       define('LX_CONTROLLER', $controller);
       define('LX_ACTION', $action);
 
-      // create a new controller instance
-      if (!isset($map['controllers'][LX_CONTROLLER]))
-	throw new UnknownControllerException(LX_CONTROLLER);
-
       if (LX_MODULE)
         $map = $map['modules'][LX_MODULE];
       $class = $map['controllers'][LX_CONTROLLER]['class'];
       $actionsMap = $map['controllers'][LX_CONTROLLER]['actions'];
+
+      // create a new controller instance
+      if (!isset($map['controllers'][LX_CONTROLLER]))
+	throw new UnknownControllerException(LX_CONTROLLER);
 
       // arguments
       $this->response->appendArguments($params, 'url');

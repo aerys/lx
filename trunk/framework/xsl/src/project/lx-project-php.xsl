@@ -181,9 +181,14 @@
   </xsl:template>
 
   <xsl:template match="lx:module">
-    <xsl:text>$_LX['map']['modules']['</xsl:text>
-    <xsl:value-of select="@name"/>
-    <xsl:text>']=array('controllers'=>array(),</xsl:text>
+    <xsl:variable name="varName">
+      <xsl:text>$_LX['map']['modules']['</xsl:text>
+      <xsl:value-of select="@name"/>
+      <xsl:text>']</xsl:text>
+    </xsl:variable>
+
+    <xsl:value-of select="$varName"/>
+    <xsl:text>=array('controllers'=>array(),</xsl:text>
     <xsl:if test="@lx:controller[@default='true']">
       <xsl:text>'default_controller'=>'</xsl:text>
       <xsl:value-of select="@lx:controller[@default='true'][last()]/@name"/>
@@ -201,6 +206,13 @@
     <xsl:apply-templates select="@default-controller"/>
 
     <xsl:apply-templates select="lx:alias"/>
+
+    <xsl:if test="@default='true'">
+      <xsl:text>$_LX['map']['modules'][LX_DEFAULT_MODULE]=</xsl:text>
+      <xsl:value-of select="$varName"/>
+      <xsl:text>;</xsl:text>
+    <xsl:value-of select="$LX_LF"/>
+    </xsl:if>
   </xsl:template>
 
   <xsl:template match="lx:controller/lx:alias">
