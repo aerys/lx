@@ -243,19 +243,19 @@
     <xsl:param name="content"/>
 
     <xsl:variable name="url">
-      <xsl:if test="$module">
+      <xsl:if test="$module != ''">
 	<xsl:value-of select="$module"/>
-	<xsl:if test="$controller or $action">
+	<xsl:if test="$controller != '' or $action != ''">
 	  <xsl:text>/</xsl:text>
 	</xsl:if>
       </xsl:if>
-      <xsl:if test="$controller">
+      <xsl:if test="$controller != ''">
 	<xsl:value-of select="$controller"/>
 	<xsl:if test="$action != ''">
 	  <xsl:text>/</xsl:text>
 	</xsl:if>
       </xsl:if>
-      <xsl:if test="$action">
+      <xsl:if test="$action != ''">
 	<xsl:value-of select="$action"/>
       </xsl:if>
       <xsl:call-template name="lx:for-each">
