@@ -263,8 +263,8 @@
 	<xsl:with-param name="delimiter" select="'/'"/>
 	<xsl:with-param name="collection" select="$arguments"/>
       </xsl:call-template>
-      <xsl:if test="$LX_RESPONSE/lx:request/@handler!='xsl'">
-	<xsl:value-of select="concat('.', $LX_RESPONSE/lx:request/@handler)"/>
+      <xsl:if test="$LX_RESPONSE/lx:request/@extension!='xsl'">
+	<xsl:value-of select="concat('.', $LX_RESPONSE/lx:request/@extension)"/>
       </xsl:if>
     </xsl:variable>
 

@@ -43,6 +43,7 @@ class Dispatcher
 
       if ($extension && isset($_LX['responses'][$extension]))
       {
+        define('LX_REQUEST_EXTENSION', $extension);
         $this->response = new $_LX['responses'][$extension]();
       }
       else
