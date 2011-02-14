@@ -23,31 +23,24 @@
       @template lx:select
       SELECT database request template.
     -->
-  <xsl:template match="lx:select | lx:count">
+  <xsl:template match="lx:select">
     <xsl:text>SELECT </xsl:text>
     <xsl:choose>
-      <xsl:when test="local-name() = 'count'">
-        <xsl:text>COUNT(*)</xsl:text>
+      <xsl:when test="lx:get">
+	<xsl:call-template name="lx:for-each">
+	  <xsl:with-param name="collection" select="lx:get"/>
+	  <xsl:with-param name="begin" select="'`'"/>
+	  <xsl:with-param name="delimiter" select="'`, `'"/>
+	  <xsl:with-param name="end" select="'`'"/>
+	</xsl:call-template>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:choose>
-          <xsl:when test="lx:get">
-	    <xsl:call-template name="lx:for-each">
-	      <xsl:with-param name="collection" select="lx:get"/>
-	      <xsl:with-param name="begin" select="'`'"/>
-	      <xsl:with-param name="delimiter" select="'`, `'"/>
-	      <xsl:with-param name="end" select="'`'"/>
-	    </xsl:call-template>
-          </xsl:when>
-          <xsl:otherwise>
-	    <xsl:call-template name="lx:for-each">
-	      <xsl:with-param name="collection" select="//lx:property/@name"/>
-	      <xsl:with-param name="begin" select="'`'"/>
-	      <xsl:with-param name="delimiter" select="'`, `'"/>
-	      <xsl:with-param name="end" select="'`'"/>
-	    </xsl:call-template>
-          </xsl:otherwise>
-        </xsl:choose>
+	<xsl:call-template name="lx:for-each">
+	  <xsl:with-param name="collection" select="//lx:property/@name"/>
+	  <xsl:with-param name="begin" select="'`'"/>
+	  <xsl:with-param name="delimiter" select="'`, `'"/>
+	  <xsl:with-param name="end" select="'`'"/>
+	</xsl:call-template>
       </xsl:otherwise>
     </xsl:choose>
     <xsl:text> FROM </xsl:text>
@@ -206,6 +199,10 @@
 
   <xsl:template match="lx:count">
     <xsl:text>SELECT COUNT(*)</xsl:text>
+    <xsl:text> FROM </xsl:text>
+    <!-- TABLE -->
+    <xsl:value-of select="concat('`', $LX_TABLE_NAME, '`')"/>
+
     <xsl:apply-templates select="node()"/>
   </xsl:template>
 
