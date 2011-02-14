@@ -61,9 +61,9 @@ class Cache
                                : null;
 
     $time = (microtime() - $time) * 1000.;
-    LX::appendDebugMessage('<cache-get time="' . $time . '">'
-                           . $key
-                           . '</cache-get>');
+    LX::debug('<cache-get time="' . $time . '">'
+              . $key
+              . '</cache-get>');
 
     return $result;
   }

@@ -7,7 +7,7 @@ class XML
     $result = '';
     $xml = self::serialize($value, $nodeName);
 
-    if ($xml)
+    if ($xml !== false)
     {
       $result = '<' . $nodeName;
       if ($attributes)
@@ -31,7 +31,11 @@ class XML
 
   public static function serialize($value, $name = null)
   {
-    if (is_array($value))
+    if (is_numeric($value))
+      return '' . $value;
+    else if (is_bool($value))
+      return $value ? 'true' : 'false';
+    else if (is_array($value))
       return self::serializeArray($value, $name);
     else if (is_object($value))
       return self::serializeObject($value);
@@ -56,10 +60,6 @@ class XML
 
       return $value;
     }
-    else if (is_numeric($value))
-      return '' . $value;
-    else if (is_bool($value))
-      return $value ? 'true' : 'false';
 
     return false;
   }
