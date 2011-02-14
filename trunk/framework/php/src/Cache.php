@@ -70,9 +70,9 @@ class Cache
 
   public function set($key, $value, $ttl = 0, $compressed = false)
   {
-    LX::appendDebugMessage('<cache-set ttl="' . $ttl . '">'
-                          . $key
-                          . '</cache-set>');
+    LX::debug('<cache-set ttl="' . $ttl . '">'
+              . $key
+              . '</cache-set>');
 
     return $this->connect()
            ? $this->memcache->set($key,
