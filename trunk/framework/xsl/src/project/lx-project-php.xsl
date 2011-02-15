@@ -113,17 +113,23 @@
       </xsl:choose>
     </xsl:variable>
 
-    <xsl:text>$_LX['map']</xsl:text>
-    <xsl:if test="$module">
-      <xsl:text>['modules']['</xsl:text>
-      <xsl:value-of select="ancestor::lx:module/@name"/>
+    <xsl:variable name="varName">
+      <xsl:text>$_LX['map']</xsl:text>
+      <xsl:if test="$module">
+        <xsl:text>['modules']['</xsl:text>
+        <xsl:value-of select="ancestor::lx:module/@name"/>
+        <xsl:text>']</xsl:text>
+      </xsl:if>
+      <xsl:text>['controllers']['</xsl:text>
+      <xsl:value-of select="@name"/>
       <xsl:text>']</xsl:text>
-    </xsl:if>
-    <xsl:text>['controllers']['</xsl:text>
-    <xsl:value-of select="@name"/>
-    <xsl:text>']=array('class'=>'</xsl:text>
+    </xsl:variable>
+
+    <xsl:value-of select="$varName"/>
+    <xsl:text>=array('class'=>'</xsl:text>
     <xsl:value-of select="$class"/>
 
+    <!-- actions -->
     <xsl:text>','default_action'=>'</xsl:text>
     <xsl:value-of select="./lx:action[@default='true'][last()]/@name"/>
     <xsl:text>','actions'=>array(),'filters'=>array(</xsl:text>
@@ -131,7 +137,12 @@
       <xsl:with-param name="collection" select="lx:filter"/>
       <xsl:with-param name="delimiter" select="','"/>
     </xsl:call-template>
-    <xsl:text>));</xsl:text>
+    <xsl:text>)</xsl:text>
+
+    <xsl:call-template name="filters"/>
+    <xsl:apply-templates select="@view|@layout|@template"/>
+
+    <xsl:text>);</xsl:text>
 
     <xsl:value-of select="$LX_LF"/>
 
@@ -146,38 +157,11 @@
         <xsl:text>']</xsl:text>
       </xsl:if>
       <xsl:text>['controllers'][LX_DEFAULT_CONTROLLER]=</xsl:text>
-      <xsl:text>$_LX['map']</xsl:text>
-      <xsl:if test="$module">
-        <xsl:text>['modules']['</xsl:text>
-        <xsl:value-of select="ancestor::lx:module/@name"/>
-        <xsl:text>']</xsl:text>
-      </xsl:if>
-      <xsl:text>['controllers']['</xsl:text>
-      <xsl:value-of select="@name"/>
-      <xsl:text>'];</xsl:text>
+      <xsl:value-of select="$varName"/>
+      <xsl:text>;</xsl:text>
       <xsl:value-of select="$LX_LF"/>
     </xsl:if>
 
-  </xsl:template>
-
-  <xsl:template match="lx:filter">
-    <xsl:variable name="class">
-      <xsl:choose>
-	<xsl:when test="@class">
-	  <xsl:value-of select="@class"/>
-	</xsl:when>
-	<xsl:otherwise>
-	  <xsl:call-template name="lx:ucfirst">
-	    <xsl:with-param name="string" select="@name"/>
-	  </xsl:call-template>
-	  <xsl:text>Filter</xsl:text>
-	</xsl:otherwise>
-      </xsl:choose>
-    </xsl:variable>
-
-    <xsl:value-of select="concat($LX_QUOTE, @name, $LX_QUOTE)"/>
-    <xsl:text>=></xsl:text>
-    <xsl:value-of select="concat($LX_QUOTE, $class, $LX_QUOTE)"/>
   </xsl:template>
 
   <xsl:template match="lx:module">
@@ -188,19 +172,18 @@
     </xsl:variable>
 
     <xsl:value-of select="$varName"/>
-    <xsl:text>=array('controllers'=>array(),</xsl:text>
+    <xsl:text>=array('controllers'=>array()</xsl:text>
     <xsl:if test="@lx:controller[@default='true']">
-      <xsl:text>'default_controller'=>'</xsl:text>
+      <xsl:text>,'default_controller'=>'</xsl:text>
       <xsl:value-of select="@lx:controller[@default='true'][last()]/@name"/>
-      <xsl:text>',</xsl:text>
+      <xsl:text>'</xsl:text>
     </xsl:if>
 
-    <xsl:text>'filters'=>array(</xsl:text>
-    <xsl:call-template name="lx:for-each">
-      <xsl:with-param name="collection" select="lx:filter"/>
-      <xsl:with-param name="delimiter" select="','"/>
-    </xsl:call-template>
-    <xsl:text>));</xsl:text>
+    <xsl:call-template name="filters"/>
+    <xsl:apply-templates select="@view|@layout|@template"/>
+
+    <xsl:text>);</xsl:text>
+
     <xsl:value-of select="$LX_LF"/>
     <xsl:apply-templates select="lx:controller"/>
     <xsl:apply-templates select="@default-controller"/>
@@ -242,9 +225,7 @@
 
   <xsl:template match="lx:module/lx:alias">
     <xsl:variable name="base">
-      <xsl:text>$_LX['map']['</xsl:text>
-
-	<xsl:text>modules']['</xsl:text>
+      <xsl:text>$_LX['map']['modules']['</xsl:text>
     </xsl:variable>
 
     <xsl:value-of select="$base"/>
@@ -283,14 +264,53 @@
 	<xsl:value-of select="@name"/>
       </xsl:otherwise>
     </xsl:choose>
-    <xsl:text>','filters'=>array(</xsl:text>
-    <xsl:call-template name="lx:for-each">
-      <xsl:with-param name="collection" select="lx:filter"/>
-      <xsl:with-param name="delimiter" select="','"/>
-    </xsl:call-template>
-    <xsl:text>));</xsl:text>
+    <xsl:text>'</xsl:text>
+
+    <xsl:call-template name="filters"/>
+    <xsl:apply-templates select="@view|@layout|@template"/>
+
+    <xsl:text>);</xsl:text>
 
     <xsl:value-of select="$LX_LF"/>
+  </xsl:template>
+
+  <xsl:template name="filters">
+    <xsl:if test="lx:filters">
+      <xsl:text>,'filters'=>array(</xsl:text>
+      <xsl:call-template name="lx:for-each">
+        <xsl:with-param name="collection" select="lx:filter"/>
+        <xsl:with-param name="delimiter" select="','"/>
+      </xsl:call-template>
+      <xsl:text>)</xsl:text>
+    </xsl:if>
+  </xsl:template>
+
+  <xsl:template match="lx:filter">
+    <xsl:variable name="class">
+      <xsl:choose>
+	<xsl:when test="@class">
+	  <xsl:value-of select="@class"/>
+	</xsl:when>
+	<xsl:otherwise>
+	  <xsl:call-template name="lx:ucfirst">
+	    <xsl:with-param name="string" select="@name"/>
+	  </xsl:call-template>
+	  <xsl:text>Filter</xsl:text>
+	</xsl:otherwise>
+      </xsl:choose>
+    </xsl:variable>
+
+    <xsl:value-of select="concat($LX_QUOTE, @name, $LX_QUOTE)"/>
+    <xsl:text>=></xsl:text>
+    <xsl:value-of select="concat($LX_QUOTE, $class, $LX_QUOTE)"/>
+  </xsl:template>
+
+  <xsl:template match="@view | @layout | @template">
+    <xsl:text>,'</xsl:text>
+    <xsl:value-of select="name()"/>
+    <xsl:text>'=>'</xsl:text>
+    <xsl:value-of select="."/>
+    <xsl:text>'</xsl:text>
   </xsl:template>
 
 </xsl:stylesheet>

@@ -20,9 +20,34 @@ class XMLResponse
 
   protected $filters            = array();
 
-  public function setView($view)		{ $this->view = $view; }
-  public function setLayout($layout)		{ $this->layout = $layout; }
-  public function setTemplate($temp)		{ $this->template = $temp; }
+  public function setView($view)
+  {
+    $filename = LX_APPLICATION_ROOT . '/src/views/' . $view;
+
+    if (LX_DEBUG && !file_exists($filename))
+      throw new Exception('The view "' . $view . '" does not exist.');
+    $this->view = $view;
+  }
+  public function setLayout($layout)
+  {
+    $filename = LX_APPLICATION_ROOT . '/src/views/' . $this->view . '/layouts/'
+                . $layout . '.xml';
+
+    if (LX_DEBUG && !file_exists($filename))
+      throw new Exception('The layout "' . $layout . '" does not exist.');
+    $this->layout = $layout;
+  }
+
+  public function setTemplate($template)
+  {
+    $filename = LX_APPLICATION_ROOT . '/src/views/' . $this->view . '/templates/'
+                . $template;
+
+    if (LX_DEBUG && !file_exists($filename . '.xml')
+        && !file_exists($filename . '.xsl'))
+      throw new Exception('The template "' . $template . '" does not exist.');
+    $this->template = $template;
+  }
 
   public function getDocument()			{ return $this->document; }
   public function getView()			{ return $this->view; }
@@ -212,7 +237,10 @@ class XMLResponse
     $controller	= LX_DEFAULT_CONTROLLER;
     $action	= '';
     $filters	= $_LX['map']['filters'];
-    $extension	= NULL;
+    $extension	= null;
+    $view       = LX_DEFAULT_VIEW;
+    $layout     = LX_DEFAULT_LAYOUT;
+    $template   = LX_DEFAULT_TEMPLATE;
 
     // cut the request
     preg_match_all("/\/([^\/]+)/", $request, $params);
@@ -227,7 +255,16 @@ class XMLResponse
     if (isset($map['modules'][$module]))
     {
       $map = $map['modules'][$module];
-      $filters = array_merge($filters, $map['filters']);
+
+      if (isset($map['filters']))
+        $filters = array_merge($filters, $map['filters']);
+
+      if (isset($map['view']))
+        $view = $map['view'];
+      if (isset($map['layout']))
+        $layout = $map['layout'];
+      if (isset($map['template']))
+        $template = $map['template'];
     }
 
     // controller
@@ -237,7 +274,17 @@ class XMLResponse
     if (isset($map[$controller]))
     {
       $action = $map[$controller]['default_action'];
-      $filters = array_merge($filters, $map[$controller]['filters']);
+      $map = $map[$controller];
+
+      if (isset($map['filters']))
+        $filters = array_merge($filters, $map['filters']);
+
+      if (isset($map['view']))
+        $view = $map['view'];
+      if (isset($map['layout']))
+        $layout = $map['layout'];
+      if (isset($map['template']))
+        $template = $map['template'];
     }
     else
     {
@@ -246,11 +293,26 @@ class XMLResponse
     }
 
     // action
-    $actionsMap = $map[$controller]['actions'];
-    if (count($params) && isset($actionsMap[$params[0]]))
+    $map = $map['actions'];
+    if (count($params) && isset($map[$params[0]]))
       $action = array_shift($params);
-    if (isset($actionsMap[$action]))
-      $filters = array_merge($filters, $actionsMap[$action]['filters']);
+    if (isset($map[$action]))
+    {
+      $map = $map[$action];
+      if (isset($map['filters']))
+        $filters = array_merge($filters, $map['filters']);
+
+      if (isset($map['view']))
+        $view = $map['view'];
+      if (isset($map['layout']))
+        $layout = $map['layout'];
+      if (isset($map['template']))
+        $template = $map['template'];
+    }
+
+    $this->setView($view);
+    $this->setLayout($layout);
+    $this->setTemplate($template);
 
     return array($filters, $module, $controller, $action, $params);
   }
