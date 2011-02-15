@@ -28,11 +28,7 @@ class Dispatcher
     try
     {
       $map		= $_LX['map'];
-      $module		= '';
-      $controller	= LX_DEFAULT_CONTROLLER;
-      $action		= '';
-      $filters		= $_LX['map']['filters'];
-      $extension	= NULL;
+      $extension	= null;
 
       // response handler
       if (($pos = strrpos($request, '.')) !== false)
@@ -52,7 +48,7 @@ class Dispatcher
 	  $request .= '.' . $extension;
 
         $response = new $_LX['responses'][LX_DEFAULT_EXTENSION]();
-        if (!LX_CLIENT_XSL_SUPPORT && !($response instanceof LXMLResponse))
+        if (!LX_CLIENT_XSL_SUPPORT && $response instanceof XSLResponse)
           $response = new LXMLResponse();
 
 	$this->response = $response;

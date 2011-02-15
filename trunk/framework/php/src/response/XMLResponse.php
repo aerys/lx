@@ -72,7 +72,7 @@ class XMLResponse
     $this->rootNode->setAttribute('host', LX_HOST);
     $this->rootNode->setAttribute('date', $this->date);
     $this->rootNode->setAttribute('documentRoot', LX_DOCUMENT_ROOT);
-    $this->rootNode->setAttribute('debug', LX_DEBUG ? 'true' : 'false');
+    //$this->rootNode->setAttribute('debug', LX_DEBUG ? 'true' : 'false');
     $this->document->appendChild($this->rootNode);
 
     // lx:request
@@ -237,7 +237,6 @@ class XMLResponse
     $controller	= LX_DEFAULT_CONTROLLER;
     $action	= '';
     $filters	= $_LX['map']['filters'];
-    $extension	= null;
     $view       = LX_DEFAULT_VIEW;
     $layout     = LX_DEFAULT_LAYOUT;
     $template   = LX_DEFAULT_TEMPLATE;
