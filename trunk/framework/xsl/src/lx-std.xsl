@@ -221,7 +221,7 @@
   <xsl:template match="/lx:layout//@* | /lx:template//@*">
     <xsl:attribute name="{name()}">
       <xsl:apply-templates select="." mode="lx:value-of">
-        <xsl:with-param name="root" select="/ | . | $LX_RESPONSE"/>
+        <xsl:with-param name="root" select="/ | . | $LX_RESPONSE | $LX_TEMPLATE"/>
       </xsl:apply-templates>
     </xsl:attribute>
   </xsl:template>
@@ -229,7 +229,7 @@
   <xsl:template match="@*" mode="lx:value-of"
 		name="lx:value-of-attribute">
     <xsl:param name="value" select="."/>
-    <xsl:param name="root" select="/ | .. | $LX_RESPONSE"/>
+    <xsl:param name="root" select="/ | .. | $LX_RESPONSE | $LX_TEMPLATE"/>
 
     <xsl:variable name="xpath"
 		  select="substring-after(substring-before($value, $LX_XPATH_STOP), $LX_XPATH_START)"/>
@@ -299,7 +299,7 @@
     <!-- @param The XPath expression to evaluate. -->
     <xsl:param name="expression"/>
     <!-- @param The root node (/) to use. -->
-    <xsl:param name="root" select="/ | .. | $LX_RESPONSE"/>
+    <xsl:param name="root" select="/ | .. | $LX_RESPONSE | $LX_TEMPLATE"/>
 
    <xsl:variable name="operator">
       <xsl:call-template name="lx.xpath:get-operator">
@@ -334,7 +334,7 @@
 	  <xsl:with-param name="root" select="$root/node()[@id=$node]"/>
 	</xsl:call-template>
       </xsl:when>
-      <xsl:when test="$operator = '/'">
+      <xsl:when test="$operator = '/' or ($operator = '' and $node != '')">
 	<xsl:call-template name="lx.xpath:expression-to-value">
 	  <xsl:with-param name="expression" select="$new_path"/>
           <xsl:with-param name="root" select="$root/node()[name()=$node or $node='*']"/>
@@ -362,7 +362,7 @@
     <!-- @param The XPath expression to evaluate. -->
     <xsl:param name="expression"/>
     <!-- @param The root node (/) to use. -->
-    <xsl:param name="root" select="$LX_RESPONSE"/>
+    <xsl:param name="root" select="/ | .. | $LX_RESPONSE | $LX_TEMPLATE"/>
 
    <xsl:variable name="operator">
       <xsl:call-template name="lx.xpath:get-operator">
@@ -391,7 +391,7 @@
 	  <xsl:with-param name="root" select="$root/@*[$node='*']|$root/@*[name()=$node]"/>
 	</xsl:call-template>
       </xsl:when>
-      <xsl:when test="$operator = '/'">
+      <xsl:when test="$operator = '/' or ($operator = '' and $node != '')">
 	<xsl:call-template name="lx.xpath:expression-to-templates">
 	  <xsl:with-param name="expression" select="$new_path"/>
           <xsl:with-param name="root" select="$root/node()[(name()=$node or $node='*')]"/>

@@ -36,8 +36,8 @@
 	</base>
 
         <title>
-	  <xsl:apply-templates select="$LX_LAYOUT/head/title/node()"/>
-	  <xsl:apply-templates select="$LX_TEMPLATE/head/title/node()"/>
+	  <xsl:apply-templates select="$LX_LAYOUT/lx:layout/head/title/node()"/>
+	  <xsl:apply-templates select="$LX_TEMPLATE/lx:template/head/title/node()"/>
 	</title>
 
 	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/>
@@ -45,13 +45,13 @@
         <!-- Client XSL support detection -->
         <xsl:call-template name="lx.html:detect-client-xsl-support"/>
 
-        <xsl:apply-templates select="$LX_LAYOUT/head/*[name()!='title']"/>
-	<xsl:apply-templates select="$LX_TEMPLATE/head/*[name()!='title']"/>
+        <xsl:apply-templates select="$LX_LAYOUT/lx:layout/head/*[name()!='title']"/>
+	<xsl:apply-templates select="$LX_TEMPLATE/lx:template/head/*[name()!='title']"/>
 
       </head>
       <body>
-	<xsl:copy-of select="$LX_LAYOUT/body/@* | $LX_TEMPLATE/body/@*"/>
-	<xsl:apply-templates select="$LX_LAYOUT/body/node()"/>
+	<xsl:copy-of select="$LX_LAYOUT/lx:layout/body/@* | $LX_TEMPLATE/lx:template/body/@*"/>
+	<xsl:apply-templates select="$LX_LAYOUT/lx:layout/body/node()"/>
       </body>
     </html>
   </xsl:template>

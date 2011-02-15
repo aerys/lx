@@ -26,14 +26,14 @@
   <!-- @const layout filename URI -->
   <xsl:variable name="LX_LAYOUT_FILE" select="concat($LX_VIEW_NAME, '/layouts/', $LX_LAYOUT_NAME, '.xml')"/>
   <!-- @const layout document root node -->
-  <xsl:variable name="LX_LAYOUT" select="document($LX_LAYOUT_FILE)/lx:layout"/>
+  <xsl:variable name="LX_LAYOUT" select="document($LX_LAYOUT_FILE)"/>
 
   <!-- @const template name -->
   <xsl:variable name="LX_TEMPLATE_NAME" select="$LX_VIEW/@template"/>
   <!-- @const template filename URI -->
   <xsl:variable name="LX_TEMPLATE_FILE" select="concat($LX_VIEW_NAME, '/templates/', $LX_TEMPLATE_NAME, '.xml')"/>
   <!-- @const template document root node -->
-  <xsl:variable name="LX_TEMPLATE" select="document($LX_TEMPLATE_FILE)/lx:template"/>
+  <xsl:variable name="LX_TEMPLATE" select="document($LX_TEMPLATE_FILE)"/>
 
   <!-- @const filter nodes (lx:filter) -->
   <xsl:variable name="LX_FILTERS" select="$LX_RESPONSE/lx:filters"/>
@@ -52,7 +52,7 @@
 	<xsl:apply-templates select="$LX_RESPONSE/lx:error"/>
       </xsl:when>
       <xsl:otherwise>
-	<xsl:apply-templates select="$LX_TEMPLATE"/>
+	<xsl:apply-templates select="$LX_TEMPLATE/lx:template"/>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
@@ -87,15 +87,8 @@
   </xsl:template>
   <!-- END IDENTITY -->
 
-  <!--
-      @template lx:insert-controller
-      Set where to insert the view generated output.
-    -->
-  <xsl:template match="lx:insert-controller">
-    <xsl:apply-templates select="$LX_CONTROLLER"/>
-  </xsl:template>
-
   <xsl:template match="lx:controller|lx:template|lx:layout">
+    <xsl:value-of select="name()"/>
     <xsl:apply-templates select="node()"/>
   </xsl:template>
 
