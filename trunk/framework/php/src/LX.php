@@ -33,9 +33,10 @@ class LX
   {
     global $_LX;
 
-    return isset($_LX['databases'][$my_name])
-           ? $_LX['databases'][$my_name]
-           : null;
+    if (array_key_exists($my_name, $_LX['databases']))
+      return $_LX['databases'][$my_name];
+
+    return null;
   }
 
   static public function disableErrors()
