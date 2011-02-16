@@ -87,9 +87,20 @@
   </xsl:template>
   <!-- END IDENTITY -->
 
-  <xsl:template match="lx:controller|lx:template|lx:layout">
+  <xsl:template match="lx:controller|lx:layout">
     <xsl:value-of select="name()"/>
     <xsl:apply-templates select="node()"/>
+  </xsl:template>
+
+  <xsl:template match="lx:template">
+    <xsl:choose>
+      <xsl:when select="$LX_RESPONSE//lx:exception">
+        <xsl:apply-templates select="$LX_RESPONSE//lx:exception"/>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:apply-templates select="node()"/>
+      </xsl:otherwise>
+    </xsl:choose>
   </xsl:template>
 
 </xsl:stylesheet>

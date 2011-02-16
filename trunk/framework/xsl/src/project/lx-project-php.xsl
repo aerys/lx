@@ -132,12 +132,7 @@
     <!-- actions -->
     <xsl:text>','default_action'=>'</xsl:text>
     <xsl:value-of select="./lx:action[@default='true'][last()]/@name"/>
-    <xsl:text>','actions'=>array(),'filters'=>array(</xsl:text>
-    <xsl:call-template name="lx:for-each">
-      <xsl:with-param name="collection" select="lx:filter"/>
-      <xsl:with-param name="delimiter" select="','"/>
-    </xsl:call-template>
-    <xsl:text>)</xsl:text>
+    <xsl:text>','actions'=>array()</xsl:text>
 
     <xsl:call-template name="filters"/>
     <xsl:apply-templates select="@view|@layout|@template"/>
@@ -275,7 +270,7 @@
   </xsl:template>
 
   <xsl:template name="filters">
-    <xsl:if test="lx:filters">
+    <xsl:if test="lx:filter">
       <xsl:text>,'filters'=>array(</xsl:text>
       <xsl:call-template name="lx:for-each">
         <xsl:with-param name="collection" select="lx:filter"/>

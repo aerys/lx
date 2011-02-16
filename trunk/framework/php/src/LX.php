@@ -24,7 +24,8 @@ class LX
                                                 'xsl'   => 'text/xsl',
                                                 'png'   => 'image/png',
                                                 'jpg'   => 'image/jpg',
-                                                'js'    => 'text/javascript');
+                                                'js'    => 'text/javascript',
+                                                'swf'   => 'application/x-shockwave-flash');
 
   static public function setResponse($my_response)	{self::$response = $my_response;}
   static public function getResponse()			{return (self::$response);}
