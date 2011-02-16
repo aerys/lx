@@ -9,7 +9,7 @@ class DatabaseFactory
     if (!self::$databases)
       self::$databases = array();
 
-    if (!isset(self::$databases[$my_cfgName]))
+    if (!array_key_exists($my_cfgName, self::$databases))
     {
       $cfg = LX::getDatabaseConfiguration($my_cfgName);
       $new_db = NULL;

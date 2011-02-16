@@ -6,6 +6,7 @@ class MySQLDatabase extends AbstractDatabase
   protected $user		= '';
   protected $password		= '';
   protected $database		= '';
+  protected $encoding		= '';
   protected $isConnected	= false;
 
   protected $mysqli		= NULL;
@@ -14,8 +15,13 @@ class MySQLDatabase extends AbstractDatabase
   {
     $this->host = $my_cfg['host'];
     $this->user = $my_cfg['user'];
-    $this->password = $my_cfg['password'];
     $this->database = $my_cfg['name'];
+
+    if (array_key_exists('password', $my_cfg))
+      $this->password = $my_cfg['password'];
+
+    if (array_key_exists('encoding', $my_cfg))
+      $this->encoding = $my_cfg['encoding'];
   }
 
   public function getInsertId()
@@ -35,6 +41,9 @@ class MySQLDatabase extends AbstractDatabase
 			       $this->user,
 			       $this->password,
 			       $this->database);
+
+    if ($this->encoding)
+      $this->mysqli->query("SET NAMES '".$this->encoding."'");
 
     $this->isConnected = true;
   }
