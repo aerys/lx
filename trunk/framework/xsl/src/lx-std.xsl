@@ -458,7 +458,10 @@
         </xsl:choose>
       </xsl:otherwise>
     </xsl:choose>
+  </xsl:template>
 
+  <xsl:template match="lx:include">
+    <xsl:apply-templates select="document(@href)"/>
   </xsl:template>
 
 </xsl:stylesheet>
