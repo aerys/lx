@@ -78,7 +78,7 @@ class XML
       {
         $xml = self::serialize($value);
 
-        if ($xml)
+        if ($xml !== false)
         {
           $nodeName = is_numeric($key)
                       ? ($name ? $name : '_' . $key)
