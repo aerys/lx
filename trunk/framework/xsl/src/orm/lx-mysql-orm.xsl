@@ -208,7 +208,7 @@
 
   <xsl:template match="lx:order-by">
     <xsl:value-of select="@property"/>
-    <xsl:if test="@desc">
+    <xsl:if test="@desc = 'true'">
       <xsl:text> DESC</xsl:text>
     </xsl:if>
   </xsl:template>
