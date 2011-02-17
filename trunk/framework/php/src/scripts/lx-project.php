@@ -1,7 +1,7 @@
 <?php
 
 require_once ('../misc/lx-bootstrap.php');
-require_once ('../misc/lx-constants.php');
+require_once ('../misc/lx-configure.php');
 
 $xml = new DOMDocument();
 $xml->load($argv[1]);
