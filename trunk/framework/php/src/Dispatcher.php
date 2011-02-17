@@ -129,7 +129,7 @@ class Dispatcher
     }
     catch (ErrorException $e)
     {
-      //ob_end_clean();
+      @ob_end_clean();
 
       if (LX_DEBUG)
       {
