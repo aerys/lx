@@ -1,17 +1,5 @@
 <?php
 
-// XSL activation
-if (isset($_REQUEST['LX_DISABLE_CLIENT_XSL_SUPPORT']))
-{
-  setcookie('LX_XSL_SUPPORT', false, time() + 31536000);
-  exit ;
-}
-if (isset($_REQUEST['LX_ENABLE_CLIENT_XSL_SUPPORT']))
-{
-  setcookie('LX_CLIENT_XSL_SUPPORT', true, time() + 31536000);
-  exit ;
-}
-
 // constants definition
 define('LX_CLIENT_XSL_SUPPORT', isset($_COOKIE['LX_CLIENT_XSL_SUPPORT'])
                                 ? !!$_COOKIE['LX_CLIENT_XSL_SUPPORT']
@@ -19,20 +7,13 @@ define('LX_CLIENT_XSL_SUPPORT', isset($_COOKIE['LX_CLIENT_XSL_SUPPORT'])
 
 define('LX_NAMESPACE',		'http://lx.aerys.in');
 define('LX_DEFAULT_TIMEZONE',	'Europe/Paris');
-define('LX_DEFAULT_EXTENSION',	'');
-define('LX_DEFAULT_HTTP_CACHE', 3600 * 24 * 365);
+define('LX_DEFAULT_HTTP_CACHE',  3600 * 24 * 365);
 
 if (!defined('LX_ROOT'))
   define('LX_ROOT', realpath(dirname(__FILE__) . '/../../..'));
 
 if (!defined('LX_APPLICATION_ROOT'))
   define('LX_APPLICATION_ROOT', realpath('..'));
-
-if (!defined('LX_DEFAULT_MODULE'))
-  define('LX_DEFAULT_MODULE', 'default');
-
-if (!defined('LX_DEFAULT_CONTROLLER'))
-  define('LX_DEFAULT_CONTROLLER', 'default');
 
 if (!defined('LX_DEFAULT_VIEW'))
   define('LX_DEFAULT_VIEW', 'default');
@@ -65,11 +46,11 @@ define('LX_SRC',	LX_ROOT . '/php/src');
 define('LX_SCRIPTS',	LX_ROOT . '/scripts');
 define('LX_XSL',	LX_ROOT . '/xsl/src');
 
+require_once (LX_SRC . '/LX.php');
+
 set_include_path(get_include_path()
                  . PATH_SEPARATOR . LX_APPLICATION_ROOT
                  . PATH_SEPARATOR . LX_APPLICATION_ROOT . '/lib');
-
-require_once (LX_SRC . '/LX.php');
 
 function __autoload($class_name)
 {
@@ -90,10 +71,5 @@ function lx_error_handler($errno,
 }
 
 set_error_handler('lx_error_handler');
-
-$_LX['databases'] = array();
-$_LX['map'] = array('filters'		=> array(),
-		    'modules'		=> array(),
-		    'controllers'	=> array());
 
 ?>

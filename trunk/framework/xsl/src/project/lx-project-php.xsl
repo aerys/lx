@@ -27,13 +27,15 @@
       </xsl:if>
 
     <!-- load LX -->
-    <xsl:text>require_once(LX_ROOT . '/php/src/misc/lx-config.php');</xsl:text>
+    <xsl:text>require_once(LX_ROOT . '/php/src/misc/lx-bootstrap.php');</xsl:text>
     <xsl:value-of select="$LX_LF"/>
     </xsl:if>
 
     <xsl:apply-templates select="lx:project"/>
 
     <xsl:if test=". = $LX_PROJECT_ROOT_NODE">
+      <xsl:text>require_once(LX_ROOT . '/php/src/misc/lx-constants.php');</xsl:text>
+      <xsl:value-of select="$LX_LF"/>
       <xsl:value-of select="concat($LX_LF, '?', $LX_GT)"/>
     </xsl:if>
     <!-- ?> -->

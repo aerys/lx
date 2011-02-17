@@ -1,6 +1,7 @@
 <?php
 
-require_once ('../misc/lx-config.php');
+require_once ('../misc/lx-bootstrap.php');
+require_once ('../misc/lx-constants.php');
 
 $model = $argv[1];
 $backend = LX_XSL . '/orm/' . $argv[2];
