@@ -94,7 +94,7 @@
 
   <xsl:template match="lx:template">
     <xsl:choose>
-      <xsl:when select="$LX_RESPONSE//lx:exception">
+      <xsl:when test="$LX_RESPONSE//lx:exception">
         <xsl:apply-templates select="$LX_RESPONSE//lx:exception"/>
       </xsl:when>
       <xsl:otherwise>
