@@ -198,7 +198,19 @@
   </xsl:template>
 
   <xsl:template match="lx:count">
-    <xsl:text>SELECT COUNT(*)</xsl:text>
+    <xsl:text>SELECT COUNT</xsl:text>
+    <xsl:text>(</xsl:text>
+
+    <xsl:choose>
+      <xsl:when test="@property">
+        <xsl:text>DISTINCT </xsl:text>
+	<xsl:value-of select="concat('`', @property, '`')"/>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:text>*</xsl:text>
+      </xsl:otherwise>
+    </xsl:choose>
+    <xsl:text>)</xsl:text>
     <xsl:text> FROM </xsl:text>
     <!-- TABLE -->
     <xsl:value-of select="concat('`', $LX_TABLE_NAME, '`')"/>
