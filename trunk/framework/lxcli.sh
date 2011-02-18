@@ -1,0 +1,1 @@
+php -f $LX_HOME/lxcli.php posix $PWD $*
