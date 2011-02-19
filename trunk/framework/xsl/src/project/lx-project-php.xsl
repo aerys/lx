@@ -94,7 +94,14 @@
 
   <xsl:template match="lx:database">
     <xsl:text>$_LX['databases']['</xsl:text>
-    <xsl:value-of select="@name"/>
+    <xsl:choose>
+      <xsl:when test="@alias">
+        <xsl:value-of select="@alias"/>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:value-of select="@name"/>
+      </xsl:otherwise>
+    </xsl:choose>
     <xsl:text>']=array(</xsl:text>
     <xsl:call-template name="lx:for-each">
       <xsl:with-param name="collection" select="@*"/>
