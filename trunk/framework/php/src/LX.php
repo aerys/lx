@@ -139,6 +139,8 @@ class LX
 
       if (isset(self::$extensionToMime[$extension]))
         header('Content-Type: ' . self::$extensionToMime[$extension]);
+      else
+        header('Content-Type: '. mime_content_type($filename));
 
       if (isset($_SERVER['HTTP_IF_MODIFIED_SINCE'])
           && strtotime($_SERVER['HTTP_IF_MODIFIED_SINCE']) >= $lastModified)
