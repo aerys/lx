@@ -53,7 +53,10 @@
 	  <xsl:text>&amp;</xsl:text>
 	</xsl:if>
       </xsl:if>
-      <xsl:apply-templates select="$flashvars"/>
+      <xsl:call-template name="lx:for-each">
+        <xsl:with-param name="collection" select="$flashvars"/>
+        <xsl:with-param name="delimiter" select="$LX_AMP"/>
+      </xsl:call-template>
     </xsl:variable>
 
     <object type="application/x-shockwave-flash" data="{$swf}.swf" width="{$width}" height="{$height}"
@@ -85,7 +88,8 @@
   <!--
       @template lx.flash:flashvar
     -->
-  <xsl:template match="lx.flash:flashvar">
+  <xsl:template match="lx.flash:flashvar"
+                name="lx.flash:flashvar">
     <xsl:variable name="value">
       <xsl:apply-templates select="@value" mode="lx:value-of"/>
     </xsl:variable>
