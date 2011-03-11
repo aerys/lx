@@ -28,6 +28,7 @@ class XMLResponse
       throw new Exception('The view "' . $view . '" does not exist.');
     $this->view = $view;
   }
+
   public function setLayout($layout)
   {
     $filename = LX_APPLICATION_ROOT . '/src/views/' . $this->view . '/layouts/'
