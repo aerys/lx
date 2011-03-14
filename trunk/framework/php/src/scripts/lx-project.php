@@ -1,7 +1,8 @@
 <?php
 
-require_once ('../misc/lx-bootstrap.php');
-require_once ('../misc/lx-configure.php');
+define('LX_HOME', getenv('LX_HOME'));
+require_once (LX_HOME . '/php/src/misc/lx-bootstrap.php');
+require_once (LX_HOME . '/php/src/misc/lx-configure.php');
 
 $xml = new DOMDocument();
 $xml->load($argv[1]);

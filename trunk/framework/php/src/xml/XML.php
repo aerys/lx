@@ -64,7 +64,7 @@ class XML
     return false;
   }
 
-  private static function serializeArray($array, $name = null)
+  public static function serializeArray($array, $name = null)
   {
     $result = '';
 
@@ -98,7 +98,7 @@ class XML
                                          $exclude       = null,
                                          $noRoot	= false)
   {
-    if (method_exists($object, 'toXML'))
+    if ($object instanceof IXMLSerializable)
       return $object->toXML($exclude, $noRoot);
 
     if (method_exists($object, 'getProperties'))

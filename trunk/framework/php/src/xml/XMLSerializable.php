@@ -1,18 +1,18 @@
 <?php
 
-abstract class XMLSerializable
+abstract class XMLSerializable implements IXMLSerializable
 {
   abstract protected function getProperties();
 
-  public function serialize($exclude	= null,
-			    $noRoot	= false)
+  public function toXML($exclude	= null,
+		        $noRoot         = false)
   {
     return XML::serializeObject($this, $exclude, $noRoot);
   }
 
   public function __toString()
   {
-    return $this->serialize();
+    return $this->toXML();
   }
 }
 

@@ -39,10 +39,16 @@
 	</xsl:otherwise>
       </xsl:choose>
     </xsl:param>
+    <!-- @param chache-killer -->
+    <xsl:param name="cacheKiller" select="@cache-killer"/>
 
     <xsl:variable name="swf">
       <xsl:text>flash/</xsl:text>
       <xsl:value-of select="$name"/>
+      <xsl:if test="cacheKiller = 'true'">
+        <xsl:text>?</xsl:text>
+        <xsl:value-of select="$LX_RESPONSE/@time"/>
+      </xsl:if>
     </xsl:variable>
 
     <xsl:variable name="flashvars_full">

@@ -85,7 +85,7 @@ class MySQLDatabase extends AbstractDatabase
     while (($row = $result->fetch_assoc()))
       $response[] = $modelClass ? new $modelClass($row) : $row;
 
-    return $response;
+    return new ResultSet($response);
   }
 
   public function escapeString($my_str)
