@@ -1,6 +1,6 @@
 <?php
 
-abstract class AbstractModel extends XMLSerializable
+abstract class AbstractModel
 {
   const FLAG_DEFAULT	= 0;
   const FLAG_UPDATE	= 1;

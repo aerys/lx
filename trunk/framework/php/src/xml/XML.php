@@ -4,8 +4,8 @@ class XML
 {
   public static function node($nodeName, $value, $attributes = null)
   {
-    $result = '';
-    $xml = self::serialize($value, $nodeName);
+    $result     = '';
+    $xml        = self::serialize($value, $nodeName);
 
     if ($xml !== false)
     {
