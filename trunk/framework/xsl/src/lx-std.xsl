@@ -281,6 +281,19 @@
     </xsl:choose>
   </xsl:template>
 
+  <xsl:template match="lx:if">
+    <xsl:variable name="test">
+      <xsl:call-template name="lx.xpath:expression-to-value">
+        <xsl:with-param name="expression" select="@test"/>
+        <xsl:with-param name="root" select="$LX_RESPONSE"/>
+      </xsl:call-template>
+    </xsl:variable>
+
+    <xsl:if test="$test != ''">
+      <xsl:apply-templates select="node()"/>
+    </xsl:if>
+  </xsl:template>
+
   <!--
       @template lx:apply-templates
       Apply templates on the nodes of the XML Response (lx:response) specified using XPath expressions.
@@ -319,7 +332,7 @@
       <xsl:when test="$operator = '//'">
 	<xsl:call-template name="lx.xpath:expression-to-value">
 	  <xsl:with-param name="expression" select="$new_path"/>
-          <xsl:with-param name="root" select="$root//node()[(name()=$node and $node!='') or $node='']"/>
+          <xsl:with-param name="root" select="$root//node()[name()=$node]"/>
 	</xsl:call-template>
       </xsl:when>
       <xsl:when test="$operator = '@'">
