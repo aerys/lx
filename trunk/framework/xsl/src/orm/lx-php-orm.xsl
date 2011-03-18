@@ -272,7 +272,7 @@
 
     <!-- fetch records -->
     <xsl:if test="lx:select/@limit = 1">
-      <xsl:text>if(is_array($r) and count($r))$r=$r[0];</xsl:text>
+      <xsl:text>if($r->size()==1)$r=$r->get(0);</xsl:text>
     </xsl:if>
 
     <!-- cache update -->
