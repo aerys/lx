@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<lx:layout xmlns:lx="http://lx.aerys.in">
+  <head>
+    <title>LX - </title>
+  </head>
+  <body>
+
+    <h1>It Works !</h1>
+
+    <lx:apply-templates select="lx:template" />
+  </body>
+</lx:layout>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<lx:template xmlns:lx="http://lx.aerys.in">
+  <head>
+    <title>Start Page</title>
+  </head>
+  <body>
+    OK.
+  </body>
+</lx:template>

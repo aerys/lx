@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<lx:project xmlns:lx="http://lx.aerys.in">
+  <!--<lx:const name="LX_DOCUMENT_ROOT" value="'/'"/>-->
+
+  <!-- Enable/disable stack traces output in responses. -->
+  <lx:const name="LX_DEBUG" value="true"/>
+
+  <!-- Bind extensions to handlers. -->
+  <lx:response handler="XSLResponse" extension="xml+xsl" default="true"/>
+  <lx:response handler="LXMLResponse" extension="lxml"/>
+  <lx:response handler="XMLResponse" extension="xml"/>
+
+  <!-- Databases configuration. -->
+  <lx:database name="database" type="mysql"
+	       user="user" password="password"
+	       host="host"/>
+
+  <lx:include href="lx-project-facebook.xml"/>
+
+  <!-- Modules, controllers and actions mapping. -->
+  <lx:map>
+    <lx:controller name="default" default="true">
+      <lx:action name="defaultAction" default="true"/>
+    </lx:controller>
+  </lx:map>
+
+</lx:project>

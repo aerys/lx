@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<lx:layout xmlns:lx="http://lx.aerys.in"
+           xmlns:h="http://lx.aerys.in/html">
+  <head>
+    <title>LX - Facebook</title>
+    <h:javascript>
+      if (top.location == self.document.location)
+        top.location = "<lx:value-of select="//facebook/url"/>";
+    </h:javascript>
+  </head>
+  <body>
+    <lx:apply-templates select="lx:template" />
+  </body>
+</lx:layout>

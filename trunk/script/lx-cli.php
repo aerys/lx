@@ -1,6 +1,6 @@
 <?php
 
-define('LX_HOME',       substr($argv[0], 0, strrpos($argv[0], '/') + 1));
+define('LX_HOME',       getenv('LX_HOME'));
 define('N',             "\n");
 define('T',             "\t");
 define('SYS',           $argv[1]);
@@ -12,7 +12,7 @@ function copy_dir($src, $dst, $mkdir = false)
   $dir = opendir($src);
   if ($mkdir) { @mkdir($dst); }
 
-  while(false !== ($file = readdir($dir)))
+  while (false !== ($file = readdir($dir)))
   {
     if (($file != '.') && ($file != '..'))
     {
@@ -65,9 +65,9 @@ function copy_ext($src, $ext, $dst)
   closedir($dir);
 }
 
-function create($path, $name)
+function create($path, $name, $archetype = null)
 {
-  $out = T . 'directory: ' . $path;
+  $out = '';
   if (!is_dir($path))
     die('\'' . $path . '\' is not a valid directory.');
 
@@ -75,7 +75,9 @@ function create($path, $name)
   @mkdir($path . '/' . $name . '/bin');
   @mkdir($path . '/' . $name . '/bin/models');
 
-  copy_dir(LX_HOME . '../project', $path . '/' . $name);
+  copy_dir(LX_HOME . '/archetype/default', $path . '/' . $name);
+  if ($archetype && $archetype != 'default' && is_dir(LX_HOME . '/archetype/' . $archetype))
+    copy_dir(LX_HOME . '/archetype/' . $archetype, $path . '/' . $name);
 
   @mkdir($path . '/' . $name . '/src/models');
   @mkdir($path . '/' . $name . '/lib');
@@ -92,14 +94,20 @@ function create($path, $name)
   }
   else //any other unix based shell
   {
-    exec('ln -s ' . LX_HOME . ' ' . $path . '/' . $name . '/lib/lx');
+    exec('ln -s ' . LX_HOME . '/framework ' . $path . '/' . $name . '/lib/lx');
+    exec('ln -s ' . LX_HOME . '/framework/xsl/src/*.xsl ' . $path . '/' . $name . '/src/views/');
   }
+
+  exec('cd ' . $path . '/' . $name . ' && ' . LX_HOME . '/script/lx-cli.sh update');
 
   return $out;
 }
 
 function update($feature)
 {
+  if (!file_exists(CURRENT . '/lx-project.xml'))
+    die('The current directory is not an LX project.' . N);
+
   $out = '';
 
   switch($feature)
@@ -132,22 +140,21 @@ function update($feature)
 function lib()
 {
   $out = 'This undocumented feature is windows only';
-  copy_dir(LX_HOME, CURRENT . '/lib/lx');
+
+  copy_dir(LX_HOME . '/framework/php', CURRENT . '/lib/lx');
 }
 
 function config()
 {
-
-  if (SYS == 'win') {  }
-  else
-  {  }
-
   $out = exec('php --rc XSLTProcessor');
+
   if (substr($out, 0, 1) == 'E')
     die('You must enable xslt extension in your php.ini');
 
-  $out = exec('php lib/lx/php/src/scripts/lx-project.php '
+  $out = exec('php '
+              . LX_HOME . '/script/lx-project.php '
               . CURRENT . '/lx-project.xml > bin/lx-project.php');
+
   return $out;
 }
 
@@ -169,18 +176,24 @@ function models()
            . $model . '.xml lx-php-orm.xsl > bin/models/'
            . $model . '.php';
 
-    $out = exec($cmd);
+    $out .= exec($cmd);
   }
 
   return $out;
 }
 
+function dump()
+{
+  update('config');
+
+  require_once(CURRENT . '/bin/lx-config.php');
+}
+
 function help()
 {
-  return 'Usage: /lxcli.sh [action]' . N
+  return 'Usage: /lxcli.sh [%action=update]' . N
     . 'Actions:' . N
-    . '  create %project' . T . T . 'Deploy a new project named %project in your current directory' . N
-    . '  create %project in %dir' . T . 'Deploy a new project named %project in the %dir directory' . N
+    . '  create %project [%archetype]' . T . 'Deploy a new project named %project in your current directory' . N
     . '  update' . T . T . T. 'Update all project files (configuration and models)' . N
     . '  update config' . T . T . T . 'Update configuration files only' . N
     . '  update models' . T . T . T . 'Update models only' . N
@@ -190,7 +203,7 @@ function help()
 if (DEBUG)
   print_r($argv);
 
-if ($argc < 4)
+if (count($argv) < 4)
   die(help());
 
 switch($argv[3])
@@ -201,18 +214,7 @@ switch($argv[3])
       $name = $argv[4];
       $path = $argv[2];
 
-      if (isset($argv[5]) && $argv[5] == 'in')
-      {
-        if (isset($argv[6]))
-          $path = $argv[6];
-        else
-          die('error');
-      }
-      else if (isset($argv[5]))
-        die('error');
-
-      die(create($path, $name));
-
+      create($path, $name, isset($argv[5]) ? $argv[5] : null);
     }
     else
       die('error');
@@ -230,6 +232,7 @@ switch($argv[3])
   default:
     die(help());
   break;
+
 }
 
 ?>

@@ -9,7 +9,7 @@ rem echo -----------------------------------------------------------------------
 
 cls
 
-rem php.exe -f LX_HOME/lxcli.php [OS] [CURRENT_DIR] [ARGS]
-call php.exe -f %LX_HOME%/lxcli.php win %cd% %* 
+rem php.exe -f LX_HOME/lx-cli.php [OS] [CURRENT_DIR] [ARGS]
+call php.exe -f %LX_HOME%/lx-cli.php win %cd% %*
 
 if "%OS%"=="Windows_NT" @endlocal
