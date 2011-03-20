@@ -25,6 +25,9 @@ function execute_task($message,
   if (!$stderr)
     $cmd .= ' 2> /dev/null';
 
+  if (DEBUG)
+    echo N . $cmd . N;
+
   exec($cmd, &$cmd, &$r);
 
   if ($cmd && ($stdout || $stderr))
@@ -253,8 +256,9 @@ function export_mysql($db)
                . ' -h ' . $db['host']
                . (isset($db['password']) && $db['password'] ? ' -p' . $db['password'] : '')
                . ' --skip-extended-insert --skip-comments'
-               . ' ' . $db['name']
-               . ' > ' . CURRENT . '/' . $db['name'] . '.sql');
+               . ' --databases ' . $db['name']
+               . ' > ' . CURRENT . '/' . $db['name'] . '.sql',
+               true);
 }
 
 function import($archive = null)
@@ -271,13 +275,23 @@ function import($archive = null)
         $filename = substr($archive,
                            strrpos($archive, '/') + 1);
 
-        $dl = execute_task('Downloading archive from \''
-                           . $archive . '\' to \'' . $tmp . '\'... ',
-                           'wget ' . $archive
-                           . ' -O ' . $tmp);
+        echo 'Downloading archive \'' . $filename . '\' to '
+          . '\'' . $tmp . '\'... ';
 
-        if (!$dl)
-          return ;
+        $data = file_get_contents($archive);
+        if ($data === false)
+        {
+          echo 'KO' . N;
+          error('unable to download \'' . $archive . '\'');
+        }
+        else
+        {
+          echo 'OK' . N;
+        }
+
+        $file = fopen($tmp, 'w');
+        fwrite($file, $data);
+        fclose($file);
 
         $archive = $tmp;
         $dir = substr($filename, 0, strrpos($filename, '.'));
