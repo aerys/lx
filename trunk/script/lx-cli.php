@@ -7,12 +7,36 @@ define('SYS',           $argv[1]);
 define('CURRENT',       $argv[2]);
 define('DEBUG',         false);
 
-function execute_task($message, $cmd)
+function error($message)
+{
+  die('Error: ' . $message . N);
+}
+
+function execute_task($message,
+                      $cmd,
+                      $stdout   = false,
+                      $stderr   = false)
 {
   echo $message;
   $r = 0;
+
+  if (!$stdout)
+    $cmd .= ' > /dev/null';
+  if (!$stderr)
+    $cmd .= ' 2> /dev/null';
+
   exec($cmd, &$cmd, &$r);
+
+  if ($cmd && ($stdout || $stderr))
+  {
+    foreach ($cmd as $line)
+      echo $line . N;
+    echo $message;
+  }
+
   echo ($r === 0 ? 'OK' : 'KO') . N;
+
+  return $r === 0;
 }
 
 function copy_dir($src, $dst, $mkdir = false)
@@ -138,7 +162,7 @@ function update($feature)
       break;
 
     default:
-      die('unknown parameter ' . $feature);
+      error('unknown parameter ' . $feature);
       break;
   }
 
@@ -157,7 +181,7 @@ function config()
   $out = exec('php --rc XSLTProcessor');
 
   if (substr($out, 0, 1) == 'E')
-    die('You must enable xslt extension in your php.ini');
+    error('you must enable xslt extension in your php.ini');
 
   $out = exec('php '
               . LX_HOME . '/script/lx-project.php '
@@ -218,7 +242,6 @@ function export()
                'cd ..'
                . ' && tar czf ' . $archive . ' ' . $dir
                . ' --exclude-vcs'
-               . ' > /dev/null 2> /dev/null'
                . ' && mv ' . $archive . ' ' . $dir);
 }
 
@@ -236,14 +259,50 @@ function export_mysql($db)
 
 function import($archive = null)
 {
-  if ($archive && file_exists($archive))
-  {
-    $dir = substr($archive, 0, strrpos($archive, '.'));
-    execute_task('Extracting project from archive \'' . $archive . '\'... ',
-                 'tar xf ' . $archive);
+  $dl = false;
 
-    echo exec('cd ' . $dir
-              . ' && ' . LX_HOME . '/script/lx-cli.sh import') . N;
+  if ($archive)
+  {
+    if (!file_exists($archive))
+    {
+      if (preg_match('/^http:\/\/.*/', $archive) !== 0)
+      {
+        $tmp = tempnam(null, 'lx_');
+        $filename = substr($archive,
+                           strrpos($archive, '/') + 1);
+
+        $dl = execute_task('Downloading archive from \''
+                           . $archive . '\' to \'' . $tmp . '\'... ',
+                           'wget ' . $archive
+                           . ' -O ' . $tmp);
+
+        if (!$dl)
+          return ;
+
+        $archive = $tmp;
+        $dir = substr($filename, 0, strrpos($filename, '.'));
+      }
+      else
+      {
+        error('\'' . $archive . '\' does not exists.');
+      }
+    }
+    else
+    {
+      $dir = substr($archive, 0, strrpos($archive, '.'));
+    }
+
+    $tar = execute_task('Extracting project from archive \'' . $archive . '\'... ',
+                        'tar xvf ' . $archive);
+
+    if ($dl)
+      unlink($archive);
+
+    if ($tar)
+      echo exec('cd ' . $dir
+                . ' && ' . LX_HOME . '/script/lx-cli.sh import') . N;
+    else
+      error('unable to extract');
   }
   else
   {
@@ -267,7 +326,7 @@ function import_mysql($db)
 {
   $filename = CURRENT . '/' . $db['name'] . '.sql';
   if (!file_exists($filename))
-    die('Unable to import database: \'' . $filename . '\' is missing.');
+    error('unable to import database: \'' . $filename . '\' is missing.');
 
   execute_task('Importing database \'' . $db['name'] . '.sql\'... ',
                'cat ' . $filename
