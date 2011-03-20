@@ -22,7 +22,7 @@
         <xsl:value-of select="$LX_LF"/>
       </xsl:if>
       <xsl:if test="not(lx:const[@name='LX_ROOT'])">
-        <xsl:text>define('LX_ROOT',realpath(dirname(__FILE__).'/../lib/lx'));</xsl:text>
+        <xsl:text>define('LX_ROOT',getenv('LX_HOME') . '/framework');</xsl:text>
         <xsl:value-of select="$LX_LF"/>
       </xsl:if>
 

@@ -7,6 +7,14 @@ define('SYS',           $argv[1]);
 define('CURRENT',       $argv[2]);
 define('DEBUG',         false);
 
+function execute_task($message, $cmd)
+{
+  echo $message;
+  $r = 0;
+  exec($cmd, &$cmd, &$r);
+  echo ($r === 0 ? 'OK' : 'KO') . N;
+}
+
 function copy_dir($src, $dst, $mkdir = false)
 {
   $dir = opendir($src);
@@ -160,9 +168,9 @@ function config()
 
 function models()
 {
-  $out = '';
-  $models = array();
-  $dir = opendir(CURRENT . '/src/models');
+  $out          = '';
+  $models       = array();
+  $dir          = opendir(CURRENT . '/src/models');
 
   while(false !== ($file = readdir($dir)))
     if (($file != '.') && ($file != '..') && (substr($file, -3, 3) == 'xml'))
@@ -172,9 +180,10 @@ function models()
 
   foreach($models as $model)
   {
-    $cmd = 'php -f lib/lx/php/src/scripts/lx-orm.php src/models/'
-           . $model . '.xml lx-php-orm.xsl > bin/models/'
-           . $model . '.php';
+    $cmd = 'php -f '
+           . LX_HOME . '/script/lx-orm.php'
+           . ' src/models/' . $model . '.xml lx-php-orm.xsl'
+           . ' > bin/models/' . $model . '.php';
 
     $out .= exec($cmd);
   }
@@ -182,11 +191,91 @@ function models()
   return $out;
 }
 
-function dump()
+function export()
 {
-  update('config');
+  config();
+  require_once(CURRENT . '/bin/lx-project.php');
 
-  require_once(CURRENT . '/bin/lx-config.php');
+  // export databases
+  foreach ($_LX['databases'] as $db)
+  {
+    switch ($db['type'])
+    {
+      case 'mysql':
+      default:
+        export_mysql($db);
+        break;
+    }
+  }
+
+  // export the project
+  $dir = substr(CURRENT, strrpos(CURRENT, '/') + 1);
+  $archive = $dir . '.tgz';
+  if (file_exists($archive))
+    unlink($archive);
+
+  execute_task('Exporting project to archive \'' . $archive . '\'... ',
+               'cd ..'
+               . ' && tar czf ' . $archive . ' ' . $dir
+               . ' --exclude-vcs'
+               . ' > /dev/null 2> /dev/null'
+               . ' && mv ' . $archive . ' ' . $dir);
+}
+
+function export_mysql($db)
+{
+  execute_task('Exporting database \'' . $db['name'] . '.sql\'... ',
+               'mysqldump'
+               . ' -u ' . $db['user']
+               . ' -h ' . $db['host']
+               . (isset($db['password']) && $db['password'] ? ' -p' . $db['password'] : '')
+               . ' --skip-extended-insert --skip-comments'
+               . ' ' . $db['name']
+               . ' > ' . CURRENT . '/' . $db['name'] . '.sql');
+}
+
+function import($archive = null)
+{
+  if ($archive && file_exists($archive))
+  {
+    $dir = substr($archive, 0, strrpos($archive, '.'));
+    execute_task('Extracting project from archive \'' . $archive . '\'... ',
+                 'tar xf ' . $archive);
+
+    echo exec('cd ' . $dir
+              . ' && ' . LX_HOME . '/script/lx-cli.sh import') . N;
+  }
+  else
+  {
+    config();
+    require_once(CURRENT . '/bin/lx-project.php');
+
+    foreach ($_LX['databases'] as $db)
+    {
+      switch ($db['type'])
+      {
+        case 'mysql':
+        default:
+          import_mysql($db);
+        break;
+      }
+    }
+  }
+}
+
+function import_mysql($db)
+{
+  $filename = CURRENT . '/' . $db['name'] . '.sql';
+  if (!file_exists($filename))
+    die('Unable to import database: \'' . $filename . '\' is missing.');
+
+  execute_task('Importing database \'' . $db['name'] . '.sql\'... ',
+               'cat ' . $filename
+               . ' | mysql'
+               . ' -h ' . $db['host']
+               . ' -u ' . $db['user']
+               . (isset($db['password']) && $db['password'] ? ' -p' . $db['password'] : '')
+               . ' --database ' . $db['name']);
 }
 
 function help()
@@ -197,6 +286,8 @@ function help()
     . '  update' . T . T . T. 'Update all project files (configuration and models)' . N
     . '  update config' . T . T . T . 'Update configuration files only' . N
     . '  update models' . T . T . T . 'Update models only' . N
+    . '  import [%archive]' . T . T . 'Import a project' . N
+    . '  export' . T . T . T . 'Export a project' . N
     . '  help' . T . T . T . T . 'Display this message' . N;
 }
 
@@ -226,6 +317,14 @@ switch($argv[3])
 
   case 'update':
     die(update((isset($argv[4]) ? $argv[4] : 'all' )));
+    break;
+
+  case 'export':
+    export();
+    break;
+
+  case 'import':
+    import(isset($argv[4]) ? $argv[4] : null);
     break;
 
   case 'help':
