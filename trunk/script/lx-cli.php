@@ -218,7 +218,7 @@ function models()
   return $out;
 }
 
-function export()
+function export($target = null)
 {
   config();
   require_once(CURRENT . '/bin/lx-project.php');
@@ -238,14 +238,35 @@ function export()
   // export the project
   $dir = substr(CURRENT, strrpos(CURRENT, '/') + 1);
   $archive = $dir . '.tgz';
-  if (file_exists($archive))
-    unlink($archive);
+  if ($target)
+  {
+    if (is_dir($target))
+    {
+      if (strrpos($target, '.tgz') == strlen($target) - 4)
+      {
+        $dir = realpath(substr($target, 0, strrpos($target, '/')));
+        $archive = substr($target, strrpos($target, '/') + 1);
+      }
+      else
+      {
+        $dir = realpath($target);
+      }
+    }
+    else
+    {
+      error('\'' . $target . '\' is not a valid directory');
+    }
+  }
 
+  if (file_exists($dir . '/' . $archive))
+    unlink($dir . '/' . $archive);
+
+  $tmp = tempnam(null, 'lx');
   execute_task('Exporting project to archive \'' . $archive . '\'... ',
                'cd ..'
-               . ' && tar czf ' . $archive . ' ' . $dir
+               . ' && tar czf ' . $tmp . ' ' . basename(CURRENT)
                . ' --exclude-vcs'
-               . ' && mv ' . $archive . ' ' . $dir);
+               . ' && mv ' . $tmp . ' ' . $dir . '/' . $archive);
 }
 
 function export_mysql($db)
@@ -359,8 +380,8 @@ function help()
     . '  update' . T . T . T. 'Update all project files (configuration and models)' . N
     . '  update config' . T . T . T . 'Update configuration files only' . N
     . '  update models' . T . T . T . 'Update models only' . N
-    . '  import [%archive]' . T . T . 'Import a project' . N
-    . '  export' . T . T . T . 'Export a project' . N
+    . '  import [%archive]' . T . T . 'Import a project [from the %archive archive]' . N
+    . '  export [%dir]' . T . T . T . 'Export a project as an archive [in the %dir directory]' . N
     . '  help' . T . T . T . T . 'Display this message' . N;
 }
 
@@ -393,7 +414,7 @@ switch($argv[3])
     break;
 
   case 'export':
-    export();
+    export(isset($argv[4]) ? $argv[4] : null);
     break;
 
   case 'import':
