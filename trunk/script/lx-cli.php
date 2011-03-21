@@ -1,7 +1,6 @@
 <?php
 
 define('LX_HOME',       getenv('LX_HOME'));
-define('N',             "\n");
 define('T',             "\t");
 define('SYS',           $argv[1]);
 define('CURRENT',       $argv[2]);
@@ -9,7 +8,7 @@ define('DEBUG',         false);
 
 function error($message)
 {
-  die('Error: ' . $message . N);
+  die('Error: ' . $message . PHP_EOL);
 }
 
 function execute_task($message,
@@ -26,18 +25,18 @@ function execute_task($message,
     $cmd .= ' 2> /dev/null';
 
   if (DEBUG)
-    echo N . $cmd . N;
+    echo N . $cmd . PHP_EOL;
 
   exec($cmd, &$cmd, &$r);
 
   if ($cmd && ($stdout || $stderr))
   {
     foreach ($cmd as $line)
-      echo $line . N;
+      echo $line . PHP_EOL;
     echo $message;
   }
 
-  echo ($r === 0 ? 'OK' : 'KO') . N;
+  echo ($r === 0 ? 'OK' : 'KO') . PHP_EOL;
 
   return $r === 0;
 }
@@ -141,7 +140,7 @@ function create($path, $name, $archetype = null)
 function update($feature)
 {
   if (!file_exists(CURRENT . '/lx-project.xml'))
-    die('The current directory is not an LX project.' . N);
+    die('The current directory is not an LX project.' . PHP_EOL);
 
   $out = '';
 
@@ -302,12 +301,12 @@ function import($archive = null)
         $data = file_get_contents($archive);
         if ($data === false)
         {
-          echo 'KO' . N;
+          echo 'KO' . PHP_EOL;
           error('unable to download \'' . $archive . '\'');
         }
         else
         {
-          echo 'OK' . N;
+          echo 'OK' . PHP_EOL;
         }
 
         $file = fopen($tmp, 'w');
@@ -335,7 +334,7 @@ function import($archive = null)
 
     if ($tar)
       echo exec('cd ' . $dir
-                . ' && ' . LX_HOME . '/script/lx-cli.sh import') . N;
+                . ' && ' . LX_HOME . '/script/lx-cli.sh import') . PHP_EOL;
     else
       error('unable to extract');
   }
@@ -374,15 +373,15 @@ function import_mysql($db)
 
 function help()
 {
-  return 'Usage: /lxcli.sh [%action=update]' . N
-    . 'Actions:' . N
-    . '  create %project [%archetype]' . T . 'Deploy a new project named %project in your current directory' . N
-    . '  update' . T . T . T. 'Update all project files (configuration and models)' . N
-    . '  update config' . T . T . T . 'Update configuration files only' . N
-    . '  update models' . T . T . T . 'Update models only' . N
-    . '  import [%archive]' . T . T . 'Import a project [from the %archive archive]' . N
-    . '  export [%dir]' . T . T . T . 'Export a project as an archive [in the %dir directory]' . N
-    . '  help' . T . T . T . T . 'Display this message' . N;
+  return 'Usage: /lxcli.sh [%action=update]' . PHP_EOL
+    . 'Actions:' . PHP_EOL
+    . '  create %project [%archetype]' . T . 'Deploy a new project named %project in your current directory' . PHP_EOL
+    . '  update' . T . T . T. 'Update all project files (configuration and models)' . PHP_EOL
+    . '  update config' . T . T . T . 'Update configuration files only' . PHP_EOL
+    . '  update models' . T . T . T . 'Update models only' . PHP_EOL
+    . '  import [%archive]' . T . T . 'Import a project [from the %archive archive]' . PHP_EOL
+    . '  export [%dir]' . T . T . T . 'Export a project as an archive [in the %dir directory]' . PHP_EOL
+    . '  help' . T . T . T . T . 'Display this message' . PHP_EOL;
 }
 
 if (DEBUG)
