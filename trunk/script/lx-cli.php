@@ -140,7 +140,7 @@ function create($path, $name, $archetype = null)
 function update($feature)
 {
   if (!file_exists(CURRENT . '/lx-project.xml'))
-    die('The current directory is not an LX project.' . PHP_EOL);
+    error('the current directory is not an LX project');
 
   $out = '';
 
@@ -360,7 +360,7 @@ function help()
     . '  update config' . T . T . T . 'Update configuration files only' . PHP_EOL
     . '  update models' . T . T . T . 'Update models only' . PHP_EOL
     . '  import [%archive]' . T . T . 'Import a project [from the %archive archive]' . PHP_EOL
-    . '  export [%dir]' . T . T . T . 'Export a project as an archive [in the %dir directory]' . PHP_EOL
+    . '  export [%project]' . T . T . 'Export the %project project or the current directory project' . PHP_EOL
     . '  help' . T . T . T . T . 'Display this message' . PHP_EOL;
 }
 
@@ -368,7 +368,7 @@ if (DEBUG)
   print_r($argv);
 
 if (count($argv) < 4)
-  die(help());
+  die(update('all'));
 
 switch($argv[3])
 {
@@ -388,10 +388,6 @@ switch($argv[3])
     die(create(isset($argv[4]) ? $argv[4] : ''));
     break;
 
-  case 'update':
-    die(update((isset($argv[4]) ? $argv[4] : 'all' )));
-    break;
-
   case 'export':
     if (isset($argv[4]))
       export($argv[4]);
@@ -404,10 +400,13 @@ switch($argv[3])
     break;
 
   case 'help':
-  default:
     die(help());
   break;
 
+  case 'update':
+  default:
+    die(update((isset($argv[4]) ? $argv[4] : 'all' )));
+    break;
 }
 
 ?>
