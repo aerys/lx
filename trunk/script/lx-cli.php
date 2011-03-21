@@ -178,23 +178,20 @@ function lib()
   copy_dir(LX_HOME . '/framework/php', CURRENT . '/lib/lx');
 }
 
-function config()
+function config($root = CURRENT)
 {
-  $out = exec('php --rc XSLTProcessor');
+  if (substr(exec('php --rc XSLTProcessor'), 0, 1) == 'E')
+    error('XSLT PHP extension is not available');
 
-  if (substr($out, 0, 1) == 'E')
-    error('you must enable xslt extension in your php.ini');
-
-  $out = exec('php '
-              . LX_HOME . '/script/lx-project.php '
-              . CURRENT . '/lx-project.xml > bin/lx-project.php');
-
-  return $out;
+  execute_task('Building configuration... ',
+               'php '
+               . LX_HOME . '/script/lx-project.php '
+               . $root . '/lx-project.xml > ' . $root . '/bin/lx-project.php',
+               true);
 }
 
 function models()
 {
-  $out          = '';
   $models       = array();
   $dir          = opendir(CURRENT . '/src/models');
 
@@ -206,69 +203,52 @@ function models()
 
   foreach($models as $model)
   {
-    $cmd = 'php -f '
-           . LX_HOME . '/script/lx-orm.php'
-           . ' src/models/' . $model . '.xml lx-php-orm.xsl'
-           . ' > bin/models/' . $model . '.php';
-
-    $out .= exec($cmd);
+    execute_task('Building model \'' . $model . '\'... ',
+                 'php -f '
+                 . LX_HOME . '/script/lx-orm.php'
+                 . ' src/models/' . $model . '.xml lx-php-orm.xsl'
+                 . ' > bin/models/' . $model . '.php',
+                 true);
   }
-
-  return $out;
 }
 
-function export($target = null)
+function export($project = CURRENT)
 {
-  config();
-  require_once(CURRENT . '/bin/lx-project.php');
+  if ($project && !(is_dir($project) && file_exists($project . '/lx-project.xml')))
+    error('\'' . $project . '\' is not a valid LX project');
+
+  config($project);
+  require_once($project . '/bin/lx-project.php');
 
   // export databases
-  foreach ($_LX['databases'] as $db)
+  if (count($_LX['databases']))
   {
-    switch ($db['type'])
+    foreach ($_LX['databases'] as $db)
     {
-      case 'mysql':
-      default:
-        export_mysql($db);
+      switch ($db['type'])
+      {
+        case 'mysql':
+        default:
+          export_mysql($db, $project);
         break;
+      }
     }
+  }
+  else
+  {
+    echo 'No database to export' . PHP_EOL;
   }
 
   // export the project
-  $dir = substr(CURRENT, strrpos(CURRENT, '/') + 1);
-  $archive = $dir . '.tgz';
-  if ($target)
-  {
-    if (is_dir($target))
-    {
-      if (strrpos($target, '.tgz') == strlen($target) - 4)
-      {
-        $dir = realpath(substr($target, 0, strrpos($target, '/')));
-        $archive = substr($target, strrpos($target, '/') + 1);
-      }
-      else
-      {
-        $dir = realpath($target);
-      }
-    }
-    else
-    {
-      error('\'' . $target . '\' is not a valid directory');
-    }
-  }
-
-  if (file_exists($dir . '/' . $archive))
-    unlink($dir . '/' . $archive);
-
-  $tmp = tempnam(null, 'lx');
-  execute_task('Exporting project to archive \'' . $archive . '\'... ',
-               'cd ..'
-               . ' && tar czf ' . $tmp . ' ' . basename(CURRENT)
-               . ' --exclude-vcs'
-               . ' && mv ' . $tmp . ' ' . $dir . '/' . $archive);
+  $basename = basename($project);
+  $archive = $basename . '.lx';
+  execute_task('Exporting project to \'' . realpath($project . '/..') . '/' . $archive . '\'... ',
+               'cd ' . realpath($project . '/..')
+               . ' && tar czf ' . $archive . ' ' . $basename
+               . ' --exclude-vcs');
 }
 
-function export_mysql($db)
+function export_mysql($db, $root = CURRENT)
 {
   execute_task('Exporting database \'' . $db['name'] . '.sql\'... ',
                'mysqldump'
@@ -277,7 +257,7 @@ function export_mysql($db)
                . (isset($db['password']) && $db['password'] ? ' -p' . $db['password'] : '')
                . ' --skip-extended-insert --skip-comments'
                . ' --databases ' . $db['name']
-               . ' > ' . CURRENT . '/' . $db['name'] . '.sql',
+               . ' > ' . $root . '/' . $db['name'] . '.sql',
                true);
 }
 
@@ -291,7 +271,7 @@ function import($archive = null)
     {
       if (preg_match('/^http:\/\/.*/', $archive) !== 0)
       {
-        $tmp = tempnam(null, 'lx_');
+        $tmp = tempnam(null, 'lx');
         $filename = substr($archive,
                            strrpos($archive, '/') + 1);
 
@@ -413,7 +393,10 @@ switch($argv[3])
     break;
 
   case 'export':
-    export(isset($argv[4]) ? $argv[4] : null);
+    if (isset($argv[4]))
+      export($argv[4]);
+    else
+      export();
     break;
 
   case 'import':
