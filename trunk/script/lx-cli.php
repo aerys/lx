@@ -242,7 +242,7 @@ function export($project = CURRENT)
 
   // export the project
   $basename = basename($project);
-  $archive = $basename . '.tgz';
+  $archive = $basename . '-' . date('Ymd') . '.tgz';
   execute_task('Exporting project to \'' . realpath($project . '/..') . '/' . $archive . '\'... ',
                'cd ' . realpath($project . '/..')
                . ' && tar czf ' . $archive . ' ' . $basename
