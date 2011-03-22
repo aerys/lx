@@ -107,17 +107,17 @@ class XMLResponse
     }
   }
 
-  public function addXMLNamespace($my_namespace, $my_uri)
+  public function addXMLNamespace($namespace, $uri)
   {
-    $this->rootNode->setAttribute('xmlns:' . $my_namespace, $my_uri);
+    $this->rootNode->setAttribute('xmlns:' . $namespace, $uri);
   }
 
-  public function appendDebugMessage($my_msg)
+  public function appendDebugMessage($msg)
   {
     if (!LX_DEBUG)
       return ;
 
-    $this->debugFragment->appendXML($my_msg);
+    $this->debugFragment->appendXML($msg);
   }
 
   public function appendArguments($value, $source)
@@ -131,10 +131,10 @@ class XMLResponse
     $this->argumentsNode->appendChild($f);
   }
 
-  public function appendController($my_controller)
+  public function appendController($controller)
   {
     $node = LX::getResponse()->getDocument()->createElement('lx:controller');
-    $fragment = $my_controller->getFragment();
+    $fragment = $controller->getFragment();
 
     if ($fragment->hasAttributes() || $fragment->hasChildNodes())
       $node->appendChild($fragment);
@@ -142,17 +142,17 @@ class XMLResponse
     $this->rootNode->appendChild($node);
   }
 
-  public function appendErrorException($my_exception)
+  public function appendErrorException($exception)
   {
     $node = $this->document->createElement('lx:error');
-    $node->setAttribute('type', get_class($my_exception));
+    $node->setAttribute('type', get_class($exception));
 
     $trace_node = $this->document->createElement('trace');
-    $trace_cdata = $this->document->createCDATASection($my_exception->getTraceAsString());
+    $trace_cdata = $this->document->createCDATASection($exception->getTraceAsString());
     $trace_node->appendChild($trace_cdata);
 
     $message = $this->document->createElement('message');
-    $message->nodeValue = $my_exception->getMessage();
+    $message->nodeValue = $exception->getMessage();
 
     $node->appendChild($message);
     $node->appendChild($trace_node);
@@ -160,12 +160,12 @@ class XMLResponse
     $this->rootNode->appendChild($node);
   }
 
-  public function appendException($my_exception)
+  public function appendException($exception)
   {
     $node = $this->document->createElement('lx:exception');
-    $node->setAttribute('type', get_class($my_exception));
+    $node->setAttribute('type', get_class($exception));
 
-    $node->nodeValue = $my_exception->getMessage();
+    $node->nodeValue = $exception->getMessage();
 
     $this->rootNode->appendChild($node);
   }

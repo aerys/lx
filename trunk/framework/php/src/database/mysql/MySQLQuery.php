@@ -12,11 +12,11 @@ class MySQLQuery extends AbstractQuery
   public function __toString()          { return $this->request; }
   public function getQueryString()      { return $this->request; }
 
-  public function MySQLQuery($my_database,
-			     $my_request)
+  public function MySQLQuery($database,
+			     $request)
   {
-    $this->database  = $my_database;
-    $this->request = $my_request;
+    $this->database  = $database;
+    $this->request = $request;
 
     $args = array();
     preg_match_all('/:([A-Za-z0-9_]+)/', $this->request, $args);

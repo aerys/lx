@@ -4,14 +4,14 @@ class DatabaseFactory
 {
   static protected $databases	= NULL;
 
-  static public function create($my_cfgName)
+  static public function create($cfgName)
   {
     if (!self::$databases)
       self::$databases = array();
 
-    if (!array_key_exists($my_cfgName, self::$databases))
+    if (!array_key_exists($cfgName, self::$databases))
     {
-      $cfg = LX::getDatabaseConfiguration($my_cfgName);
+      $cfg = LX::getDatabaseConfiguration($cfgName);
       $new_db = NULL;
 
       switch ($cfg['type'])
@@ -22,10 +22,10 @@ class DatabaseFactory
 	  break;
       }
 
-      self::$databases[$my_cfgName] = $new_db;
+      self::$databases[$cfgName] = $new_db;
     }
 
-    return (self::$databases[$my_cfgName]);
+    return (self::$databases[$cfgName]);
   }
 }
 

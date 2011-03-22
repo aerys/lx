@@ -164,13 +164,6 @@ class LX
       Dispatcher::get()->dispatchHTTPRequest($url, $get, $post);
     }
   }
-
-  static public function print_r($myVariable)
-  {
-    $str = htmlentities(print_r($myVariable, true));
-
-    return $str;
-  }
 }
 
 ?>
