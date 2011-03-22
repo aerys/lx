@@ -15,6 +15,11 @@ class ResultSet implements Iterator, IXMLSerializable
     $this->data = $data;
   }
 
+  public function __toString()
+  {
+    return $this->toXML();
+  }
+
   public function rewind()
   {
     $this->current = 0;
@@ -32,12 +37,12 @@ class ResultSet implements Iterator, IXMLSerializable
 
   public function current()
   {
-    return $this->current;
+    return $this->data[$this->current];
   }
 
   public function valid()
   {
-    return $this->current <= count($this->data);
+    return $this->current < count($this->data);
   }
 
   public function size()
