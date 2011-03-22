@@ -291,7 +291,7 @@
       <xsl:when test="lx:delete">
       </xsl:when>
       <xsl:when test="lx:count">
-        <xsl:text>(int)current($r[0])</xsl:text>
+        <xsl:text>(int)current($r->get(0))</xsl:text>
       </xsl:when>
       <xsl:when test="$isStatic or lx:select">
 	<!--<xsl:text>$n</xsl:text>-->
