@@ -5,9 +5,19 @@ class ResultSet implements Iterator, IXMLSerializable
   private $data         = null;
   private $current      = 0;
 
+  public function getArray()
+  {
+    return $this->data;
+  }
+
   public function ResultSet(array $data)
   {
     $this->data = $data;
+  }
+
+  public function __toString()
+  {
+    return $this->toXML();
   }
 
   public function rewind()
@@ -27,12 +37,12 @@ class ResultSet implements Iterator, IXMLSerializable
 
   public function current()
   {
-    return $this->current;
+    return $this->data[$this->current];
   }
 
   public function valid()
   {
-    return $this->current <= count($this->data);
+    return $this->current < count($this->data);
   }
 
   public function size()

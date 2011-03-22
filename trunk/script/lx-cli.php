@@ -16,8 +16,9 @@ function execute_task($message,
                       $stdout   = false,
                       $stderr   = false)
 {
-  echo $message;
   $r = 0;
+
+  echo $message;
 
   if (!$stdout)
     $cmd .= ' > /dev/null';
@@ -36,7 +37,7 @@ function execute_task($message,
     echo $message;
   }
 
-  echo ($r === 0 ? 'OK' : 'KO') . PHP_EOL;
+  echo ($r === 0 ? '[OK]' : '[KO]') . PHP_EOL;
 
   return $r === 0;
 }
@@ -241,7 +242,7 @@ function export($project = CURRENT)
 
   // export the project
   $basename = basename($project);
-  $archive = $basename . '.lx';
+  $archive = $basename . '-' . date('Ymd') . '.tgz';
   execute_task('Exporting project to \'' . realpath($project . '/..') . '/' . $archive . '\'... ',
                'cd ' . realpath($project . '/..')
                . ' && tar czf ' . $archive . ' ' . $basename

@@ -261,7 +261,7 @@
     <xsl:if test="lx:select">
       <xsl:text>,__CLASS__</xsl:text>
     </xsl:if>
-    <xsl:text>);</xsl:text>
+    <xsl:text>);if($r===null)return null;</xsl:text>
 
     <!-- set record id -->
     <xsl:if test="(lx:insert or lx:insert-or-update)
@@ -291,7 +291,7 @@
       <xsl:when test="lx:delete">
       </xsl:when>
       <xsl:when test="lx:count">
-        <xsl:text>(int)current($r[0])</xsl:text>
+        <xsl:text>(int)current($r->get(0))</xsl:text>
       </xsl:when>
       <xsl:when test="$isStatic or lx:select">
 	<!--<xsl:text>$n</xsl:text>-->
