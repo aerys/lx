@@ -57,9 +57,9 @@ class Dispatcher
 
       list($filters, $module, $controller, $action, $params) = $this->response->handleRequest($request);
 
-      define('LX_MODULE', $module);
-      define('LX_CONTROLLER', $controller);
-      define('LX_ACTION', $action);
+      define('LX_MODULE',       $module);
+      define('LX_CONTROLLER',   $controller);
+      define('LX_ACTION',       $action);
 
       if (LX_MODULE)
         $map = $map['modules'][LX_MODULE];
@@ -99,13 +99,12 @@ class Dispatcher
       }
 
       // call the controller's action
-      $cont = new $class();
-      $result = null;
+      $cont     = new $class();
+      $result   = null;
       if ($action)
       {
-	$result = call_user_func_array(array($cont,
-                                             $actionsMap[$action]['method']),
-                                       $params);
+        $context = array($cont, $actionsMap[$action]['method']);
+	$result = call_user_func_array($context, $params);
       }
 
       if ($result)
@@ -134,10 +133,10 @@ class Dispatcher
 
       if (LX_DEBUG)
       {
-		if ($this->response)
-			$this->response->appendErrorException($e);
+        if ($this->response)
+          $this->response->appendErrorException($e);
         else
-			echo $e->getMessage();
+          echo $e->getMessage();
       }
     }
     catch (Exception $e)
