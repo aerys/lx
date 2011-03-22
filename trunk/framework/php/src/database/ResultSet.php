@@ -7,7 +7,7 @@ class ResultSet implements Iterator, IXMLSerializable
 
   public function getArray()
   {
-    return $data;
+    return $this->data;
   }
 
   public function ResultSet(array $data)
