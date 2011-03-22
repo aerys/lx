@@ -5,6 +5,11 @@ class ResultSet implements Iterator, IXMLSerializable
   private $data         = null;
   private $current      = 0;
 
+  public function getArray()
+  {
+    return $data;
+  }
+
   public function ResultSet(array $data)
   {
     $this->data = $data;
