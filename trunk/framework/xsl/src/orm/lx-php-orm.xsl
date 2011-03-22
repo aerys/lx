@@ -261,7 +261,7 @@
     <xsl:if test="lx:select">
       <xsl:text>,__CLASS__</xsl:text>
     </xsl:if>
-    <xsl:text>);</xsl:text>
+    <xsl:text>);if($r===null)return null;</xsl:text>
 
     <!-- set record id -->
     <xsl:if test="(lx:insert or lx:insert-or-update)
