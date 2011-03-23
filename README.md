@@ -9,9 +9,9 @@ Installation
 ------------
 
 1. Clone the repository
-2. Make sure PHP is in your $PATH
-3. Add an environment variable LX_HOME set to `/path/to/lx/framework`
-4. Add $LX_HOME/bin to your $PATH
+2. Make sure the PHP interpreter is in your `$PATH`
+3. Add an environment variable `$LX_HOME` set to `/path/to/lx/framework`
+4. Add `$LX_HOME/bin` to your `$PATH`
 
 It should work on Linux, Windows and Mac.
 
