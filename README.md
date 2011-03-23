@@ -22,7 +22,7 @@ Usage
 You should use `lx-cli` to manage your project:
 
 * `lx-cli create <project>` -- deploy <project> skeleton in current directory
-* `lx-cli create <project> in <directory> -- deploy <project> skeleton in <directory>
+* `lx-cli create <project> in <directory>` -- deploy <project> skeleton in <directory>
 * `lx-cli update` -- update both configuration files and models
 * `lx-cli update config` -- update configuration files
 * `lx-cli update models` -- update models
