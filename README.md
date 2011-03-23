@@ -33,8 +33,7 @@ You should use `lx-cli` to manage your project:
 Contribute
 ----------
 
-`lx` is LGPL-licensed.  We love bug reports and pull requests!
+`lx` is LGPL-licensed.  Make sure you tell us everything that's wrong!
 
 * [Source code](https://github.com/aerys/lx)
 * [Issue tracker](https://github.com/aerys/lx/issues)
-* [Documentation](http://aerys.github.com/lx/)
