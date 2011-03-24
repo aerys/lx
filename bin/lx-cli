@@ -1,0 +1,6 @@
+#!/bin/sh
+
+[ -z $LX_HOME ]    && { echo "Warning: make sure $LX_HOME environment variable is set." > /dev/stderr; exit 1; }
+[ -z `which php` ] && { echo "Warning: make sure 'php' is in your $PATH." > /dev/stderr; exit 1; }
+
+php -f $LX_HOME/script/lx-cli.php posix $PWD $*
