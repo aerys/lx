@@ -143,6 +143,9 @@ function update($feature)
   if (!file_exists(CURRENT . '/lx-project.xml'))
     error('the current directory is not an LX project');
 
+  @mkdir(CURRENT . '/bin');
+  @mkdir(CURRENT . '/bin/models');
+
   $out = '';
 
   switch($feature)
@@ -354,7 +357,7 @@ function import_mysql($db)
 
 function help()
 {
-  return 'Usage: /lxcli.sh [%action=update]' . PHP_EOL
+  return 'Usage: lx-cli [%action=update]' . PHP_EOL
     . 'Actions:' . PHP_EOL
     . '  create %project [%archetype]' . T . 'Deploy a new project named %project in your current directory' . PHP_EOL
     . '  update' . T . T . T. 'Update all project files (configuration and models)' . PHP_EOL
