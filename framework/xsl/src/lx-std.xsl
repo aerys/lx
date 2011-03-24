@@ -335,10 +335,17 @@
           <xsl:with-param name="root" select="$root//node()[name()=$node]"/>
 	</xsl:call-template>
       </xsl:when>
-      <xsl:when test="$operator = '@'">
+      <!-- FIXME: Not working. -->
+      <!-- <xsl:when test="$operator = '//@'"> -->
+      <!--   <xsl:call-template name="lx.xpath:expression-to-value"> -->
+      <!--     <xsl:with-param name="expression" select="$new_path"/> -->
+      <!--     <xsl:with-param name="root" select="$root//@*[$node='*' or name()=$node]"/> -->
+      <!--   </xsl:call-template> -->
+      <!-- </xsl:when> -->
+      <xsl:when test="$operator = '@' or $operator = '/@'">
 	<xsl:call-template name="lx.xpath:expression-to-value">
 	  <xsl:with-param name="expression" select="$new_path"/>
-	  <xsl:with-param name="root" select="$root/@*[$node='*']|$root/@*[name()=$node]"/>
+	  <xsl:with-param name="root" select="$root/@*[$node='*' or name()=$node]"/>
 	</xsl:call-template>
       </xsl:when>
       <xsl:when test="$operator = '#'">
@@ -398,7 +405,14 @@
           <xsl:with-param name="root" select="$root//node()[(name()=$node and $node!='') or $node='']"/>
 	</xsl:call-template>
       </xsl:when>
-      <xsl:when test="$operator = '@'">
+      <!-- FIXME: Not working. -->
+      <!-- <xsl:when test="$operator = '//@'"> -->
+      <!--   <xsl:call-template name="lx.xpath:expression-to-templates"> -->
+      <!--     <xsl:with-param name="expression" select="$new_path"/> -->
+      <!--     <xsl:with-param name="root" select="$root//@*[$node='*' or name()=$node]"/> -->
+      <!--   </xsl:call-template> -->
+      <!-- </xsl:when> -->
+      <xsl:when test="$operator = '@' or $operator = '/@'">
 	<xsl:call-template name="lx.xpath:expression-to-templates">
 	  <xsl:with-param name="expression" select="$new_path"/>
 	  <xsl:with-param name="root" select="$root/@*[$node='*']|$root/@*[name()=$node]"/>
@@ -452,6 +466,15 @@
       <xsl:when test="starts-with($expression, '//')">
         <xsl:value-of select="'//'"/>
       </xsl:when>
+
+      <xsl:when test="starts-with($expression, '/@')">
+        <xsl:value-of select="'/@'"/>
+      </xsl:when>
+
+      <!-- FIXME: Not working. -->
+      <!-- <xsl:when test="starts-with($expression, '//@')"> -->
+      <!--   <xsl:value-of select="'//@'"/> -->
+      <!-- </xsl:when> -->
 
       <xsl:when test="starts-with($expression, '..')">
         <xsl:value-of select="'..'"/>
