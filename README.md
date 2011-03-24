@@ -1,5 +1,5 @@
-LX web framework
-================
+LX web platform framework
+=========================
 
 
 LX is a MVC framework.  LX was not designed to be a website framework but a
