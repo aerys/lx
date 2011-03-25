@@ -133,8 +133,6 @@ function create($path, $name, $archetype = null)
     exec('ln -s ' . LX_HOME . '/framework/xsl/src/*.xsl ' . $path . '/' . $name . '/src/views/');
   }
 
-
-
   exec('cd ' . $path . '/' . $name . ' && ' . LX_HOME . '/script/lx-cli' . (SYS === 'win' ? '.bat' : '') . ' update');
 
   return $out;
