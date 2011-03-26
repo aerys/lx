@@ -29,9 +29,7 @@
       <xsl:when test="lx:get">
 	<xsl:call-template name="lx:for-each">
 	  <xsl:with-param name="collection" select="lx:get"/>
-	  <xsl:with-param name="begin" select="'`'"/>
-	  <xsl:with-param name="delimiter" select="'`, `'"/>
-	  <xsl:with-param name="end" select="'`'"/>
+	  <xsl:with-param name="delimiter" select="', '"/>
 	</xsl:call-template>
       </xsl:when>
       <xsl:otherwise>
@@ -46,6 +44,8 @@
     <xsl:text> FROM </xsl:text>
     <!-- TABLE -->
     <xsl:value-of select="concat('`', $LX_TABLE_NAME, '`')"/>
+    <!-- INNER JOIN -->
+    <xsl:apply-templates select="lx:inner-join"/>
     <!-- WHERE -->
     <xsl:apply-templates select="lx:where|lx:not"/>
     <!-- SORT -->
@@ -226,7 +226,11 @@
   </xsl:template>
 
   <xsl:template match="lx:get">
-    <xsl:value-of select="@property"/>
+    <xsl:if test="@model">
+      <xsl:value-of select="concat($DB_PREFIX, @model, '.')" />
+    </xsl:if>
+  	
+    <xsl:value-of select="concat('`', @property, '`')"/>
   </xsl:template>
 
   <xsl:template match="lx:set">
@@ -239,6 +243,19 @@
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
+
+  <xsl:template match="lx:inner-join">
+  	<xsl:text> INNER JOIN </xsl:text>
+  	<xsl:value-of select="concat($DB_PREFIX, lx:external-property/@model)" />
+  	<xsl:text> ON </xsl:text>
+  	<xsl:value-of select="concat($LX_TABLE_NAME, '.`', lx:internal-property/@name, '`')" />
+	<xsl:text> = </xsl:text>
+  	<xsl:value-of select="concat($DB_PREFIX, lx:external-property/@model, '.`', lx:internal-property/@name, '`')" />
+  </xsl:template>
+
+
+
+
 
   <xsl:template match="lx:where">
     <xsl:variable name="property" select="concat('`', @property, '`')"/>
