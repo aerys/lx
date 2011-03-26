@@ -187,10 +187,16 @@ function config($root = CURRENT)
   if (substr(exec('php --rc XSLTProcessor'), 0, 1) == 'E')
     error('XSLT PHP extension is not available');
 
-  execute_task('Building configuration... ',
+  execute_task('Building configuration (php)... ',
                'php '
                . LX_HOME . '/script/lx-project.php '
-               . $root . '/lx-project.xml > ' . $root . '/bin/lx-project.php',
+               . $root . '/lx-project.xml > ' . $root . '/bin/lx-project.php php',
+               true);
+               
+  execute_task('Building configuration (xsl)... ',
+               'php '
+               . LX_HOME . '/script/lx-project.php '
+               . $root . '/lx-project.xml > ' . $root . '/bin/lx-project.xsl xsl',
                true);
 }
 
@@ -211,7 +217,8 @@ function models()
                  'php -f '
                  . LX_HOME . '/script/lx-orm.php'
                  . ' src/models/' . $model . '.xml lx-php-orm.xsl'
-                 . ' > bin/models/' . $model . '.php',
+                 . ' > bin/models/' . $model . '.php'
+                 . ' ' . CURRENT,
                  true);
   }
 }
@@ -310,6 +317,7 @@ function import($archive = null)
       $dir = substr($archive, 0, strrpos($archive, '.'));
     }
 
+	//FIX: tar is not windows native ; use of zip and zip php extension instead ?
     $tar = execute_task('Extracting project from archive \'' . $archive . '\'... ',
                         'tar xvf ' . $archive);
 
