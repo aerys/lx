@@ -4,16 +4,16 @@ LX web platform framework
 
 LX is a MVC framework.  LX was not designed to be a website framework but a
 web platform framework.  The difference lies in the fact that LX applications
-are actual website only when they are open using a web browser.
+appear as websites only if they are opened within a web browser.
 
-Despite the fact that its default implementation uses PHP and MySQL, it can be
-extended to use any language/DBMS.
+The default implementation uses PHP and MySQL, but LX can be extended to use
+any language/DBMS.
 
 LX relies on a W3C standard called XSL to transform XML declaration files into
-configuration and implementation files.  XSL is also used to managed templates
-and layouts so that the view is entirely separated from the controllers and
-can be fully cached by the web browser.  In fact, it is perfectly suitable for
-REST applications.
+configuration and implementation files.  XSL is also used to manage templates
+and layouts to keep the view completely separated from the controllers and
+can be cached by the web browser.  In fact, it is perfectly suitable for REST
+applications.
 
 
 Installation
