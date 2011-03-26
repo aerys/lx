@@ -26,6 +26,8 @@
   <!-- @const line feed (\n) character -->
   <xsl:variable name="LX_LF"><xsl:text>
 </xsl:text></xsl:variable>
+  <!-- @const space character -->
+  <xsl:variable name="LX_NBSP">&#160;</xsl:variable>
   <!-- @const lesser-than (<) character -->
   <xsl:variable name="LX_LT">&#60;</xsl:variable>
   <!-- @const greater-then (>) character -->
@@ -75,8 +77,17 @@
     <xsl:param name="content">
       <xsl:apply-templates select="node()"/>
     </xsl:param>
+    <!-- @param -->
+    <xsl:param name="normalize" select="@normalize"/>
 
-    <xsl:value-of select="normalize-space($content)"/>
+    <xsl:choose>
+      <xsl:when test="$normalize='false'">
+        <xsl:value-of select="$content"/>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:value-of select="normalize-space($content)"/>
+      </xsl:otherwise>
+    </xsl:choose>
   </xsl:template>
 
   <!--

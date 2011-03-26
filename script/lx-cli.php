@@ -26,17 +26,19 @@ function execute_task($message,
     $cmd .= ' 2> /dev/null';
 
   if (DEBUG)
-    echo N . $cmd . PHP_EOL;
+    echo PHP_EOL . $cmd . PHP_EOL;
 
   exec($cmd, &$cmd, &$r);
 
-  if ($cmd && ($stdout || $stderr))
+  if ($cmd && ($stdout || $stderr || $r))
   {
     foreach ($cmd as $line)
       echo $line . PHP_EOL;
     echo $message;
   }
 
+  for ($i = strlen($message); $i < 76; $i++)
+    echo ' ';
   echo ($r === 0 ? '[OK]' : '[KO]') . PHP_EOL;
 
   return $r === 0;
@@ -351,8 +353,7 @@ function import_mysql($db)
                . ' | mysql'
                . ' -h ' . $db['host']
                . ' -u ' . $db['user']
-               . (isset($db['password']) && $db['password'] ? ' -p' . $db['password'] : '')
-               . ' --database ' . $db['name']);
+               . (isset($db['password']) && $db['password'] ? ' -p' . $db['password'] : ''));
 }
 
 function help()

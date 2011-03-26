@@ -71,5 +71,7 @@ function lx_error_handler($errno,
 }
 
 set_error_handler('lx_error_handler');
+if (LX_DEBUG)
+  error_reporting(0xffffffff);
 
 ?>

@@ -105,6 +105,11 @@ abstract class AbstractModel
   {
     throw new UnknownMethodException(get_class($this) . '::' . $p, $a);
   }
+
+  public function __toString()
+  {
+    return XML::serialize($this);
+  }
 }
 
 ?>
