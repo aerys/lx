@@ -119,15 +119,20 @@ function create($path, $name, $archetype = null)
   @mkdir($path . '/' . $name . '/src/models');
   @mkdir($path . '/' . $name . '/lib');
 
-  if (SYS === 'win')
+  if (SYS === 'old')
   {
     @mkdir($path . '/' . $name . '/lib/lx');
 
-    //windows does not support any ln -s so we have to copy all the lib right into the project
+    //old school windows (<= XP) does not support any ln -s so we have to copy all the lib right into the project
     copy_dir(LX_HOME, $path . '/' . $name . '/lib/lx');
     rm_rf($path . '/' . $name . '/lib/lx/project');
 
     copy_ext(LX_HOME . 'xsl/src', 'xsl', $path . '/' . $name . '/src/views');
+  }
+  else if (SYS === 'win') //new windows (Vista/7) support mklink /D (ln -s alternative)
+  {
+    exec('mklink /D ' . LX_HOME . '/framework ' . $path . '/' . $name . '/lib/lx');
+    exec('mklink /D ' . LX_HOME . '/framework/xsl/src/*.xsl ' . $path . '/' . $name . '/src/views/');  
   }
   else //any other unix based shell
   {
@@ -135,7 +140,7 @@ function create($path, $name, $archetype = null)
     exec('ln -s ' . LX_HOME . '/framework/xsl/src/*.xsl ' . $path . '/' . $name . '/src/views/');
   }
 
-  exec('cd ' . $path . '/' . $name . ' && ' . LX_HOME . '/script/lx-cli.sh update');
+  exec('cd ' . $path . '/' . $name . ' && ' . LX_HOME . '/script/lx-cli' . (SYS !== 'posix' ? '.bat' : '') . ' update');
 
   return $out;
 }
@@ -180,8 +185,9 @@ function update($feature)
 function lib()
 {
   $out = 'This undocumented feature is windows only';
-
-  copy_dir(LX_HOME . '/framework/php', CURRENT . '/lib/lx');
+  if (SYS === 'old') { copy_dir(LX_HOME . '/framework/php', CURRENT . '/lib/lx'); }
+  
+  return $out;
 }
 
 function config($root = CURRENT)
@@ -189,10 +195,16 @@ function config($root = CURRENT)
   if (substr(exec('php --rc XSLTProcessor'), 0, 1) == 'E')
     error('XSLT PHP extension is not available');
 
-  execute_task('Building configuration... ',
+  execute_task('Building configuration (php)... ',
                'php '
                . LX_HOME . '/script/lx-project.php '
-               . $root . '/lx-project.xml > ' . $root . '/bin/lx-project.php',
+               . $root . '/lx-project.xml > ' . $root . '/bin/lx-project.php php',
+               true);
+               
+  execute_task('Building configuration (xsl)... ',
+               'php '
+               . LX_HOME . '/script/lx-project.php '
+               . $root . '/lx-project.xml > ' . $root . '/bin/lx-project.xsl xsl',
                true);
 }
 
@@ -213,7 +225,8 @@ function models()
                  'php -f '
                  . LX_HOME . '/script/lx-orm.php'
                  . ' src/models/' . $model . '.xml lx-php-orm.xsl'
-                 . ' > bin/models/' . $model . '.php',
+                 . ' > bin/models/' . $model . '.php'
+                 . ' ' . CURRENT,
                  true);
   }
 }
@@ -248,6 +261,8 @@ function export($project = CURRENT)
   // export the project
   $basename = basename($project);
   $archive = $basename . '-' . date('Ymd') . '.tgz';
+  
+  //FIX: tar is not windows native ; use of zip and zip php extension instead ?
   execute_task('Exporting project to \'' . realpath($project . '/..') . '/' . $archive . '\'... ',
                'cd ' . realpath($project . '/..')
                . ' && tar czf ' . $archive . ' ' . $basename
@@ -256,6 +271,7 @@ function export($project = CURRENT)
 
 function export_mysql($db, $root = CURRENT)
 {
+  //FIX: mysqldump needs to be added to $PATH on windows
   execute_task('Exporting database \'' . $db['name'] . '.sql\'... ',
                'mysqldump'
                . ' -u ' . $db['user']
@@ -312,6 +328,7 @@ function import($archive = null)
       $dir = substr($archive, 0, strrpos($archive, '.'));
     }
 
+	//FIX: tar is not windows native ; use of zip and zip php extension instead ?
     $tar = execute_task('Extracting project from archive \'' . $archive . '\'... ',
                         'tar xvf ' . $archive);
 
@@ -348,6 +365,7 @@ function import_mysql($db)
   if (!file_exists($filename))
     error('unable to import database: \'' . $filename . '\' is missing.');
 
+  //FIX: cat not supported in windows
   execute_task('Importing database \'' . $db['name'] . '.sql\'... ',
                'cat ' . $filename
                . ' | mysql'
@@ -374,7 +392,6 @@ if (DEBUG)
 
 if (count($argv) < 4)
   die(update('all'));
-
 switch($argv[3])
 {
   case 'create':
@@ -389,19 +406,12 @@ switch($argv[3])
       die('error');
     break;
 
-  case 'create-in':
-    die(create(isset($argv[4]) ? $argv[4] : ''));
-    break;
-
   case 'export':
-    if (isset($argv[4]))
-      export($argv[4]);
-    else
-      export();
+  	die(export(isset($argv[4]) ? $argv[4] : null));
     break;
 
   case 'import':
-    import(isset($argv[4]) ? $argv[4] : null);
+    die(import(isset($argv[4]) ? $argv[4] : null));
     break;
 
   case 'help':
@@ -410,7 +420,7 @@ switch($argv[3])
 
   case 'update':
   default:
-    die(update((isset($argv[4]) ? $argv[4] : 'all' )));
+    die(update(isset($argv[4]) ? $argv[4] : 'all'));
     break;
 }
 

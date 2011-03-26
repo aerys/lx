@@ -259,7 +259,9 @@
     <!-- perform query -->
     <xsl:text>$r=$db->performQuery($q</xsl:text>
     <xsl:if test="lx:select">
-      <xsl:text>,__CLASS__</xsl:text>
+      <xsl:if test="not(lx:select/lx:get/@model)">
+        <xsl:text>,__CLASS__</xsl:text>
+      </xsl:if>
     </xsl:if>
     <xsl:text>);if($r===null)return null;</xsl:text>
 
