@@ -6,15 +6,15 @@
 		xmlns:lx="http://lx.aerys.in"
                 version="1.0">
 
-  <xsl:variable name="LX_PREFIX" select="'lx'"/>
-  
+  <xsl:variable name="LX_TABLE_PREFIX" select="'lx'"/>
+
   <xsl:variable name="LX_TABLE_NAME">
     <xsl:choose>
       <xsl:when test="/lx:model/@table">
 	<xsl:value-of select="/lx:model/@table"/>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:value-of select="concat($DB_PREFIX, /lx:model/@name)"/>
+        <xsl:value-of select="concat($LX_TABLE_PREFIX, /lx:model/@name)"/>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:variable>
@@ -229,7 +229,7 @@
     <xsl:if test="@model">
       <xsl:value-of select="concat($DB_PREFIX, @model, '.')" />
     </xsl:if>
-  	
+
     <xsl:value-of select="concat('`', @property, '`')"/>
   </xsl:template>
 
