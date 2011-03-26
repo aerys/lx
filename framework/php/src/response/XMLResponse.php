@@ -24,7 +24,8 @@ class XMLResponse extends AbstractResponse
     $this->rootNode->setAttribute('xmlns:lx', LX_NAMESPACE);
     $this->rootNode->setAttribute('host', LX_HOST);
     $this->rootNode->setAttribute('date', $this->date);
-    $this->rootNode->setAttribute('documentRoot', LX_DOCUMENT_ROOT);
+    if (LX_DOCUMENT_ROOT != '/')
+      $this->rootNode->setAttribute('documentRoot', LX_DOCUMENT_ROOT);
     //$this->rootNode->setAttribute('debug', LX_DEBUG ? 'true' : 'false');
     $this->document->appendChild($this->rootNode);
 
