@@ -259,8 +259,6 @@
 
   <xsl:template match="lx:where">
     <xsl:variable name="property" select="concat('`', @property, '`')"/>
-    <xsl:variable name="value" select="concat(':', @property, '_', generate-id())"/>
-    <xsl:variable name="type" select="/lx:model/lx:property[@name = $property]/@type"/>
 
     <xsl:if test="not(ancestor::lx:where or preceding-sibling::lx:where)">
       <xsl:text> WHERE </xsl:text>
@@ -270,49 +268,50 @@
       <xsl:text> OR </xsl:text>
     </xsl:if>
 
-    <xsl:variable name="operator">
-      <xsl:choose>
-	<xsl:when test="$type = 'string' and @operator = 'eq'">
-	  <xsl:text> LIKE </xsl:text>
-	</xsl:when>
-	<xsl:when test="$type = 'string' and @operator = 'ne'">
-	  <xsl:text> NOT LIKE </xsl:text>
-	</xsl:when>
-        <xsl:when test="@operator = 'eq'">
-          <xsl:text>=</xsl:text>
-        </xsl:when>
-        <xsl:when test="@operator = 'lt'">
-          <xsl:text>&lt;</xsl:text>
-        </xsl:when>
-        <xsl:when test="@operator = 'le'">
-          <xsl:text>&lt;=</xsl:text>
-        </xsl:when>
-        <xsl:when test="@operator = 'gt'">
-          <xsl:text>&gt;</xsl:text>
-        </xsl:when>
-        <xsl:when test="@operator = 'ge'">
-          <xsl:text>&gt;=</xsl:text>
-        </xsl:when>
-        <xsl:when test="@operator = 'in'">
-          <xsl:text> IN </xsl:text>
-        </xsl:when>
-	<xsl:otherwise>
-	  <xsl:value-of select="concat(' ', @operator, ' ')"/>
-	</xsl:otherwise>
-      </xsl:choose>
-    </xsl:variable>
+    <xsl:value-of select="$property"/>
 
-    <xsl:value-of select="concat($property, $operator, $value)"/>
+    <xsl:if test="@value and @operator">
+      <xsl:variable name="value" select="concat(':', @property, '_', generate-id())"/>
+      <xsl:variable name="type" select="/lx:model/lx:property[@name = $property]/@type"/>
+
+      <xsl:variable name="operator">
+        <xsl:choose>
+	  <xsl:when test="$type = 'string' and @operator = 'eq'">
+	    <xsl:text> LIKE </xsl:text>
+	  </xsl:when>
+	  <xsl:when test="$type = 'string' and @operator = 'ne'">
+	    <xsl:text> NOT LIKE </xsl:text>
+	  </xsl:when>
+          <xsl:when test="@operator = 'eq'">
+            <xsl:text>=</xsl:text>
+          </xsl:when>
+          <xsl:when test="@operator = 'lt'">
+            <xsl:text>&lt;</xsl:text>
+          </xsl:when>
+          <xsl:when test="@operator = 'le'">
+            <xsl:text>&lt;=</xsl:text>
+          </xsl:when>
+          <xsl:when test="@operator = 'gt'">
+            <xsl:text>&gt;</xsl:text>
+          </xsl:when>
+          <xsl:when test="@operator = 'ge'">
+            <xsl:text>&gt;=</xsl:text>
+          </xsl:when>
+          <xsl:when test="@operator = 'in'">
+            <xsl:text> IN </xsl:text>
+          </xsl:when>
+	  <xsl:otherwise>
+	    <xsl:value-of select="concat(' ', @operator, ' ')"/>
+	  </xsl:otherwise>
+        </xsl:choose>
+      </xsl:variable>
+
+      <xsl:value-of select="concat($operator, $value)"/>
+    </xsl:if>
 
     <xsl:if test="lx:where">
       <xsl:text> AND </xsl:text>
-      <xsl:if test="count(lx:where) > 1">
-        <xsl:text>(</xsl:text>
-      </xsl:if>
       <xsl:apply-templates select="lx:where"/>
-      <xsl:if test="count(lx:where) > 1">
-        <xsl:text>)</xsl:text>
-      </xsl:if>
     </xsl:if>
   </xsl:template>
 
