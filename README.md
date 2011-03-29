@@ -41,6 +41,24 @@ You should use `lx-cli` to manage your project:
 * `lx-cli help` -- display commands
 
 
+Troubleshooting
+---------------
+
+### Check your cache ###
+Since the transformation is done client-side, you can expect your browser to cache the stylesheet.  It's recommended that you disable your cache while developing.
+
+### Make sure the generated code is up-to-date ###
+Run `lx-cli` every time you change your models.
+
+### Define your document root in the configuration ###
+If the URL doesn't start on the server root, make sure you define `<lx:const name="LX_DOCUMENT_ROOT" value="'/path'"/>`.
+
+### Where are the errors? ###
+1. In the current view (if you have defined `<lx:const name="LX_DEBUG" value="true"/>`)
+2. In the XML response (add .xml to the end of the URL)
+3. In the log file of your HTTP server's language extension
+
+
 Contribute
 ----------
 
