@@ -26,7 +26,8 @@ class XMLResponse extends AbstractResponse
     $this->rootNode->setAttribute('date', $this->date);
     if (LX_DOCUMENT_ROOT != '/')
       $this->rootNode->setAttribute('documentRoot', LX_DOCUMENT_ROOT);
-    //$this->rootNode->setAttribute('debug', LX_DEBUG ? 'true' : 'false');
+    if (LX_DEBUG)
+      $this->rootNode->setAttribute('debug', 'true');
     $this->document->appendChild($this->rootNode);
 
     // lx:request
