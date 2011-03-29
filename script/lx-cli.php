@@ -132,7 +132,7 @@ function create($path, $name, $archetype = null)
   else if (SYS === 'win') //new windows (Vista/7) support mklink /D (ln -s alternative)
   {
     exec('mklink /D ' . LX_HOME . '/framework ' . $path . '/' . $name . '/lib/lx');
-    exec('mklink /D ' . LX_HOME . '/framework/xsl/src/*.xsl ' . $path . '/' . $name . '/src/views/');  
+    exec('mklink /D ' . LX_HOME . '/framework/xsl/src/*.xsl ' . $path . '/' . $name . '/src/views/');
   }
   else //any other unix based shell
   {
@@ -186,7 +186,7 @@ function lib()
 {
   $out = 'This undocumented feature is windows only';
   if (SYS === 'old') { copy_dir(LX_HOME . '/framework/php', CURRENT . '/lib/lx'); }
-  
+
   return $out;
 }
 
@@ -200,7 +200,7 @@ function config($root = CURRENT)
                . LX_HOME . '/script/lx-project.php '
                . $root . '/lx-project.xml > ' . $root . '/bin/lx-project.php php',
                true);
-               
+
   execute_task('Building configuration (xsl)... ',
                'php '
                . LX_HOME . '/script/lx-project.php '
@@ -261,7 +261,7 @@ function export($project = CURRENT)
   // export the project
   $basename = basename($project);
   $archive = $basename . '-' . date('Ymd') . '.tgz';
-  
+
   //FIX: tar is not windows native ; use of zip and zip php extension instead ?
   execute_task('Exporting project to \'' . realpath($project . '/..') . '/' . $archive . '\'... ',
                'cd ' . realpath($project . '/..')
