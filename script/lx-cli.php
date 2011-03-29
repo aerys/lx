@@ -334,7 +334,7 @@ function import($archive = null)
       $dir = substr($archive, 0, strrpos($archive, '.'));
     }
 
-	//FIX: tar is not windows native ; use of zip and zip php extension instead ?
+    //FIX: tar is not windows native ; use of zip and zip php extension instead ?
     $tar = execute_task('Extracting project from archive \'' . $archive . '\'... ',
                         'tar xvf ' . $archive);
 
@@ -349,7 +349,7 @@ function import($archive = null)
   }
   else
   {
-    config();
+    update('all');
     require_once(CURRENT . '/bin/lx-project.php');
 
     foreach ($_LX['databases'] as $db)
