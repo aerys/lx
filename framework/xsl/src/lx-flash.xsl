@@ -41,6 +41,8 @@
     </xsl:param>
     <!-- @param chache-killer -->
     <xsl:param name="cacheKiller" select="@cache-killer"/>
+    <!-- @param alternative content -->
+    <xsl:param name="alternativeContent" select="lx.flash:alternative-content"/>
 
     <xsl:variable name="swf">
       <xsl:text>flash/</xsl:text>
@@ -78,7 +80,8 @@
       <param name="flashvars" value="{$flashvars_full}" />
       <param name="wmode" value="{$wmode}" />
       <param name="name" value="{$name}"/>
-      <xsl:apply-templates select="lx.flash:alternative-content"/>
+
+      <xsl:apply-templates select="$alternativeContent"/>
     </object>
     <xsl:apply-templates select="lx.flash:fabridge"/>
   </xsl:template>
