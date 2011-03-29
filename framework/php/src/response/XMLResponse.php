@@ -110,8 +110,17 @@ class XMLResponse extends AbstractResponse
     $node->setAttribute('type', get_class($exception));
 
     $trace_node = $this->document->createElement('trace');
-    $trace_cdata = $this->document->createCDATASection($exception->getTraceAsString());
-    $trace_node->appendChild($trace_cdata);
+
+    $trace_text = $exception->getTraceAsString();
+    $frames = explode("\n", $trace_text);
+
+    foreach ($frames as $frame)
+    {
+      $frame_node = $this->document->createElement('frame');
+      $frame_cdata = $this->document->createCDATASection($frame);
+      $frame_node->appendChild($frame_cdata);
+      $trace_node->appendChild($frame_node);
+    }
 
     $message = $this->document->createElement('message');
     $message->nodeValue = $exception->getMessage();
