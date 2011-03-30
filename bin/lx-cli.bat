@@ -12,14 +12,16 @@ cls
 rem php.exe -f LX_HOME/script/lx-cli.php [OS] [CURRENT_DIR] [ARGS]
 
 
+call mklink /D lx-mklink-support .
+IF "%ERRORLEVEL%" == "0" goto modern 
 
-if exist mklink ( goto modern ) else (goto oldschool )
 
 :oldschool
 call php.exe -f %LX_HOME%/script/lx-cli.php old %cd% %*
 goto exit
 
 :modern
+call rd lx-mklink-support
 call php.exe -f %LX_HOME%/script/lx-cli.php win %cd% %*
 goto exit
 

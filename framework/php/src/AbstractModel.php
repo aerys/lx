@@ -34,6 +34,8 @@ abstract class AbstractModel
 		
 		foreach($xslincludes as $xslinclude)
 		{
+			$xslinclude = str_replace('\\', '/', $xslinclude);
+			
 			$node = $xsl->createElementNS('http://www.w3.org/1999/XSL/Transform', 'xsl:include');
 			$node->setAttribute('href', $xslinclude);
 			
