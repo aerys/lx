@@ -18,7 +18,7 @@ abstract class AbstractModel
   public static function scaffold($model,
 				  $backend,
 				  $output,
-				  $xslincludes)
+				  $xslIncludes)
   {
     $xml = new DOMDocument();
     $xml->load($model);
@@ -26,6 +26,7 @@ abstract class AbstractModel
     $xsl = new DOMDocument();
     $xsl->load($backend);
 
+<<<<<<< HEAD
 	if (isset($xslincludes))
 	{
 		$root = $xsl->getElementsByTagName('include')->item(0);
@@ -43,6 +44,24 @@ abstract class AbstractModel
 		}
 	}
     
+=======
+    if (isset($xslIncludes))
+    {
+      $root = $xsl->getElementsByTagName('include')->item(0);
+
+      if (!is_array($xslIncludes))
+        $xslIncludes = array($xslIncludes);
+
+      foreach ($xslIncludes as $xslinclude)
+      {
+        $node = $xsl->createElementNS('http://www.w3.org/1999/XSL/Transform', 'xsl:include');
+        $node->setAttribute('href', $xslinclude);
+
+        $root->parentNode->insertBefore($node, $root);
+      }
+    }
+
+>>>>>>> ae3324859d8ef65291204946c24d58e2a59dc68c
     $processor = new XSLTProcessor();
     $processor->importStyleSheet($xsl);
     $processor->transformToURI($xml, $output);

@@ -177,7 +177,7 @@
   </xsl:template>
 
   <xsl:template name="lx:set-query-properties">
-    <xsl:apply-templates select="descendant::node()[@property]" mode="set"/>
+    <xsl:apply-templates select="descendant::node()[@property][@value]" mode="set"/>
 
     <xsl:apply-templates select=".//@offset | .//@limit" mode="set"/>
 

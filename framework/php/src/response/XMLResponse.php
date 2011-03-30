@@ -24,8 +24,10 @@ class XMLResponse extends AbstractResponse
     $this->rootNode->setAttribute('xmlns:lx', LX_NAMESPACE);
     $this->rootNode->setAttribute('host', LX_HOST);
     $this->rootNode->setAttribute('date', $this->date);
-    $this->rootNode->setAttribute('documentRoot', LX_DOCUMENT_ROOT);
-    //$this->rootNode->setAttribute('debug', LX_DEBUG ? 'true' : 'false');
+    if (LX_DOCUMENT_ROOT != '/')
+      $this->rootNode->setAttribute('documentRoot', LX_DOCUMENT_ROOT);
+    if (LX_DEBUG)
+      $this->rootNode->setAttribute('debug', 'true');
     $this->document->appendChild($this->rootNode);
 
     // lx:request
@@ -108,8 +110,17 @@ class XMLResponse extends AbstractResponse
     $node->setAttribute('type', get_class($exception));
 
     $trace_node = $this->document->createElement('trace');
-    $trace_cdata = $this->document->createCDATASection($exception->getTraceAsString());
-    $trace_node->appendChild($trace_cdata);
+
+    $trace_text = $exception->getTraceAsString();
+    $frames = explode("\n", $trace_text);
+
+    foreach ($frames as $frame)
+    {
+      $frame_node = $this->document->createElement('frame');
+      $frame_cdata = $this->document->createCDATASection($frame);
+      $frame_node->appendChild($frame_cdata);
+      $trace_node->appendChild($frame_node);
+    }
 
     $message = $this->document->createElement('message');
     $message->nodeValue = $exception->getMessage();
