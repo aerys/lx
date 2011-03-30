@@ -55,7 +55,7 @@ class Dispatcher
       }
       LX::setResponse($this->response);
 
-      list($filters, $module, $controller, $action, $params) = $this->response->handleRequest($request);
+      list($filters, $module, $controller, $action, $params) = $this->response->handleRequest($request, $_GET);
 
       define('LX_MODULE',       $module);
       define('LX_CONTROLLER',   $controller);
