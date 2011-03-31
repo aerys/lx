@@ -311,7 +311,13 @@
 
     <xsl:if test="lx:where">
       <xsl:text> AND </xsl:text>
+      <xsl:if test="count(lx:where) &gt; 1">
+        <xsl:text>(</xsl:text>
+      </xsl:if>
       <xsl:apply-templates select="lx:where"/>
+      <xsl:if test="count(lx:where) &gt; 1">
+        <xsl:text>)</xsl:text>
+      </xsl:if>
     </xsl:if>
   </xsl:template>
 
