@@ -300,9 +300,18 @@
       </xsl:call-template>
     </xsl:variable>
 
-    <xsl:if test="$test != ''">
-      <xsl:apply-templates select="node()"/>
-    </xsl:if>
+    <xsl:choose>
+      <xsl:when test="$test != ''">
+        <xsl:apply-templates select="node()"/>
+      </xsl:when>
+      <xsl:when test="following-sibling::node() = following-sibling::lx:else[1]">
+        <xsl:apply-templates select="following-sibling::lx:else[1]/node()"/>
+      </xsl:when>
+    </xsl:choose>
+  </xsl:template>
+
+  <xsl:template match="lx:else">
+    <!-- nothing -->
   </xsl:template>
 
   <!--
