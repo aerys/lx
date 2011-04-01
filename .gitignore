@@ -5,3 +5,4 @@ framework/as3/.settings/
 framework/as3/bin/
 bin/*.php
 bin/models/*.php
+.DS_Store

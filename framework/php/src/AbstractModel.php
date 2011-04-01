@@ -26,21 +26,22 @@ abstract class AbstractModel
     $xsl = new DOMDocument();
     $xsl->load($backend);
 
-    if (isset($xslIncludes))
-    {
-      $root = $xsl->getElementsByTagName('include')->item(0);
-
-      if (!is_array($xslIncludes))
-        $xslIncludes = array($xslIncludes);
-
-      foreach ($xslIncludes as $xslinclude)
-      {
-        $node = $xsl->createElementNS('http://www.w3.org/1999/XSL/Transform', 'xsl:include');
-        $node->setAttribute('href', $xslinclude);
-
-        $root->parentNode->insertBefore($node, $root);
-      }
-    }
+	if (isset($xslIncludes))
+	{
+		$root = $xsl->getElementsByTagName('include')->item(0);
+	
+		if (!is_array($xslIncludes)) { $xslIncludes = array($xslIncludes); }
+		
+		foreach($xslIncludes as $xslInclude)
+		{
+			$xslInclude = str_replace('\\', '/', $xslInclude);
+			
+			$node = $xsl->createElementNS('http://www.w3.org/1999/XSL/Transform', 'xsl:include');
+			$node->setAttribute('href', $xslInclude);
+			
+			$root->parentNode->insertBefore($node, $root);
+		}
+	}
 
     $processor = new XSLTProcessor();
     $processor->importStyleSheet($xsl);
