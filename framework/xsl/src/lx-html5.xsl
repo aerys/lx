@@ -12,13 +12,19 @@
 		xmlns:lx.html="http://lx.aerys.in/html"
         exclude-result-prefixes="lx.html">
 
-  <xsl:output method="html" encoding="unicode" indent="yes" />
+<xsl:output method="html" omit-xml-declaration="yes" indent="yes" media-type="text/html" doctype-public="" doctype-system="" />
 
   <xsl:template match="/">
-    <xsl:text disable-output-escaping="yes">&lt;!DOCTYPE html></xsl:text>
     <html lang="fr">
       <head>
 
+    <title>
+	  <xsl:apply-templates select="$LX_LAYOUT/lx:layout/head/title/node()"/>
+	  <xsl:apply-templates select="$LX_TEMPLATE/lx:template/head/title/node()"/>
+	</title>
+	
+	<meta charset="utf-8" />
+	
 	<base>
 	  <xsl:attribute name="href">
 	    <xsl:text>http://</xsl:text>
@@ -29,14 +35,7 @@
 	    <xsl:text>/</xsl:text>
 	  </xsl:attribute>
 	</base>
-
-	<meta charset="utf-8" />
-
-    <title>
-	  <xsl:apply-templates select="$LX_LAYOUT/lx:layout/head/title/node()"/>
-	  <xsl:apply-templates select="$LX_TEMPLATE/lx:template/head/title/node()"/>
-	</title>
-
+	
         <!-- Client XSL support detection -->
         <xsl:call-template name="lx.html:detect-client-xsl-support"/>
         

@@ -13,8 +13,7 @@
 
   <xsl:output method="html"
 	    omit-xml-declaration="yes"
-	    indent="yes"
-	    encoding="unicode"/>
+	    indent="yes" />
 
   <xsl:template name="lx.html:detect-client-xsl-support">
     <xsl:if test="not($LX_RESPONSE/lx:request/@clientXslSupport)">
