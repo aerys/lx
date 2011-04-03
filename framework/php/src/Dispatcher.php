@@ -55,7 +55,7 @@ class Dispatcher
       }
       LX::setResponse($this->response);
 
-      list($filters, $module, $controller, $action, $params) = $this->response->handleRequest($request);
+      list($filters, $module, $controller, $action, $params) = $this->response->handleRequest($request, $_GET);
 
       define('LX_MODULE',       $module);
       define('LX_CONTROLLER',   $controller);
@@ -104,6 +104,8 @@ class Dispatcher
       if ($action)
       {
         $context = array($cont, $actionsMap[$action]['method']);
+        foreach ($params as $key => $value)
+          $params[$key] = urldecode($value);
 	$result = call_user_func_array($context, $params);
       }
 

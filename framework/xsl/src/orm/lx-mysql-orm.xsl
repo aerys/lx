@@ -258,7 +258,7 @@
 
 
   <xsl:template match="lx:where">
-    <xsl:variable name="property" select="concat('`', @property, '`')"/>
+    <xsl:variable name="property" select="@property"/>
 
     <xsl:if test="not(ancestor::lx:where or preceding-sibling::lx:where)">
       <xsl:text> WHERE </xsl:text>
@@ -268,7 +268,7 @@
       <xsl:text> OR </xsl:text>
     </xsl:if>
 
-    <xsl:value-of select="$property"/>
+    <xsl:value-of select="concat('`', $property, '`')"/>
 
     <xsl:if test="@value and @operator">
       <xsl:variable name="value" select="concat(':', @property, '_', generate-id())"/>
@@ -311,7 +311,13 @@
 
     <xsl:if test="lx:where">
       <xsl:text> AND </xsl:text>
+      <xsl:if test="count(lx:where) &gt; 1">
+        <xsl:text>(</xsl:text>
+      </xsl:if>
       <xsl:apply-templates select="lx:where"/>
+      <xsl:if test="count(lx:where) &gt; 1">
+        <xsl:text>)</xsl:text>
+      </xsl:if>
     </xsl:if>
   </xsl:template>
 
