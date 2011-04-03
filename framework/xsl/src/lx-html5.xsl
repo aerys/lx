@@ -3,8 +3,8 @@
 <?xml-stylesheet type="text/xsl" href="lx-xsldoc.xsl"?>
 
 <!--
-    @stylesheet LX HTML4
-    HTML4 templates.
+    @stylesheet LX HTML5
+    HTML5 templates.
 -->
 <xsl:stylesheet version="1.0"
 		xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -12,16 +12,11 @@
 		xmlns:lx.html="http://lx.aerys.in/html"
         exclude-result-prefixes="lx.html">
 
-  <xsl:output method="html"
-	      version="4.0"
-	      omit-xml-declaration="yes"
-	      doctype-public="-//W3C//DTD HTML 4.01 Transitional//EN"
-	      doctype-system="http://www.w3.org/TR/html4/loose.dtd"
-	      indent="yes"
-	      encoding="unicode"/>
+  <xsl:output method="html" encoding="unicode" indent="yes" />
 
   <xsl:template match="/">
-    <html>
+    <xsl:text disable-output-escaping="yes">&lt;!DOCTYPE html></xsl:text>
+    <html lang="fr">
       <head>
 
 	<base>
@@ -35,18 +30,21 @@
 	  </xsl:attribute>
 	</base>
 
-        <title>
+	<meta charset="utf-8" />
+
+    <title>
 	  <xsl:apply-templates select="$LX_LAYOUT/lx:layout/head/title/node()"/>
 	  <xsl:apply-templates select="$LX_TEMPLATE/lx:template/head/title/node()"/>
 	</title>
 
-	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/>
-
         <!-- Client XSL support detection -->
         <xsl:call-template name="lx.html:detect-client-xsl-support"/>
+        
+       	<script language="javascript" type="text/javascript"
+	    src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
 
         <xsl:apply-templates select="$LX_LAYOUT/lx:layout/head/*[name()!='title']"/>
-	<xsl:apply-templates select="$LX_TEMPLATE/lx:template/head/*[name()!='title']"/>
+		<xsl:apply-templates select="$LX_TEMPLATE/lx:template/head/*[name()!='title']"/>
 
       </head>
       <body>
@@ -56,7 +54,6 @@
     </html>
   </xsl:template>
 
-<xsl:include href="lx-html-utils.xsl" />
-
+  <xsl:include href="lx-html-utils.xsl" />
 
 </xsl:stylesheet>
