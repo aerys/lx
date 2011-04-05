@@ -425,7 +425,10 @@ switch($argv[3])
     break;
 
   case 'export':
-  	die(export(isset($argv[4]) ? $argv[4] : null));
+    if (isset($argv[4]))
+      die(export($argv[4]));
+    else
+      die(export());
     break;
 
   case 'import':
