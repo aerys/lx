@@ -46,11 +46,6 @@
 
 	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/>
 
-        <xsl:apply-templates select="$LX_HTML_HEAD/*
-                                     [name()!='title']
-                                     [not(descendant-or-self::lx.html:stylesheet)]
-                                     [not(descendant-or-self::lx.html:javascript)]"/>
-
         <!-- CSS -->
         <xsl:apply-templates select="$LX_HTML_HEAD/*
                                      [descendant-or-self::lx.html:stylesheet]"/>
@@ -63,6 +58,10 @@
                                      [descendant-or-self::lx.html:javascript]
                                      [. != '']"/>
 
+        <xsl:apply-templates select="$LX_HTML_HEAD/*
+                                     [name()!='title']
+                                     [not(descendant-or-self::lx.html:stylesheet)]
+                                     [not(descendant-or-self::lx.html:javascript)]"/>
       </head>
       <body>
 	<xsl:copy-of select="$LX_HTML_BODY/@*"/>
