@@ -63,6 +63,7 @@ function lx_error_handler($errno,
 			  $errline,
 			  $context)
 {
+  // FIXME
   throw new ErrorException($errstr, 0, $errno, $errfile, $errline);
 
   /* Don't execute PHP internal error handler */

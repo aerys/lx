@@ -20,15 +20,18 @@ function execute_task($message,
 
   echo $message;
 
-  if (!$stdout)
-    $cmd .= ' > /dev/null';
-  if (!$stderr)
-    $cmd .= ' 2> /dev/null';
+  if (SYS === 'posix')
+  {
+	if (!$stdout)
+		$cmd .= ' > /dev/null';
+	if (!$stderr)
+		$cmd .= ' 2> /dev/null';
+  }
 
   if (DEBUG)
     echo PHP_EOL . $cmd . PHP_EOL;
 
-  exec($cmd, &$cmd, &$r);
+  exec($cmd, $cmd, $r); //&$cmd deprecated
 
   if ($cmd && ($stdout || $stderr || $r))
   {
@@ -131,21 +134,30 @@ function create($path, $name, $archetype = null)
   }
   else if (SYS === 'win') //new windows (Vista/7) support mklink /D (ln -s alternative)
   {
-    exec('mklink /D ' . LX_HOME . '/framework '
-         . $path . '/' . $name . '/lib/lx');
-    exec('mklink /D ' . LX_HOME . '/framework/xsl/src/*.xsl '
-         . $path . '/' . $name . '/src/views/');
+	$escaped = str_replace('\\', '/', $path);
+
+    exec('mklink /D "' . $escaped . '/' . $name . '/lib/lx" "' . LX_HOME . '/framework"');
+
+	$src = LX_HOME . '/framework/xsl/src';
+	$dir = opendir($src);
+
+	while(false !== ($file = readdir($dir)))
+	{
+		if (!is_dir($file) && ($file != '.') && ($file != '..') && (substr($file, -3) == "xsl"))
+		{
+			exec('mklink /D "' . $escaped . '/' . $name . '/src/views/' . $file . '" "' . $src . '/' . $file . '"');
+		}
+	}
+
+	closedir($dir);
   }
   else //any other unix based shell
   {
-    exec('ln -s ' . LX_HOME . '/framework '
-         . $path . '/' . $name . '/lib/lx');
-    exec('ln -s ' . LX_HOME . '/framework/xsl/src/*.xsl '
-         . $path . '/' . $name . '/src/views/');
+    exec('ln -s ' . LX_HOME . '/framework ' . $path . '/' . $name . '/lib/lx');
+    exec('ln -s ' . LX_HOME . '/framework/xsl/src/*.xsl ' . $path . '/' . $name . '/src/views/');
   }
 
-  exec('cd ' . $path . '/' . $name
-       . ' && ' . LX_HOME . '/script/lx-cli'
+  exec('cd ' . $path . '/' . $name . ' && ' . LX_HOME . '/bin/lx-cli'
        . (SYS !== 'posix' ? '.bat' : '') . ' update');
 
   return $out;
@@ -334,7 +346,7 @@ function import($archive = null)
       $dir = substr($archive, 0, strrpos($archive, '.'));
     }
 
-    //FIX: tar is not windows native ; use of zip and zip php extension instead ?
+	//FIX: tar is not windows native ; use of zip and zip php extension instead ?
     $tar = execute_task('Extracting project from archive \'' . $archive . '\'... ',
                         'tar xvf ' . $archive);
 
@@ -343,13 +355,13 @@ function import($archive = null)
 
     if ($tar)
       echo exec('cd ' . $dir
-                . ' && ' . LX_HOME . '/script/lx-cli.sh import') . PHP_EOL;
+                . ' && ' . LX_HOME . '/bin/lx-cli.sh import') . PHP_EOL;
     else
       error('unable to extract');
   }
   else
   {
-    update('all');
+    config();
     require_once(CURRENT . '/bin/lx-project.php');
 
     foreach ($_LX['databases'] as $db)
@@ -413,10 +425,7 @@ switch($argv[3])
     break;
 
   case 'export':
-    if (isset($argv[4]))
-      export($argv[4]);
-    else
-      export();
+  	die(export(isset($argv[4]) ? $argv[4] : null));
     break;
 
   case 'import':

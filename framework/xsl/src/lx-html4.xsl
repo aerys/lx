@@ -20,6 +20,11 @@
 	      indent="yes"
 	      encoding="unicode"/>
 
+  <xsl:variable name="LX_HTML_HEAD" select="$LX_LAYOUT/lx:layout/head
+                                            | $LX_TEMPLATE/lx:template/head"/>
+  <xsl:variable name="LX_HTML_BODY" select="$LX_LAYOUT/lx:layout/body
+                                            | $LX_TEMPLATE/lx:template/body"/>
+
   <xsl:template match="/">
     <html>
       <head>
@@ -36,22 +41,35 @@
 	</base>
 
         <title>
-	  <xsl:apply-templates select="$LX_LAYOUT/lx:layout/head/title/node()"/>
-	  <xsl:apply-templates select="$LX_TEMPLATE/lx:template/head/title/node()"/>
+	  <xsl:apply-templates select="$LX_HTML_HEAD/title/node()"/>
 	</title>
 
 	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/>
 
-        <!-- Client XSL support detection -->
-        <xsl:call-template name="lx.html:detect-client-xsl-support"/>
+        <xsl:apply-templates select="$LX_HTML_HEAD/*
+                                     [name()!='title']
+                                     [not(descendant-or-self::lx.html:stylesheet)]
+                                     [not(descendant-or-self::lx.html:javascript)]"/>
 
-        <xsl:apply-templates select="$LX_LAYOUT/lx:layout/head/*[name()!='title']"/>
-	<xsl:apply-templates select="$LX_TEMPLATE/lx:template/head/*[name()!='title']"/>
+        <!-- CSS -->
+        <xsl:apply-templates select="$LX_HTML_HEAD/*
+                                     [descendant-or-self::lx.html:stylesheet]"/>
+
+        <!-- JavaScript -->
+        <xsl:apply-templates select="$LX_HTML_HEAD/*
+                                     [descendant-or-self::lx.html:javascript]
+                                     [. = '']"/>
+        <xsl:apply-templates select="$LX_HTML_HEAD/*
+                                     [descendant-or-self::lx.html:javascript]
+                                     [. != '']"/>
 
       </head>
       <body>
-	<xsl:copy-of select="$LX_LAYOUT/lx:layout/body/@* | $LX_TEMPLATE/lx:template/body/@*"/>
+	<xsl:copy-of select="$LX_HTML_BODY/@*"/>
 	<xsl:apply-templates select="$LX_LAYOUT/lx:layout/body/node()"/>
+
+        <!-- Client XSL support detection -->
+        <xsl:call-template name="lx.html:detect-client-xsl-support"/>
       </body>
     </html>
   </xsl:template>
@@ -109,34 +127,6 @@
   </xsl:template>
 
   <!--
-      @template lx.html:javascript-class
-      Include a javascript class.
-    -->
-  <xsl:template name="lx.html:javascript-class"
-		match="lx.html:javascript-class">
-    <!-- @param name of the javascript class -->
-    <xsl:param name="name" select="@name"/>
-
-    <script language="javascript" type="text/javascript"
-	    src="javascript/class/{$name}.js"></script>
-    <xsl:value-of select="$LX_LF"/>
-  </xsl:template>
-
-  <!--
-      @template lx.html:javascript-library
-      Include a javascript library.
-    -->
-  <xsl:template name="lx.html:javascript-library"
-		match="lx.html:javascript-library">
-    <!-- @param name of the javascript library -->
-    <xsl:param name="name" select="@name"/>
-
-    <script language="javascript" type="text/javascript"
-	    src="javascript/libs/{$name}.js"></script>
-    <xsl:value-of select="$LX_LF"/>
-  </xsl:template>
-
-  <!--
       @template lx.html:javascript
       Embed javascript code.
     -->
@@ -147,6 +137,11 @@
 
     <script language="javascript" type="text/javascript">
       <xsl:choose>
+        <xsl:when test="@name">
+          <xsl:attribute name="src">
+            <xsl:value-of select="concat('javascript/', @name, '.js')"/>
+          </xsl:attribute>
+        </xsl:when>
         <xsl:when test="node() = $script">
           <xsl:apply-templates select="$script"/>
         </xsl:when>
