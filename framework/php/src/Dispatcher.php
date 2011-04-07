@@ -109,7 +109,7 @@ class Dispatcher
 	$result = call_user_func_array($context, $params);
       }
 
-      if ($result)
+      if ($result !== null)
         echo XML::serialize($result);
 
       if (($ob_output = ob_get_clean()))

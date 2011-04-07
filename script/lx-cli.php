@@ -27,7 +27,7 @@ function execute_task($message,
 	if (!$stderr)
 		$cmd .= ' 2> /dev/null';
   }
-  
+
   if (DEBUG)
     echo PHP_EOL . $cmd . PHP_EOL;
 
@@ -135,9 +135,9 @@ function create($path, $name, $archetype = null)
   else if (SYS === 'win') //new windows (Vista/7) support mklink /D (ln -s alternative)
   {
 	$escaped = str_replace('\\', '/', $path);
-	
+
     exec('mklink /D "' . $escaped . '/' . $name . '/lib/lx" "' . LX_HOME . '/framework"');
-	
+
 	$src = LX_HOME . '/framework/xsl/src';
 	$dir = opendir($src);
 
@@ -157,7 +157,8 @@ function create($path, $name, $archetype = null)
     exec('ln -s ' . LX_HOME . '/framework/xsl/src/*.xsl ' . $path . '/' . $name . '/src/views/');
   }
 
-  exec('cd ' . $path . '/' . $name . ' && ' . LX_HOME . '/bin/lx-cli' . (SYS !== 'posix' ? '.bat' : '') . ' update');
+  exec('cd ' . $path . '/' . $name . ' && ' . LX_HOME . '/bin/lx-cli'
+       . (SYS !== 'posix' ? '.bat' : '') . ' update');
 
   return $out;
 }
@@ -203,7 +204,7 @@ function lib()
 {
   $out = 'This undocumented feature is windows only';
   if (SYS === 'old') { copy_dir(LX_HOME . '/framework/php', CURRENT . '/lib/lx'); }
-  
+
   return $out;
 }
 
@@ -217,7 +218,7 @@ function config($root = CURRENT)
                . LX_HOME . '/script/lx-project.php '
                . $root . '/lx-project.xml > ' . $root . '/bin/lx-project.php php',
                true);
-               
+
   execute_task('Building configuration (xsl)... ',
                'php '
                . LX_HOME . '/script/lx-project.php '
@@ -281,7 +282,7 @@ function export($project = "")
   // export the project
   $basename = basename($project);
   $archive = $basename . '-' . date('Ymd') . '.tgz';
-  
+
   //FIX: tar is not windows native ; use of zip and zip php extension instead ?
   execute_task('Exporting project to \'' . realpath($project . '/..') . '/' . $archive . '\'... ',
                'cd ' . realpath($project . '/..')
@@ -357,7 +358,7 @@ function import($archive = null)
 
     if ($tar)
       echo exec('cd ' . $dir
-                . ' && ' . LX_HOME . '/script/lx-cli.sh import') . PHP_EOL;
+                . ' && ' . LX_HOME . '/bin/lx-cli.sh import') . PHP_EOL;
     else
       error('unable to extract');
   }
@@ -427,7 +428,10 @@ switch($argv[3])
     break;
 
   case 'export':
-  	die(export(isset($argv[4]) ? $argv[4] : null));
+    if (isset($argv[4]))
+      die(export($argv[4]));
+    else
+      die(export());
     break;
 
   case 'import':

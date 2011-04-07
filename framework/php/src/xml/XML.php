@@ -70,25 +70,10 @@ class XML
 
     foreach ($array as $key => $value)
     {
-      if (is_object($value))
-      {
-        $result .= self::serializeObject($value);
-      }
+      if (is_numeric($key))
+        $result .= self::serialize($value);
       else
-      {
-        $xml = self::serialize($value);
-
-        if ($xml !== false)
-        {
-          $nodeName = is_numeric($key)
-                      ? ($name ? $name : '_' . $key)
-                      : $key;
-
-          $result .= '<' . $nodeName . '>'
-                     . $xml
-                     . '</' . $nodeName . '>';
-        }
-      }
+        $result .= self::node($key, $value);
     }
 
     return $result;
@@ -100,6 +85,8 @@ class XML
   {
     if ($object instanceof IXMLSerializable)
       return $object->toXML($exclude, $noRoot);
+    /*else if (method_exists($object, '__toString'))
+      return $object->__toString();*/
 
     if (method_exists($object, 'getProperties'))
     {

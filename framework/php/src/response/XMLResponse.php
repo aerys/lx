@@ -82,13 +82,14 @@ class XMLResponse extends AbstractResponse
     $this->debugFragment->appendXML($msg);
   }
 
-  public function appendArguments($value, $source)
+  public function appendArguments($values, $source)
   {
-    if (!count($value))
+    if (!count($values))
       return ;
 
     $f = $this->document->createDocumentFragment();
-    $f->appendXML(XML::serialize($value, $source));
+    foreach ($values as $value)
+      $f->appendXML(XML::node($source, $value));
 
     $this->argumentsNode->appendChild($f);
   }
