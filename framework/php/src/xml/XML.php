@@ -7,14 +7,14 @@ class XML
     $result     = '';
     $xml        = self::serialize($value, $nodeName);
 
+    $result = '<' . $nodeName;
+    if ($attributes)
+      foreach ($attributes as $name => $attribute)
+        $result .= ' ' . self::attribute($name, $attribute);
     if ($xml !== false)
-    {
-      $result = '<' . $nodeName;
-      if ($attributes)
-        foreach ($attributes as $name => $attribute)
-          $result .= ' ' . self::attribute($name, $attribute);
       $result .=  '>' . $xml . '</' . $nodeName . '>';
-    }
+    else
+      $result .= '/>';
 
     return $result;
   }

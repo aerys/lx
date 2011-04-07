@@ -45,6 +45,16 @@ class MySQLDatabase extends AbstractDatabase
     if ($this->encoding)
       $this->mysqli->query("SET NAMES '".$this->encoding."'");
 
+    if (LX_DEBUG)
+    {
+      LX::debug(XML::node('mysqlConnect',
+                          null,
+                          array('host'          => $this->host,
+                                'user'          => $this->user,
+                                'database'      => $this->database,
+                                'time'          => ((microtime() - $time) * 1000))));
+    }
+
     $this->isConnected = true;
   }
 
