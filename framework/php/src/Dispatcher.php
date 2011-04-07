@@ -106,9 +106,8 @@ class Dispatcher
         $context = array($cont, $actionsMap[$action]['method']);
         foreach ($params as $key => $value)
           $params[$key] = urldecode($value);
-          
-        $object = array("data" => $params, "get" => $get, "post" => $post);
-		$result = call_user_func_array($context, $object);
+
+        $result = call_user_func_array($context, $params);
       }
 
       if ($result !== null)

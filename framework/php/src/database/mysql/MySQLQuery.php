@@ -80,7 +80,7 @@ class MySQLQuery extends AbstractQuery
     if (is_array($myValue))
     {
       for ($i = 0; $i < count($myValue); ++$i)
-        $myValue[$i] = $this->database->escapeString($myValue[$i]);
+        $myValue[$i] = '\'' . $this->database->escapeString($myValue[$i]) . '\'';
 
       return $this->setTuple($myArg, $myValue);
     }
@@ -88,7 +88,7 @@ class MySQLQuery extends AbstractQuery
     $myValue = $this->database->escapeString($myValue);
 
     $this->request = str_replace($this->arguments[$myArg],
-				 "'" . $myValue . "'",
+				 '\'' . $myValue . '\'',
 				 $this->request);
 
     return $this;
