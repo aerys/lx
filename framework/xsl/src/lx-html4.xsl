@@ -10,7 +10,7 @@
 		xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
 		xmlns:lx="http://lx.aerys.in"
 		xmlns:lx.html="http://lx.aerys.in/html"
-        exclude-result-prefixes="lx.html">
+                exclude-result-prefixes="lx.html">
 
   <xsl:output method="html"
 	      version="4.0"
@@ -72,6 +72,6 @@
       </html>
     </xsl:template>
 
-    <xsl:include href="lx-html-utils.xsl" />
+    <xsl:include href="lx-html-common.xsl" />
 
 </xsl:stylesheet>
