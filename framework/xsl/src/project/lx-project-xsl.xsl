@@ -35,7 +35,7 @@
     <xsl:for-each select="@*">
       <xsl:call-template name="lx:xsl_var">
         <xsl:with-param name="name" select="concat('db_', name())"/>
-        <xsl:with-param name="value" select="current()"/>
+        <xsl:with-param name="value" select="'current()'"/>
       </xsl:call-template>
     </xsl:for-each>
   </xsl:template>
@@ -52,7 +52,7 @@
       </xsl:attribute>
 
       <xsl:attribute name="select">
-        <xsl:value-of select="concat($LX_QUOTE, $value, $LX_QUOTE)"/>
+        <xsl:value-of select="$value"/>
       </xsl:attribute>
     </xsl:element>
 
