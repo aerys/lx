@@ -68,34 +68,6 @@
   </xsl:template>
 
   <!--
-      @template lx.html:javascript-class
-      Include a javascript class.
-    -->
-  <xsl:template name="lx.html:javascript-class"
-		match="lx.html:javascript-class">
-    <!-- @param name of the javascript class -->
-    <xsl:param name="name" select="@name"/>
-
-    <script language="javascript" type="text/javascript"
-	    src="javascript/class/{$name}.js"></script>
-    <xsl:value-of select="$LX_LF"/>
-  </xsl:template>
-
-  <!--
-      @template lx.html:javascript-library
-      Include a javascript library.
-    -->
-  <xsl:template name="lx.html:javascript-library"
-		match="lx.html:javascript-library">
-    <!-- @param name of the javascript library -->
-    <xsl:param name="name" select="@name"/>
-
-    <script language="javascript" type="text/javascript"
-	    src="javascript/libs/{$name}.js"></script>
-    <xsl:value-of select="$LX_LF"/>
-  </xsl:template>
-  
-  <!--
       @template lx.html:javascript
       Embed javascript code.
     -->
@@ -106,6 +78,13 @@
 
     <script language="javascript" type="text/javascript">
       <xsl:choose>
+        <xsl:when test="@name">
+          <xsl:attribute name="src">
+            <xsl:text>javascript/</xsl:text>
+            <xsl:value-of select="@name"/>
+            <xsl:text>.js</xsl:text>
+          </xsl:attribute>
+        </xsl:when>
         <xsl:when test="node() = $script">
           <xsl:apply-templates select="$script"/>
         </xsl:when>
@@ -299,5 +278,5 @@
     <meta name="keywords" content="{normalize-space($content)}"/>
     <xsl:value-of select="$LX_LF"/>
   </xsl:template>
-  
+
 </xsl:stylesheet>
