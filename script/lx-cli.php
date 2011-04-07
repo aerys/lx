@@ -249,8 +249,11 @@ function models()
   }
 }
 
-function export($project = CURRENT)
+function export($project = "")
 {
+  if (!$project)
+    $project = CURRENT;
+  
   if ($project && !(is_dir($project) && file_exists($project . '/lx-project.xml')))
     error('\'' . $project . '\' is not a valid LX project');
 
