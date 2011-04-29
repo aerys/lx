@@ -60,6 +60,15 @@ class ResultSet implements Iterator, IXMLSerializable
   {
     return XML::serializeArray($this->data);
   }
+
+  public function remove($index)
+  {
+    $count = $this->size();
+    for ($i = 0; $i < $count - 1; $i++)
+      $this->data[$i] = $this->data[$i + 1];
+
+    unset($this->data[$i]);
+  }
 }
 
 ?>
