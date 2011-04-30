@@ -31,10 +31,11 @@ function execute_task($message,
   if (DEBUG)
     echo PHP_EOL . $cmd . PHP_EOL;
 
-  exec($cmd, $cmd, $r); //&$cmd deprecated
+  exec($cmd, $cmd, $r);
 
   if ($cmd && ($stdout || $stderr || $r))
   {
+    echo PHP_EOL;
     foreach ($cmd as $line)
       echo $line . PHP_EOL;
     echo $message;
@@ -253,7 +254,7 @@ function export($project = "")
 {
   if (!$project)
     $project = CURRENT;
-  
+
   if ($project && !(is_dir($project) && file_exists($project . '/lx-project.xml')))
     error('\'' . $project . '\' is not a valid LX project');
 
@@ -395,6 +396,18 @@ function import_mysql($db)
                . (isset($db['password']) && $db['password'] ? ' -p' . $db['password'] : ''));
 }
 
+function doctor($path = null)
+{
+  $path = dirname($path ? $path : 'project.xml');
+
+  execute_task('Checking for $LX_HOME environment variable',
+               ': ${LX_HOME:?"Need to set LX_HOME non-empty"}');
+  execute_task('Checking for invalid symlinks ('.$path.'/src/views/)',
+               'set -e; for XSL in '.$path.'/src/views/*.xsl; do test -e $XSL; done');
+  execute_task('Checking for GNU tools (tar, ls)',
+               'set -e; `which tar` --version | grep -q GNU && `which ls` --version | grep -q GNU');
+}
+
 function help()
 {
   return 'Usage: lx-cli [%action=update]' . PHP_EOL
@@ -405,6 +418,7 @@ function help()
     . '  update models' . T . T . T . 'Update models only' . PHP_EOL
     . '  import [%archive]' . T . T . 'Import a project [from the %archive archive]' . PHP_EOL
     . '  export [%project]' . T . T . 'Export the %project project or the current directory project' . PHP_EOL
+    . '  doctor [%project]' . T . T . 'Check the project for potential problems' . PHP_EOL
     . '  help' . T . T . T . T . 'Display this message' . PHP_EOL;
 }
 
@@ -413,6 +427,7 @@ if (DEBUG)
 
 if (count($argv) < 4)
   die(update('all'));
+
 switch($argv[3])
 {
   case 'create':
@@ -437,6 +452,9 @@ switch($argv[3])
   case 'import':
     die(import(isset($argv[4]) ? $argv[4] : null));
     break;
+
+  case 'doctor':
+    die(doctor(isset($argv[4]) ? $argv[4] : null));
 
   case 'help':
     die(help());
