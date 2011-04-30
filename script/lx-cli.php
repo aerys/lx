@@ -401,11 +401,13 @@ function doctor($path = null)
   $path = dirname($path ? $path : 'project.xml');
 
   execute_task('Checking for $LX_HOME environment variable',
-               ': ${LX_HOME:?"Need to set LX_HOME non-empty"}');
+               'set -e; : ${LX_HOME:?"Need to set LX_HOME non-empty"}');
   execute_task('Checking for invalid symlinks ('.$path.'/src/views/)',
                'set -e; for XSL in '.$path.'/src/views/*.xsl; do test -e $XSL; done');
   execute_task('Checking for GNU tools (tar, ls)',
                'set -e; `which tar` --version | grep -q GNU && `which ls` --version | grep -q GNU');
+  execute_task('Checking for generated files',
+               'set -e; test -e '.$path.'/bin/lx-project.php');
 }
 
 function help()
