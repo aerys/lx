@@ -65,7 +65,7 @@
   <xsl:template match="lx:select/@offset | lx:select/@limit">
     <xsl:choose>
       <xsl:when test="ancestor::lx:static-method/lx:argument/@name = .">
-        <xsl:value-of select="concat(':', ., '_', generate-id())"/>
+        <xsl:value-of select="concat(':', name(), '_', generate-id())"/>
       </xsl:when>
       <xsl:otherwise>
         <xsl:value-of select="string(.)"/>
