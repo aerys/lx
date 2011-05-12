@@ -32,8 +32,6 @@ class XML
     else
       $result .= '/>';
 
-    LX::debug('<![CDATA[' . $result . ']]>');
-
     return $result;
   }
 
