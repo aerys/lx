@@ -20,11 +20,7 @@ class LX
 											'/bin/models');
 
 	static private $extensionToMime       = array('css'   => 'text/css',
-                                                'xml'   => 'text/xml',
                                                 'xsl'   => 'text/xsl',
-                                                'png'   => 'image/png',
-                                                'jpg'   => 'image/jpg',
-                                                'js'    => 'text/javascript',
                                                 'swf'   => 'application/x-shockwave-flash');
 
 	static public function setResponse($my_response)	{self::$response = $my_response;}
@@ -124,23 +120,22 @@ class LX
 	static public function dispatchHTTPRequest($url, $get, $post)
 	{
 		if (($pos = strpos($url, '?')) !== false)
-		$url = substr($url, 0, $pos);
-		if (LX_DOCUMENT_ROOT != '/'
-		&& ($pos = strpos($url, LX_DOCUMENT_ROOT)) !== false)
-		$url = substr($url, $pos + strlen(LX_DOCUMENT_ROOT));
+			$url = substr($url, 0, $pos);
+		if (LX_DOCUMENT_ROOT != '/' && ($pos = strpos($url, LX_DOCUMENT_ROOT)) !== false)
+			$url = substr($url, $pos + strlen(LX_DOCUMENT_ROOT));
 
 		if ((preg_match('#^/views/(.*)\.(xsl|xml)$#', $url)
-		&& file_exists($filename = LX_APPLICATION_ROOT . '/src' . $url))
-		|| (file_exists($filename = LX_APPLICATION_ROOT . '/public' . $url)
-		&& !is_dir($filename)))
+			&& file_exists($filename = LX_APPLICATION_ROOT . '/src' . $url))
+			|| (file_exists($filename = LX_APPLICATION_ROOT . '/public' . $url)
+			&& !is_dir($filename)))
 		{
 			$extension = substr($url, strrpos($url, '.') + 1);
 			$lastModified = filemtime($filename);
 
 			if (isset(self::$extensionToMime[$extension]))
-			header('Content-Type: ' . self::$extensionToMime[$extension]);
+				header('Content-Type: ' . self::$extensionToMime[$extension]);
 			else
-			header('Content-Type: '. mime_content_type($filename));
+				header('Content-Type: '. mime_content_type($filename));
 
 			if (isset($_SERVER['HTTP_IF_MODIFIED_SINCE'])
 			&& strtotime($_SERVER['HTTP_IF_MODIFIED_SINCE']) >= $lastModified)
