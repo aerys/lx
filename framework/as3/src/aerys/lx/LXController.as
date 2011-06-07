@@ -65,8 +65,10 @@
 			}
 			
 			data[int(Math.random() * int.MAX_VALUE).toString()] = int(Math.random() * int.MAX_VALUE);
+
+			if (url.lastIndexOf(".xml") < 0)
+				request.url = url + ".xml";
 			
-			request.url = url + ".xml";
 			request.data = data;
 						
 			loader.addEventListener(Event.COMPLETE, loaderCompleteHandler);

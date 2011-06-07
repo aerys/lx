@@ -8,6 +8,11 @@
       if (top.location == self.document.location)
         top.location = "<lx:value-of select="//facebook/url"/>";
     </h:javascript>
+    <!-- Correct fb_xd_fragment Bug Start -->
+    <h:javascript>
+      window.onload = function() { document.getElementsByTagName('html')[0].style.display='block'; };
+    </h:javascript>
+    <!-- Correct fb_xd_fragment Bug End -->
   </head>
   <body>
     <lx:apply-templates select="lx:template" />
