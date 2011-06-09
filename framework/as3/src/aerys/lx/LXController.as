@@ -7,6 +7,7 @@
 	import flash.net.URLRequest;
 	import flash.net.URLRequestMethod;
 	import flash.net.URLVariables;
+	import flash.utils.ByteArray;
 	import flash.utils.Proxy;
 	import flash.utils.escapeMultiByte;
 	import flash.utils.flash_proxy;
@@ -29,11 +30,10 @@
 		
 		override flash_proxy function callProperty(name : *, ...rest) : *
 		{
-			var url : String = _url + "/" + name;
-			var numArguments : int = rest.length;
-			var request : URLRequest = new URLRequest();
-			var loader : URLLoader = new URLLoader();
-			var data : URLVariables = new URLVariables();
+			var url 			: String 		= _url + "/" + name;
+			var numArguments 	: int 			= rest.length;
+			var request 		: URLRequest 	= new URLRequest();
+			var loader 			: URLLoader 	= new URLLoader();
 			
 			if (rest[numArguments - 1] is Function)
 			{
@@ -46,29 +46,37 @@
 					callback.call(null, e.response);
 				});
 			}
-			
-			if (typeof rest[0] == "object")
+		
+			if (rest[0] is ByteArray)
 			{
-				
-				var obj : Object = rest[0];
-				
-				for (var propertyName : String in obj)
-					data[propertyName] = obj[propertyName];
-				
-				request.method = URLRequestMethod.POST;
-				
+				request.data = rest[0];
+				request.contentType = "application/octet-stream";
 			}
 			else
 			{
-				for (var i : int = 0; i < numArguments; ++i)
-					url += "/" + escapeMultiByte(rest[i]);
+				var data	: URLVariables 	= new URLVariables();
+				
+				data[int(Math.random() * int.MAX_VALUE).toString()] = int(Math.random() * int.MAX_VALUE);
+				
+				if (typeof rest[0] == "object")
+				{
+					var obj : Object = rest[0];
+					
+					for (var propertyName : String in obj)
+						data[propertyName] = obj[propertyName];
+				}
+				else
+				{
+					for (var i : int = 0; i < numArguments; ++i)
+						url += "/" + escapeMultiByte(rest[i]);
+				}
+
+				request.data = data;
 			}
 			
-			data[int(Math.random() * int.MAX_VALUE).toString()] = int(Math.random() * int.MAX_VALUE);
-			
+			request.method = URLRequestMethod.POST;
 			request.url = url + ".xml";
-			request.data = data;
-						
+			
 			loader.addEventListener(Event.COMPLETE, loaderCompleteHandler);
 			loader.load(request);
 			
@@ -79,17 +87,17 @@
 		{
 			dispatchEvent(new LXEvent(LXEvent.RESPONSE, new XML((e.target as URLLoader).data)));
 		}
-		
+	
 		public function toString() : String
 		{
 			return _url;
 		}
-		
+	
 		public function addEventListener(type : String, listener : Function, useCapture : Boolean = false, priority : int = 0, useWeakReference : Boolean = false) : void
 		{
 			_dispatcher.addEventListener(type, listener, useCapture, priority, useWeakReference);
 		}
-
+		
 		public function dispatchEvent(event : Event) : Boolean
 		{
 			return _dispatcher.dispatchEvent(event);

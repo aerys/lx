@@ -4,6 +4,22 @@ class XML
 {
   public static function node($nodeName, $value, $attributes = null)
   {
+    // turn '@xxx' properties into attributes
+    if (is_array($value))
+    {
+      foreach ($value as $k => $v)
+      {
+        if (is_string($k) && substr($k, 0, 1) == '@')
+        {
+          if (!$attributes)
+            $attributes = array();
+
+          unset($value[$k]);
+          $attributes[substr($k, 1)] = $v;
+        }
+      }
+    }
+
     $result     = '';
     $xml        = self::serialize($value, $nodeName);
 
@@ -40,28 +56,31 @@ class XML
     else if (is_object($value))
       return self::serializeObject($value);
     else if (is_string($value))
-    {
-      if (get_magic_quotes_gpc())
-        $value = stripslashes($value);
+      return self::serializeString($value);
 
-      if (preg_match('/[&<>]+/', $value))
+    return false;
+  }
+
+  public static function serializeString($value)
+  {
+    if (get_magic_quotes_gpc())
+      $value = stripslashes($value);
+
+    if (preg_match('/[&<>]+/', $value))
+    {
+      try
       {
-        try
-        {
           @simplexml_load_string('<root>' . $value . '</root>');
 
           return $value;
-        }
-        catch (Exception $e)
-        {
-          return '<![CDATA[' . $value . ']]>';
-        }
       }
-
-      return $value;
+      catch (Exception $e)
+      {
+        return '<![CDATA[' . $value . ']]>';
+      }
     }
 
-    return false;
+    return $value;
   }
 
   public static function serializeArray($array, $name = null)

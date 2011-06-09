@@ -2,18 +2,18 @@
 
 class FilterException extends Exception
 {
-  private $filter	= NULL;
+  private $filter	= null;
+  private $data		= null;
 
-  public function getFilter()
+  public function getFilter() 	{ return $this->filter;}
+  public function getData()  	{ return $this->data;}
+
+  public function FilterException($filter, $error = "", $data = null)
   {
-    return ($this->filter);
-  }
+    parent::__construct($error);
 
-  public function FilterException($myFilter, $myError = "")
-  {
-    parent::__construct($myError);
-
-    $this->filter = $myFilter;
+    $this->filter = $filter;
+    $this->data = $data;
   }
 }
 

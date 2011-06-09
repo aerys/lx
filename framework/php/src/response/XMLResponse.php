@@ -24,6 +24,7 @@ class XMLResponse extends AbstractResponse
     $this->rootNode->setAttribute('xmlns:lx', LX_NAMESPACE);
     $this->rootNode->setAttribute('host', LX_HOST);
     $this->rootNode->setAttribute('date', $this->date);
+    $this->rootNode->setAttribute('protocol', isset($_SERVER['HTTPS']) ? 'https' : 'http');
     if (LX_DOCUMENT_ROOT != '/')
       $this->rootNode->setAttribute('documentRoot', LX_DOCUMENT_ROOT);
     if (LX_DEBUG)
@@ -59,11 +60,15 @@ class XMLResponse extends AbstractResponse
   public function handleRequest($request, $get = null, $post = null)
   {
     /*if (($xml = XML::node('get', $_GET) . XML::node('post', $_POST)))*/
-    if ($get != null && ($xml = XML::node('get', $get)))
+    /* if ($get != null && ($xml = XML::node('get', $get))) */
+    /* { */
+    /*   $argsFragment = $this->document->createDocumentFragment(); */
+    /*   $argsFragment->appendXML($xml); */
+    /*   $this->argumentsNode->appendChild($argsFragment); */
+    /* } */
+    if ($get)
     {
-      $argsFragment = $this->document->createDocumentFragment();
-      $argsFragment->appendXML($xml);
-      $this->argumentsNode->appendChild($argsFragment);
+      $this->appendArguments($get, 'get');
     }
 
     return parent::handleRequest($request, $get, $post);
@@ -88,8 +93,16 @@ class XMLResponse extends AbstractResponse
       return ;
 
     $f = $this->document->createDocumentFragment();
-    foreach ($values as $value)
-      $f->appendXML(XML::node($source, $value));
+    if ($source == 'url')
+    {
+      foreach ($values as $value)
+        if (is_string($value))
+          $f->appendXML(XML::node($source, $value));
+    }
+    else
+    {
+      $f->appendXML(XML::node($source, $values));
+    }
 
     $this->argumentsNode->appendChild($f);
   }

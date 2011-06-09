@@ -36,7 +36,8 @@
 
           <base>
             <xsl:attribute name="href">
-              <xsl:text>http://</xsl:text>
+			  <xsl:value-of select="$LX_RESPONSE/@protocol"/>
+              <xsl:text>://</xsl:text>
               <xsl:value-of select="$LX_RESPONSE/@host"/>
               <xsl:if test="$LX_RESPONSE/@documentRoot != '/'">
                 <xsl:value-of select="$LX_RESPONSE/@documentRoot"/>

@@ -24,7 +24,7 @@
 
     <div id="fb-root"></div>
 
-    <script src="http://connect.facebook.net/fr_FR/all.js"></script>
+    <script src="{$LX_RESPONSE/@protocol}://connect.facebook.net/fr_FR/all.js"></script>
 
     <xsl:variable name="init_script">
       FB.init({appId: '<xsl:value-of select="$id"/>',
