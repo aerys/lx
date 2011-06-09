@@ -69,11 +69,18 @@
 
     <object type="application/x-shockwave-flash" data="{$swf}.swf" width="{$width}" height="{$height}"
 	    style="outline:none;display:block">
-      <xsl:if test="$id">
-	<xsl:attribute name="id">
-	  <xsl:value-of select="$id"/>
-	</xsl:attribute>
-      </xsl:if>
+
+      <xsl:attribute name="id">
+        <xsl:choose>
+          <xsl:when test="$id">
+            <xsl:value-of select="$id"/>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:value-of select="concat($name, '_', generate-id())"/>
+          </xsl:otherwise>
+        </xsl:choose>
+      </xsl:attribute>
+
       <param name="movie" value="{$swf}.swf" />
       <param name="allowScriptAccess" value="sameDomain" />
       <param name="allowFullscreen" value="true" />
