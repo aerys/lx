@@ -12,6 +12,10 @@
 
   <xsl:variable name="LX_PROJECT_ROOT_NODE" select="/"/>
 
+  <xsl:param name="LX_CONFIGURATION_NAME">
+    <xsl:value-of select="$LX_PROJECT_ROOT_NODE//lx:configuration[@default='true']/@name"/>
+  </xsl:param>
+
   <xsl:template match="/">
     <xsl:if test=". = $LX_PROJECT_ROOT_NODE">
       <!-- <?php -->
@@ -42,18 +46,17 @@
   </xsl:template>
 
   <xsl:template match="lx:configuration">
-    <xsl:if test="@name = $LX_PROJECT_ROOT_NODE/lx:project/@configuration">
-      <xsl:apply-templates select="node()"/>
+    <xsl:if test="@name = $LX_CONFIGURATION_NAME">
+      <xsl:apply-templates select="lx:const | lx:database | lx:response
+                                   | lx:map | lx:include"/>
     </xsl:if>
   </xsl:template>
 
   <xsl:template match="lx:project">
-    <xsl:apply-templates select="lx:const"/>
-    <xsl:apply-templates select="lx:database"/>
-    <xsl:apply-templates select="lx:response"/>
-    <xsl:apply-templates select="lx:map"/>
-    <xsl:apply-templates select="lx:include"/>
-    <xsl:apply-templates select="lx:configuration"/>
+      <xsl:apply-templates select="lx:const | lx:database | lx:response
+                                   | lx:map | lx:include"/>
+
+      <xsl:apply-templates select="lx:configuration"/>
   </xsl:template>
 
   <xsl:template match="lx:map">

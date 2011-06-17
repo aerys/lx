@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<lx:template xmlns:lx="http://lx.aerys.in"
+			 xmlns:h="http://lx.aerys.in/html">
+	<head>
+		<h:javascript>
+			top.location.href = '<lx:value-of select="/lx:filters/facebook/loginUrl"/>';
+		</h:javascript>
+	</head>
+</lx:template>

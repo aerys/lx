@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<lx:template xmlns:lx="http://lx.aerys.in">
+	<head>
+	</head>
+	<body>
+		<h1>This page is reserved to our fans only!</h1>
+	</body>
+</lx:template>

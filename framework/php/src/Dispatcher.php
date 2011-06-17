@@ -81,7 +81,7 @@ class Dispatcher
 			{
 				$this->filterName = $filterName;
 				$filter = new $filterClass();
-				$filter_result = $filter->filter();
+				$filter_result = $filter->filter($params);
 				$ob_output = ob_get_contents();
 
 				ob_clean();

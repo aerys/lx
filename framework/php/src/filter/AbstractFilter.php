@@ -2,7 +2,7 @@
 
 abstract class AbstractFilter extends XMLResponseElement
 {
-  abstract public function filter();
+  abstract public function filter($parameters);
 }
 
 ?>

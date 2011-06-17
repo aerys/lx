@@ -2,14 +2,20 @@
 
 <lx:project xmlns:lx="http://lx.aerys.in">
 
-  <lx:const name="FB_APP_ID" value="'xxxxxxxxxxxxx'"/>
-  <lx:const name="FB_API_KEY" value="'xxxxxxxxxxxxxxx'"/>
-  <lx:const name="FB_SECRET_KEY" value="'xxxxxxxxxxxxxx'"/>
-  <lx:const name="FB_APP_URL" value="'http://apps.facebook.com/xxxxxx'"/>
-  <lx:const name="FB_PERMISSIONS" value="'email,publish_stream'"/>
+	<lx:const name="FB_APP_ID" value="'xxxxxxxxxxxxx'" />
+	<lx:const name="FB_API_KEY" value="'xxxxxxxxxxxxxxx'" />
+	<lx:const name="FB_SECRET_KEY" value="'xxxxxxxxxxxxxx'" />
+	<lx:const name="FB_APP_URL" value="'http://apps.facebook.com/xxxxxx'" />
+	<lx:const name="FB_PERMISSIONS" value="'email,publish_stream'" />
+	<lx:const name="FB_REQUIRE_LOGIN" value="true" />
+	
+	<!--
+		@const Use FB_REQUIRE_LIKE to specify the ID of a fan page that must be liked.
+		<lx:const name="FB_REQUIRE_LIKE" value="'xxxxxxxxxxxx'" />
+	-->
 
-  <lx:map>
-    <lx:filter name="facebook"/>
-  </lx:map>
+	<lx:map>
+		<lx:filter name="facebook" />
+	</lx:map>
 
 </lx:project>
