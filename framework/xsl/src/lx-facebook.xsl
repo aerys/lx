@@ -14,15 +14,6 @@
     <xsl:variable name="id">
       <xsl:apply-templates select="@id" mode="lx:value-of"/>
     </xsl:variable>
-    <xsl:variable name="url">
-      <xsl:apply-templates select="@url" mode="lx:value-of"/>
-    </xsl:variable>
-
-    <!--<script src="http://static.ak.connect.facebook.com/js/api_lib/v0.4/FeatureLoader.js.php"
-	    type="text/javascript">
-    </script>-->
-
-    <div id="fb-root"></div>
 
     <script src="{$LX_RESPONSE/@protocol}://connect.facebook.net/fr_FR/all.js"></script>
 
@@ -44,28 +35,28 @@
         {
           var attachment = {
             name:    myName,
-            href:    '<xsl:value-of select="$url"/>',
+            href:    myLink,
             caption: myCaption,
             media:[{
               type:  "image",
               src:   myImage,
-              href:  '<xsl:value-of select="$url"/>'
+              href:  myLink
             }]
-        };
+          };
 
-        var action_links = [{
-          text: "Jouer",
-          href: '<lx:value-of select="$url"/>'
-        }];
+          var action_links = [{
+            text: "Jouer",
+            href: myLink
+          }];
 
-        FB_RequireFeatures(["Connect"], function()
-        {
-          FB.ensureInit(function()
+          FB_RequireFeatures(["Connect"], function()
           {
-            FB.Connect.streamPublish('', attachment, action_links);
+            FB.ensureInit(function()
+            {
+              FB.Connect.streamPublish('', attachment, action_links);
+            });
           });
-         });
-      }
+        }
         </xsl:variable>
 
       <xsl:call-template name="lx.html:javascript">
