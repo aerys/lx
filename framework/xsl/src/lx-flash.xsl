@@ -15,7 +15,7 @@
   <xsl:template match="lx.flash:flash"
                 name="lx.flash:flash">
     <!-- @param id of the application -->
-    <xsl:param name="id" select="@id"/>
+    <xsl:param name="id"/>
     <!-- @param ressource name (without 'flash/' and '.swf') of the SWF file -->
     <xsl:param name="name">
       <xsl:apply-templates select="@name" mode="lx:value-of"/>
