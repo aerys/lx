@@ -90,7 +90,7 @@ class Dispatcher
 				{
 					if ($ob_output)
 						$filter->getFragment()->appendXML($ob_output);
-						
+
 					if ($filter_result && $filter_result !== FilterResult::OK
 						&& $filter_result !== FilterResult::STOP)
 					{
@@ -151,7 +151,8 @@ class Dispatcher
 		}
 		catch (Exception $e)
 		{
-			ob_end_clean();
+			if (ob_get_level() !== 0)
+                                ob_end_clean();
 
 			$this->response->appendException($e);
 		}
