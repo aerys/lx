@@ -3,6 +3,7 @@
 	import flash.events.Event;
 	import flash.events.EventDispatcher;
 	import flash.events.IEventDispatcher;
+	import flash.external.ExternalInterface;
 	import flash.net.URLLoader;
 	import flash.net.URLRequest;
 	import flash.net.URLRequestMethod;
@@ -19,13 +20,15 @@
 	dynamic public class LXController extends Proxy implements IEventDispatcher
 	{
 		private var _url		: String			= null;
+		private var _extra		: Object			= null;
 		private var _dispatcher	: EventDispatcher	= new EventDispatcher();
 		
-		public function LXController(myURL : String) 
+		public function LXController(myURL : String, myExtra : Object = null) 
 		{
 			super();
 			
 			_url = myURL;
+			_extra = myExtra || {};
 		}
 		
 		override flash_proxy function callProperty(name : *, ...rest) : *
@@ -54,7 +57,8 @@
 			}
 			else
 			{
-				var data	: URLVariables 	= new URLVariables();
+				var data			: URLVariables 	= new URLVariables();
+				var propertyName	: String		= null;
 				
 				data[int(Math.random() * int.MAX_VALUE).toString()] = int(Math.random() * int.MAX_VALUE);
 				
@@ -62,7 +66,7 @@
 				{
 					var obj : Object = rest[0];
 					
-					for (var propertyName : String in obj)
+					for (propertyName in obj)
 						data[propertyName] = obj[propertyName];
 				}
 				else
@@ -70,6 +74,10 @@
 					for (var i : int = 0; i < numArguments; ++i)
 						url += "/" + escapeMultiByte(rest[i]);
 				}
+				
+				if (_extra)
+					for (propertyName in _extra)
+						data[propertyName] = _extra[propertyName];
 
 				request.data = data;
 			}

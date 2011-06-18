@@ -11,27 +11,29 @@
 	dynamic public class LXServer extends Proxy
 	{
 		private var _url	: String	= null;
+		private var _extra	: Object	= null;
 		
 		public function get url() : String
 		{
 			return _url;
 		}
 		
-		public function LXServer(myURL : String = "")
+		public function LXServer(myURL : String = "", myExtra : Object = null)
 		{
 			super();
 			
 			_url = myURL;
+			_extra = myExtra;
 		}
 		
 		override flash_proxy function getDescendants(name : * ) : *
 		{
-			return new LXModule(_url + "/" + name);
+			return new LXModule(_url + "/" + name, _extra);
 		}
 		
 		override flash_proxy function getProperty(name : *) : *
 		{
-			return new LXController(_url + "/" + name);
+			return new LXController(_url + "/" + name, _extra);
 		}
 		
 		public function toString() : String
