@@ -200,11 +200,11 @@ function config($root = CURRENT, $config = null)
                  . ($config != null ? ' ' . $config : ''),
                  true);
 
-   /*execute_task('Building configuration (xsl)... ',
-                'php '
-                . LX_HOME . '/script/lx-project.php '
-                . $root . '/lx-project.xml > ' . $root . '/bin/lx-project.xsl xsl',
-                true);*/
+ 	execute_task('Building configuration (xsl)... ',
+                 'php '
+                 . LX_HOME . '/script/lx-project.php '
+                 . $root . '/lx-project.xml > ' . $root . '/bin/lx-project.xsl xsl',
+                 true);
 }
 
 function models()
