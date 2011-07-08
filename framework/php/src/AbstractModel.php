@@ -2,132 +2,133 @@
 
 abstract class AbstractModel
 {
-  const FLAG_DEFAULT	= 0;
-  const FLAG_UPDATE	= 1;
+	const FLAG_DEFAULT	= 0;
+	const FLAG_UPDATE	= 1;
 
-  protected $flags	= self::FLAG_DEFAULT;
+	protected $flags	= self::FLAG_DEFAULT;
 
-  /* CONSTRUCTOR */
-  public function AbstractModel($data = null)
-  {
-    if ($data)
-      $this->loadArray($data);
-  }
-
-  /* METHODS */
-  public static function scaffold($model,
-				  $backend,
-				  $output,
-				  $xslIncludes)
-  {
-    $xml = new DOMDocument();
-    $xml->load($model);
-
-    $xsl = new DOMDocument();
-    $xsl->load($backend);
-
-	if (isset($xslIncludes))
+	/* CONSTRUCTOR */
+	public function AbstractModel($data = null)
 	{
-		$root = $xsl->getElementsByTagName('include')->item(0);
-	
-		if (!is_array($xslIncludes)) { $xslIncludes = array($xslIncludes); }
-		
-		foreach($xslIncludes as $xslInclude)
+		if ($data)
+			$this->loadArray($data);
+	}
+
+	/* METHODS */
+	public static function scaffold($model,
+									$backend,
+									$output,
+									$xslIncludes)
+	{
+		$xml = new DOMDocument();
+		$xml->load($model);
+
+		$xsl = new DOMDocument();
+		$xsl->load($backend);
+
+		if (isset($xslIncludes))
 		{
-			$xslInclude = str_replace('\\', '/', $xslInclude);
-			
-			$node = $xsl->createElementNS('http://www.w3.org/1999/XSL/Transform', 'xsl:include');
-			$node->setAttribute('href', $xslInclude);
-			
-			$root->parentNode->insertBefore($node, $root);
+			$root = $xsl->getElementsByTagName('include')->item(0);
+
+			if (!is_array($xslIncludes))
+				$xslIncludes = array($xslIncludes);
+
+			foreach ($xslIncludes as $xslInclude)
+			{
+				$xslInclude = str_replace('\\', '/', $xslInclude);
+					
+				$node = $xsl->createElementNS('http://www.w3.org/1999/XSL/Transform', 'xsl:include');
+				$node->setAttribute('href', $xslInclude);
+					
+				$root->parentNode->insertBefore($node, $root);
+			}
+		}
+
+		$processor = new XSLTProcessor();
+		$processor->importStyleSheet($xsl);
+		$processor->transformToURI($xml, $output);
+	}
+
+	public function loadArray($data)
+	{
+		$class = get_class($this);
+
+		foreach ($this->getProperties() as $name)
+			if (isset($data[$name]))
+				$this->$name = $data[$name];
+	}
+
+	public function copy($model)
+	{
+		foreach ($this->getProperties() as $name)
+			$this->$name = $model->$name;
+	}
+
+	public function loadXML($filename, $useCache = true)
+	{
+		$cache = $useCache ? $cache = Cache::getCache() : null;
+		$key = $useCache ? md5(realpath($filename)) : null;
+
+		if ($useCache && $cache && ($object = $cache->get($key)))
+		{
+			$this->copy($object);
+		}
+		else
+		{
+			$xml = simplexml_load_file($filename);
+
+			foreach ($xml->children() as $child)
+			{
+				$nodeName = $child->getName();
+				$l = strlen($nodeName) + 2;
+				$xml = $child->asXML();
+
+				$this->$nodeName = substr($xml, $l, strlen($xml) - ($l * 2 + 1));
+			}
+
+			if ($useCache && $cache)
+			$cache->set($key, $this);
 		}
 	}
 
-    $processor = new XSLTProcessor();
-    $processor->importStyleSheet($xsl);
-    $processor->transformToURI($xml, $output);
-  }
+	public function saveXML($filename, $useCache = true)
+	{
+		$xml = XML::serialize($this);
+		$doc = new DOMDocument('1.0', 'utf-8');
 
-  public function loadArray($data)
-  {
-    $class = get_class($this);
+		$fragment = $doc->createDocumentFragment();
+		$fragment->appendXML($xml);
+		$doc->appendChild($fragment);
 
-    foreach ($this->getProperties() as $name)
-      if (isset($data[$name]))
-        $this->$name = $data[$name];
-  }
+		$doc->save($filename);
 
-  public function copy($model)
-  {
-    foreach ($this->getProperties() as $name)
-      $this->$name = $model->$name;
-  }
+		if ($useCache && ($cache = Cache::getCache()))
+		$cache->set(md5(realpath($filename)), $this);
+	}
 
-  public function loadXML($filename, $useCache = true)
-  {
-    $cache = $useCache ? $cache = Cache::getCache() : null;
-    $key = $useCache ? md5(realpath($filename)) : null;
+	public function __get($propertyName)
+	{
+		return $this->$propertyName;
+	}
 
-    if ($useCache && $cache && ($object = $cache->get($key)))
-    {
-      $this->copy($object);
-    }
-    else
-    {
-      $xml = simplexml_load_file($filename);
+	public function __set($propertyName, $value)
+	{
+		if ($this->$propertyName != $value)
+		{
+			$this->$propertyName = $value;
+			$this->flags |= self::FLAG_UPDATE;
+		}
+	}
 
-      foreach ($xml->children() as $child)
-      {
-        $nodeName = $child->getName();
-        $l = strlen($nodeName) + 2;
-        $xml = $child->asXML();
+	public function __call($p, $a)
+	{
+		throw new UnknownMethodException(get_class($this) . '::' . $p, $a);
+	}
 
-        $this->$nodeName = substr($xml, $l, strlen($xml) - ($l * 2 + 1));
-      }
-
-      if ($useCache && $cache)
-        $cache->set($key, $this);
-    }
-  }
-
-  public function saveXML($filename, $useCache = true)
-  {
-    $xml = XML::serialize($this);
-    $doc = new DOMDocument('1.0', 'utf-8');
-
-    $fragment = $doc->createDocumentFragment();
-    $fragment->appendXML($xml);
-    $doc->appendChild($fragment);
-
-    $doc->save($filename);
-
-    if ($useCache && ($cache = Cache::getCache()))
-      $cache->set(md5(realpath($filename)), $this);
-  }
-
-  public function __get($propertyName)
-  {
-    return $this->$propertyName;
-  }
-
-  public function __set($propertyName, $value)
-  {
-    if ($this->$propertyName != $value)
-    {
-      $this->$propertyName = $value;
-      $this->flags |= self::FLAG_UPDATE;
-    }
-  }
-
-  public function __call($p, $a)
-  {
-    throw new UnknownMethodException(get_class($this) . '::' . $p, $a);
-  }
-
-  public function __toString()
-  {
-    return XML::serialize($this);
-  }
+	public function __toString()
+	{
+		return XML::serialize($this);
+	}
 }
 
 ?>
