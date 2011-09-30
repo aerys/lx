@@ -31,7 +31,7 @@ class LX
 		global $_LX;
 
 		if (array_key_exists($my_name, $_LX['databases']))
-		return $_LX['databases'][$my_name];
+			return $_LX['databases'][$my_name];
 
 		return null;
 	}
@@ -54,7 +54,7 @@ class LX
 		if (!$external)
 		{
 			if ($url[0] != '/' && LX_DOCUMENT_ROOT != '/')
-			$url = '/' . $url;
+				$url = '/' . $url;
 
 			$url = LX_DOCUMENT_ROOT . $url;
 		}
@@ -109,7 +109,7 @@ class LX
 	static public function debug($msg)
 	{
 		if (self::$response)
-		self::$response->appendDebugMessage($msg);
+			self::$response->appendDebugMessage($msg);
 	}
 
 	static public function addApplicationDirectory($directory)
@@ -119,11 +119,12 @@ class LX
 
 	static public function dispatchHTTPRequest($url, $get, $post)
 	{
+		$url = urldecode($url);
 		if (($pos = strpos($url, '?')) !== false)
 			$url = substr($url, 0, $pos);
 		if (LX_DOCUMENT_ROOT != '/' && ($pos = strpos($url, LX_DOCUMENT_ROOT)) !== false)
 			$url = substr($url, $pos + strlen(LX_DOCUMENT_ROOT));
-
+		
 		if ((preg_match('#^/views/(.*)\.(xsl|xml)$#', $url)
 			&& file_exists($filename = LX_APPLICATION_ROOT . '/src' . $url))
 			|| (file_exists($filename = LX_APPLICATION_ROOT . '/public' . $url)

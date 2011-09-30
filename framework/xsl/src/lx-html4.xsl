@@ -29,7 +29,8 @@
       <html>
         <head>
           <title>
-            <xsl:apply-templates select="$LX_HTML_HEAD/title/node()"/>
+          	<xsl:apply-templates select="$LX_LAYOUT/lx:layout/head/title/node()"/>
+          	<xsl:apply-templates select="$LX_TEMPLATE/lx:template/head/title/node()"/>
           </title>
 
           <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/>

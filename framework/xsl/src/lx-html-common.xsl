@@ -75,22 +75,24 @@
 		match="lx.html:javascript">
     <!-- @param javascript code to embed -->
     <xsl:param name="script" select="node()"/>
+    <!-- @param name of the javascript file to embed -->
+    <xsl:param name="name" select="@name"/>
 
     <script language="javascript" type="text/javascript">
       <xsl:choose>
-        <xsl:when test="@name">
-          <xsl:attribute name="src">
-            <xsl:text>javascript/</xsl:text>
-            <xsl:value-of select="@name"/>
-            <xsl:text>.js</xsl:text>
-          </xsl:attribute>
-        </xsl:when>
         <xsl:when test="node() = $script">
           <xsl:apply-templates select="$script"/>
         </xsl:when>
-        <xsl:otherwise>
-          <xsl:value-of select="$script"/>
-        </xsl:otherwise>
+        <xsl:when test="$script != ''">
+        	<xsl:value-of select="$script"/>
+        </xsl:when>
+        <xsl:when test="$name">
+          <xsl:attribute name="src">
+            <xsl:text>javascript/</xsl:text>
+            <xsl:value-of select="$name"/>
+            <xsl:text>.js</xsl:text>
+          </xsl:attribute>
+        </xsl:when>
       </xsl:choose>
     </script>
     <xsl:value-of select="$LX_LF"/>

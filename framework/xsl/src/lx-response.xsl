@@ -79,11 +79,9 @@
   </xsl:template>
 
   <xsl:template match="text()">
-    <xsl:if test="normalize-space(.) != '' or not(following-sibling::lx:text or preceding-sibling::lx:text)">
-      <xsl:copy>
-	<xsl:apply-templates select="@*|node()"/>
-      </xsl:copy>
-    </xsl:if>
+<!--    <xsl:if test="normalize-space(.) != '' or not(following-sibling::lx:text or preceding-sibling::lx:text)">-->
+		<xsl:value-of select="."/>
+<!--    </xsl:if>-->
   </xsl:template>
   <!-- END IDENTITY -->
 
