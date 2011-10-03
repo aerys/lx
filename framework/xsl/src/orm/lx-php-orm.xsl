@@ -263,7 +263,7 @@
         <xsl:text>,__CLASS__</xsl:text>
       </xsl:if>
     </xsl:if>
-    <xsl:text>);if($r===null)return null;</xsl:text>
+    <xsl:text>);</xsl:text>
 
     <!-- set record id -->
     <xsl:if test="(lx:insert or lx:insert-or-update)
@@ -273,9 +273,14 @@
     </xsl:if>
 
     <!-- fetch records -->
-    <xsl:if test="lx:select/@limit = 1">
-      <xsl:text>if($r->size()==1)$r=$r->get(0);</xsl:text>
-    </xsl:if>
+    <xsl:choose>
+	    <xsl:when test="lx:select/@limit = 1">
+	    	<xsl:text>if($r and $r->size()==1)$r=$r->get(0);</xsl:text>
+	    </xsl:when>
+	    <xsl:otherwise>
+	    	<xsl:text>if(!$r)return new ResultSet(array());</xsl:text>
+	    </xsl:otherwise>
+    </xsl:choose>
 
     <!-- cache update -->
     <xsl:if test="lx:select and lx:select/@ttl">
@@ -288,7 +293,7 @@
     <xsl:text>return </xsl:text>
     <xsl:choose>
       <xsl:when test="lx:insert">
-	<xsl:text>$db->getInsertId()</xsl:text>
+		<xsl:text>$db->getInsertId()</xsl:text>
       </xsl:when>
       <xsl:when test="lx:delete">
       </xsl:when>
@@ -296,7 +301,6 @@
         <xsl:text>(int)current($r->get(0))</xsl:text>
       </xsl:when>
       <xsl:when test="$isStatic or lx:select">
-	<!--<xsl:text>$n</xsl:text>-->
         <xsl:text>$r</xsl:text>
       </xsl:when>
       <xsl:otherwise>

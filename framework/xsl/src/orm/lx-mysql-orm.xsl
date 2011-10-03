@@ -174,27 +174,29 @@
     -->
   <xsl:template match="lx:insert-or-update">
     <xsl:call-template name="lx:insert"/>
-    <xsl:text> ON DUPLICATE KEY UPDATE</xsl:text>
-    <xsl:choose>
-      <xsl:when test="lx:set">
-	<xsl:call-template name="lx:for-each">
-	  <xsl:with-param name="begin" select="' '"/>
-	  <xsl:with-param name="collection" select="lx:set"/>
-	  <xsl:with-param name="delimiter" select="', '"/>
-	</xsl:call-template>
-      </xsl:when>
-      <xsl:otherwise>
-	<xsl:for-each select="/lx:model/lx:property[not(@read-only)]">
-	  <xsl:if test="position() != 1">
-	    <xsl:text>,</xsl:text>
-	  </xsl:if>
-	  <xsl:text> </xsl:text>
-	  <xsl:value-of select="concat('`', @name, '`')"/>
-	  <xsl:text>=:</xsl:text>
-	  <xsl:value-of select="concat(@name, '_', generate-id(.))"/>
-	</xsl:for-each>
-      </xsl:otherwise>
-    </xsl:choose>
+    <xsl:if test="/lx:model/lx:property[not(@read-only)]">
+	    <xsl:text> ON DUPLICATE KEY UPDATE</xsl:text>
+	    <xsl:choose>
+	      <xsl:when test="lx:set">
+		<xsl:call-template name="lx:for-each">
+		  <xsl:with-param name="begin" select="' '"/>
+		  <xsl:with-param name="collection" select="lx:set"/>
+		  <xsl:with-param name="delimiter" select="', '"/>
+		</xsl:call-template>
+	      </xsl:when>
+	      <xsl:otherwise>
+		<xsl:for-each select="/lx:model/lx:property[not(@read-only)]">
+		  <xsl:if test="position() != 1">
+		    <xsl:text>,</xsl:text>
+		  </xsl:if>
+		  <xsl:text> </xsl:text>
+		  <xsl:value-of select="concat('`', @name, '`')"/>
+		  <xsl:text>=:</xsl:text>
+		  <xsl:value-of select="concat(@name, '_', generate-id(.))"/>
+		</xsl:for-each>
+	      </xsl:otherwise>
+	    </xsl:choose>
+	 </xsl:if>
   </xsl:template>
 
   <xsl:template match="lx:count">
