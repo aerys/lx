@@ -56,7 +56,7 @@ class LX
 			if ($url[0] != '/' && LX_DOCUMENT_ROOT != '/')
 				$url = '/' . $url;
 
-			$url = LX_DOCUMENT_ROOT . $url;
+			$url = 'http://' . LX_HOST . LX_DOCUMENT_ROOT . $url;
 		}
 
 		header('Location: ' . $url);
@@ -124,7 +124,7 @@ class LX
 			$url = substr($url, 0, $pos);
 		if (LX_DOCUMENT_ROOT != '/' && ($pos = strpos($url, LX_DOCUMENT_ROOT)) !== false)
 			$url = substr($url, $pos + strlen(LX_DOCUMENT_ROOT));
-		
+
 		if ((preg_match('#^/views/(.*)\.(xsl|xml)$#', $url)
 			&& file_exists($filename = LX_APPLICATION_ROOT . '/src' . $url))
 			|| (file_exists($filename = LX_APPLICATION_ROOT . '/public' . $url)

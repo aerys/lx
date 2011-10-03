@@ -341,26 +341,28 @@ function import($archive = null)
 		unlink($archive);
 
 		if ($tar)
-			echo exec('cd ' . $dir . ' && ' . LX_HOME . '/bin/lx-cli.sh import') . PHP_EOL;
+                  echo exec('cd ' . $dir . ' && ' . LX_HOME . '/bin/lx-cli.sh import') . PHP_EOL;
 		else
-			error('unable to extract');
-	}
-	else
-	{
-		config();
-		require_once(CURRENT . '/bin/lx-project.php');
+                  error('unable to extract');
+        }
+        else
+        {
+          require_once(CURRENT . '/bin/lx-project.php');
 
-		foreach ($_LX['databases'] as $db)
-		{
-			switch ($db['type'])
-			{
-				case 'mysql':
-				default:
-					import_mysql($db);
-					break;
-			}
-		}
-	}
+          if (count($_LX['databases']) == 0)
+            error('no database to import');
+
+          foreach ($_LX['databases'] as $db)
+          {
+            switch ($db['type'])
+            {
+              case 'mysql':
+              default:
+                import_mysql($db);
+              break;
+            }
+          }
+        }
 }
 
 function import_mysql($db)
@@ -446,7 +448,7 @@ switch($argv[3])
 
 	case 'update':
 		die(update(isset($argv[4]) ? $argv[4] : null));
-		
+
 	default:
 		die(update());
 		break;
