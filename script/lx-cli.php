@@ -4,7 +4,6 @@ define('LX_HOME',       getenv('LX_HOME'));
 define('T',             "\t");
 define('SYS',           $argv[1]);
 define('CURRENT',       $argv[2]);
-define('DEBUG',         false);
 
 function error($message)
 {
@@ -24,7 +23,7 @@ function execute_task($message,
 	{
 		if (!$stdout)
 			$cmd .= ' > /dev/null';
-		if (!$stderr)
+		if (!$stderr && !DEBUG)
 			$cmd .= ' 2> /dev/null';
 	}
 
@@ -408,11 +407,21 @@ function help()
 	. '  help' . T . T . T . T . 'Display this message' . PHP_EOL;
 }
 
-if (DEBUG)
-	print_r($argv);
-
 if (count($argv) < 4)
 	die(update());
+
+for ($i = 3; $i < count($argv); $i++)
+	if ($argv[$i] == '--debug')
+        {
+		print_r($argv);
+		unset($argv[$i]);
+		$argv = array_values($argv);
+		define('DEBUG', true);
+		break;
+        }
+
+if (!defined('DEBUG'))
+	define('DEBUG', false);
 
 switch($argv[3])
 {
