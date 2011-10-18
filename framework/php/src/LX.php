@@ -53,10 +53,12 @@ class LX
 
 		if (!$external)
 		{
-			if ($url[0] != '/' && LX_DOCUMENT_ROOT != '/')
+			if ($url[0] != '/')
 				$url = '/' . $url;
+                        if (LX_DOCUMENT_ROOT != '/')
+                          $url = LX_DOCUMENT_ROOT . $url;
 
-			$url = 'http://' . LX_HOST . LX_DOCUMENT_ROOT . $url;
+			$url = 'http://' . LX_HOST . $url;
 		}
 
 		header('Location: ' . $url);
