@@ -407,9 +407,6 @@ function help()
 	. '  help' . T . T . T . T . 'Display this message' . PHP_EOL;
 }
 
-if (count($argv) < 4)
-	die(update());
-
 for ($i = 3; $i < count($argv); $i++)
 	if ($argv[$i] == '--debug')
         {
@@ -422,6 +419,9 @@ for ($i = 3; $i < count($argv); $i++)
 
 if (!defined('DEBUG'))
 	define('DEBUG', false);
+
+if (count($argv) < 4)
+	die(update());
 
 switch($argv[3])
 {
