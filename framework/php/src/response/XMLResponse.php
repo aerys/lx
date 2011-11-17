@@ -33,6 +33,7 @@ class XMLResponse extends AbstractResponse
 
     // lx:request
     $this->requestNode = $this->document->createElement('lx:request');
+//    $this->requestNode->setAttribute('query', $_SERVER['REQUEST_URI']);
     if (is_bool(LX_CLIENT_XSL_SUPPORT))
       $this->requestNode->setAttribute('clientXslSupport',
                                        LX_CLIENT_XSL_SUPPORT ? 'true' : 'false');
@@ -67,9 +68,9 @@ class XMLResponse extends AbstractResponse
     /*   $this->argumentsNode->appendChild($argsFragment); */
     /* } */
     if ($get)
-    {
       $this->appendArguments($get, 'get');
-    }
+    if ($post)
+      $this->appendArguments($post, 'post');
 
     return parent::handleRequest($request, $get, $post);
   }

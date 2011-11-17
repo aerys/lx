@@ -152,10 +152,10 @@
   <xsl:template name="lx.html:style"
 		match="lx.html:style">
     <!-- @param style declaration -->
-    <xsl:param name="style" select="text()"/>
+    <xsl:param name="style" select="node()"/>
 
     <style type="text/css">
-      <xsl:copy-of select="$style"/>
+      <xsl:apply-templates select="$style"/>
     </style>
   </xsl:template>
 
