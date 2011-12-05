@@ -226,8 +226,8 @@ function models()
                  'php -f '
                  . LX_HOME . '/script/lx-orm.php'
                  . ' src/models/' . $model . '.xml lx-php-orm.xsl'
-                 . ' > bin/models/' . $model . '.php'
-                 . ' ' . CURRENT,
+                 . ' ' . CURRENT
+                 . ' > bin/models/' . $model . '.php',
                  true);
 	}
 }

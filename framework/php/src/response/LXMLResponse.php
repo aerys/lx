@@ -27,13 +27,14 @@ class LXMLResponse extends XMLResponse
     $xml = new DOMDocument();
     $xml->loadXML($this->document->saveXML());
 
-    $xsl = new DOMDocument();
-    $xsl->load($dir . $file);
+    $stylesheet = new DOMDocument();
+    $stylesheet->load($dir . $file);
 
-    $processor = new XSLTProcessor();
-    $processor->importStyleSheet($xsl);
+    
+    $xsl = new XSLT();
+    $xsl->import($stylesheet);
 
-    $result = $processor->transformToDoc($xml);
+    $result = $xsl->transformToDoc($xml);
 
     echo $result->saveHTML();
   }

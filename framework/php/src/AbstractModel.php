@@ -23,30 +23,20 @@ abstract class AbstractModel
 		$xml = new DOMDocument();
 		$xml->load($model);
 
-		$xsl = new DOMDocument();
-		$xsl->load($backend);
+		$stylesheet = new DOMDocument();
+		$stylesheet->load($backend);
 
+		$xsl = new XSLT();
 		if (isset($xslIncludes))
 		{
-			$root = $xsl->getElementsByTagName('include')->item(0);
-
-			if (!is_array($xslIncludes))
-				$xslIncludes = array($xslIncludes);
-
 			foreach ($xslIncludes as $xslInclude)
 			{
-				$xslInclude = str_replace('\\', '/', $xslInclude);
-					
-				$node = $xsl->createElementNS('http://www.w3.org/1999/XSL/Transform', 'xsl:include');
-				$node->setAttribute('href', $xslInclude);
-					
-				$root->parentNode->insertBefore($node, $root);
+				$xsl->addInclude($xslInclude);
 			}
 		}
 
-		$processor = new XSLTProcessor();
-		$processor->importStyleSheet($xsl);
-		$processor->transformToURI($xml, $output);
+		$xsl->import($stylesheet);
+		$xsl->transformToUri($xml, $output);
 	}
 
 	public function loadArray($data)

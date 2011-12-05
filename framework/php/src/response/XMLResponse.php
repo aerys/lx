@@ -34,6 +34,7 @@ class XMLResponse extends AbstractResponse
 
     // lx:request
     $this->requestNode = $this->document->createElement('lx:request');
+//    $this->requestNode->setAttribute('query', $_SERVER['REQUEST_URI']);
     if (is_bool(LX_CLIENT_XSL_SUPPORT))
       $this->requestNode->setAttribute('clientXslSupport',
                                        LX_CLIENT_XSL_SUPPORT ? 'true' : 'false');
@@ -61,11 +62,9 @@ class XMLResponse extends AbstractResponse
   public function handleRequest($request)
   {
     if (count($_GET))
-    {
       $this->appendArguments($_GET, 'get');
-    }
 
-    return parent::handleRequest($request);
+   return parent::handleRequest($request);
   }
 
   public function addXMLNamespace($namespace, $uri)

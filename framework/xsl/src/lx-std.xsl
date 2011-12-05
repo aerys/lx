@@ -519,5 +519,17 @@
   <xsl:template match="lx:include">
     <xsl:apply-templates select="document(@href)"/>
   </xsl:template>
+  
+  <xsl:template match="text()" priority="10">
+  	<xsl:if test="string-length(normalize-space(.))">
+  		<xsl:value-of select="."/>
+  	</xsl:if>
+  </xsl:template>
+  
+  <xsl:template match="lx:attribute">
+  	<xsl:attribute name="{@name}">
+  		<xsl:apply-templates select="node()"/>
+  	</xsl:attribute>
+  </xsl:template>
 
 </xsl:stylesheet>
