@@ -25,6 +25,7 @@ class XMLResponse extends AbstractResponse
     $this->rootNode->setAttribute('host', LX_HOST);
     $this->rootNode->setAttribute('date', $this->date);
     $this->rootNode->setAttribute('protocol', isset($_SERVER['HTTPS']) ? 'https' : 'http');
+    $this->rootNode->setAttribute('method', strtolower($_SERVER['REQUEST_METHOD']));
     if (LX_DOCUMENT_ROOT != '/')
       $this->rootNode->setAttribute('documentRoot', LX_DOCUMENT_ROOT);
     if (LX_DEBUG)
