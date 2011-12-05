@@ -58,7 +58,7 @@ class AbstractResponse
                   : time();
   }
 
-  public function handleRequest($request, $get = null, $post = null)
+  public function handleRequest($request)
   {
     global $_LX;
 

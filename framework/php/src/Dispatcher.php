@@ -21,7 +21,7 @@ class Dispatcher
 
 	}
 
-	public function dispatchHTTPRequest($request, $get, $post)
+	public function dispatchHTTPRequest($request)
 	{
 		global $_LX;
 
@@ -55,7 +55,7 @@ class Dispatcher
 			}
 			LX::setResponse($this->response);
 
-			list($filters, $module, $controller, $action, $params) = $this->response->handleRequest($request, $_GET);
+			list($filters, $module, $controller, $action, $params) = $this->response->handleRequest($request);
 
 			define('LX_MODULE',       $module);
 			define('LX_CONTROLLER',   $controller);

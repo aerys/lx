@@ -58,21 +58,14 @@ class XMLResponse extends AbstractResponse
     }
   }
 
-  public function handleRequest($request, $get = null, $post = null)
+  public function handleRequest($request)
   {
-    /*if (($xml = XML::node('get', $_GET) . XML::node('post', $_POST)))*/
-    /* if ($get != null && ($xml = XML::node('get', $get))) */
-    /* { */
-    /*   $argsFragment = $this->document->createDocumentFragment(); */
-    /*   $argsFragment->appendXML($xml); */
-    /*   $this->argumentsNode->appendChild($argsFragment); */
-    /* } */
-    if ($get)
+    if (count($_GET))
     {
-      $this->appendArguments($get, 'get');
+      $this->appendArguments($_GET, 'get');
     }
 
-    return parent::handleRequest($request, $get, $post);
+    return parent::handleRequest($request);
   }
 
   public function addXMLNamespace($namespace, $uri)
