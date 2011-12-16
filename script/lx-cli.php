@@ -4,7 +4,6 @@ define('LX_HOME',       getenv('LX_HOME'));
 define('T',             "\t");
 define('SYS',           $argv[1]);
 define('CURRENT',       $argv[2]);
-define('DEBUG',         false);
 
 function error($message)
 {
@@ -24,7 +23,7 @@ function execute_task($message,
 	{
 		if (!$stdout)
 			$cmd .= ' > /dev/null';
-		if (!$stderr)
+		if (!$stderr && !DEBUG)
 			$cmd .= ' 2> /dev/null';
 	}
 
@@ -200,11 +199,11 @@ function config($root = CURRENT, $config = null)
                  . ($config != null ? ' ' . $config : ''),
                  true);
 
-   /*execute_task('Building configuration (xsl)... ',
-                'php '
-                . LX_HOME . '/script/lx-project.php '
-                . $root . '/lx-project.xml > ' . $root . '/bin/lx-project.xsl xsl',
-                true);*/
+ 	execute_task('Building configuration (xsl)... ',
+                 'php '
+                 . LX_HOME . '/script/lx-project.php '
+                 . $root . '/lx-project.xml > ' . $root . '/bin/lx-project.xsl xsl',
+                 true);
 }
 
 function models()
@@ -213,7 +212,7 @@ function models()
 	$dir          = opendir(CURRENT . '/src/models');
 
         if (!$dir)
-          return false;
+                return false;
 
 	while(false !== ($file = readdir($dir)))
 		if (($file != '.') && ($file != '..') && (substr($file, -3, 3) == 'xml'))
@@ -341,26 +340,28 @@ function import($archive = null)
 		unlink($archive);
 
 		if ($tar)
-			echo exec('cd ' . $dir . ' && ' . LX_HOME . '/bin/lx-cli.sh import') . PHP_EOL;
+                  echo exec('cd ' . $dir . ' && ' . LX_HOME . '/bin/lx-cli.sh import') . PHP_EOL;
 		else
-			error('unable to extract');
-	}
-	else
-	{
-		config();
-		require_once(CURRENT . '/bin/lx-project.php');
+                  error('unable to extract');
+        }
+        else
+        {
+          require_once(CURRENT . '/bin/lx-project.php');
 
-		foreach ($_LX['databases'] as $db)
-		{
-			switch ($db['type'])
-			{
-				case 'mysql':
-				default:
-					import_mysql($db);
-					break;
-			}
-		}
-	}
+          if (count($_LX['databases']) == 0)
+            error('no database to import');
+
+          foreach ($_LX['databases'] as $db)
+          {
+            switch ($db['type'])
+            {
+              case 'mysql':
+              default:
+                import_mysql($db);
+              break;
+            }
+          }
+        }
 }
 
 function import_mysql($db)
@@ -406,8 +407,18 @@ function help()
 	. '  help' . T . T . T . T . 'Display this message' . PHP_EOL;
 }
 
-if (DEBUG)
-	print_r($argv);
+for ($i = 3; $i < count($argv); $i++)
+	if ($argv[$i] == '--debug')
+        {
+		print_r($argv);
+		unset($argv[$i]);
+		$argv = array_values($argv);
+		define('DEBUG', true);
+		break;
+        }
+
+if (!defined('DEBUG'))
+	define('DEBUG', false);
 
 if (count($argv) < 4)
 	die(update());
@@ -446,7 +457,7 @@ switch($argv[3])
 
 	case 'update':
 		die(update(isset($argv[4]) ? $argv[4] : null));
-		
+
 	default:
 		die(update());
 		break;
