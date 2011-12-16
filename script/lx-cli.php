@@ -212,6 +212,9 @@ function models()
 	$models       = array();
 	$dir          = opendir(CURRENT . '/src/models');
 
+        if (!$dir)
+          return false;
+
 	while(false !== ($file = readdir($dir)))
 		if (($file != '.') && ($file != '..') && (substr($file, -3, 3) == 'xml'))
 			array_push($models, substr($file, 0, -4));
