@@ -2,7 +2,7 @@
 
 class DatabaseFactory
 {
-  static protected $databases	= NULL;
+  static protected $databases = NULL;
 
   static public function create($cfgName)
   {
@@ -14,12 +14,15 @@ class DatabaseFactory
       $cfg = LX::getDatabaseConfiguration($cfgName);
       $new_db = NULL;
 
+      if (!$cfg)
+        throw new ErrorException("Database '$cfgName' has no configuration associated.");
+
       switch ($cfg['type'])
       {
-	case 'mysql':
-	default :
-	  $new_db = new MySQLDatabase($cfg);
-	  break;
+        case 'mysql':
+        default :
+          $new_db = new MySQLDatabase($cfg);
+          break;
       }
 
       self::$databases[$cfgName] = $new_db;
