@@ -64,9 +64,6 @@ class XMLResponse extends AbstractResponse
     if (count($_GET))
       $this->appendArguments($_GET, 'get');
 
-    if (count($_POST))
-      $this->appendArguments($_POST, 'post');
-
    return parent::handleRequest($request);
   }
 
