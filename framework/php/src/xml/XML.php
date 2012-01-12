@@ -89,7 +89,7 @@ class XML
 
     foreach ($array as $key => $value)
     {
-      if (is_numeric($key))
+      if (is_numeric($key) || is_numeric(substr($key, 0, 1)))
         $result .= self::serialize($value);
       else
         $result .= self::node($key, $value);
