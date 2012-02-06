@@ -192,11 +192,11 @@ function config($root = CURRENT, $config = null)
 	if (substr(exec('php --rc XSLTProcessor'), 0, 1) == 'E')
 		error('XSLT PHP extension is not available');
 
-	execute_task('Building configuration (php)... ',
+	execute_task("Building configuration (php)... ",
                  'php '
                  . LX_HOME . '/script/lx-project.php '
-                 . $root . '/lx-project.xml > ' . $root . '/bin/lx-project.php'
-                 . ($config != null ? ' ' . $config : ''),
+                 . $root . '/lx-project.xml ' . ($config != null ? $config : '')
+                 . ' > ' . $root . '/bin/lx-project.php',
                  true);
 
  	execute_task('Building configuration (xsl)... ',
@@ -423,7 +423,7 @@ if (!defined('DEBUG'))
 if (count($argv) < 4)
 	die(update());
 
-switch($argv[3])
+switch ($argv[3])
 {
 	case 'create':
 		if (isset($argv[4]))
@@ -446,21 +446,18 @@ switch($argv[3])
 
 	case 'import':
 		die(import(isset($argv[4]) ? $argv[4] : null));
-		break;
 
 	case 'doctor':
 		die(doctor(isset($argv[4]) ? $argv[4] : null));
 
 	case 'help':
 		die(help());
-		break;
 
 	case 'update':
 		die(update(isset($argv[4]) ? $argv[4] : null));
 
 	default:
-		die(update());
-		break;
+		die(update(isset($argv[3]) ? $argv[3] : null));
 }
 
 ?>

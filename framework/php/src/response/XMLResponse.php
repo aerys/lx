@@ -25,6 +25,7 @@ class XMLResponse extends AbstractResponse
     $this->rootNode->setAttribute('host', LX_HOST);
     $this->rootNode->setAttribute('date', $this->date);
     $this->rootNode->setAttribute('protocol', isset($_SERVER['HTTPS']) ? 'https' : 'http');
+    $this->rootNode->setAttribute('method', strtolower($_SERVER['REQUEST_METHOD']));
     if (LX_DOCUMENT_ROOT != '/')
       $this->rootNode->setAttribute('documentRoot', LX_DOCUMENT_ROOT);
     if (LX_DEBUG)
@@ -58,21 +59,12 @@ class XMLResponse extends AbstractResponse
     }
   }
 
-  public function handleRequest($request, $get = null, $post = null)
+  public function handleRequest($request)
   {
-    /*if (($xml = XML::node('get', $_GET) . XML::node('post', $_POST)))*/
-    /* if ($get != null && ($xml = XML::node('get', $get))) */
-    /* { */
-    /*   $argsFragment = $this->document->createDocumentFragment(); */
-    /*   $argsFragment->appendXML($xml); */
-    /*   $this->argumentsNode->appendChild($argsFragment); */
-    /* } */
-    if ($get)
-      $this->appendArguments($get, 'get');
-    if ($post)
-      $this->appendArguments($post, 'post');
+    if (count($_GET))
+      $this->appendArguments($_GET, 'get');
 
-    return parent::handleRequest($request, $get, $post);
+   return parent::handleRequest($request);
   }
 
   public function addXMLNamespace($namespace, $uri)

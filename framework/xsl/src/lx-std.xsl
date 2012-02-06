@@ -539,4 +539,8 @@
   	</xsl:attribute>
   </xsl:template>
 
+  <xsl:template match="lx:copy-of">
+    <xsl:copy-of select="node()"/>
+  </xsl:template>
+
 </xsl:stylesheet>

@@ -3,7 +3,8 @@
 class LX
 {
 	static private $dispatcher		= NULL;
-	static private $response		= NULL;
+	static private $response		  = NULL;
+	static private $request       = NULL;
 	static private $directories		= array('/',
 											'/database',
 											'/database/mysql',
@@ -20,11 +21,13 @@ class LX
 											'/bin/models');
 
 	static private $extensionToMime       = array('css'   => 'text/css',
+                                                'js'	  => 'application/x-javascript',
                                                 'xsl'   => 'text/xsl',
                                                 'swf'   => 'application/x-shockwave-flash');
 
 	static public function setResponse($my_response)	{self::$response = $my_response;}
 	static public function getResponse()			{return (self::$response);}
+	static public function getRequest()			  {return (self::$request);}
 
 	static public function getDatabaseConfiguration($my_name)
 	{
@@ -119,13 +122,15 @@ class LX
 		self::$app_directories[] = $directory;
 	}
 
-	static public function dispatchHTTPRequest($url, $get, $post)
+	static public function dispatchHTTPRequest($url, $get = null, $post = null)
 	{
 		$url = urldecode($url);
 		if (($pos = strpos($url, '?')) !== false)
 			$url = substr($url, 0, $pos);
 		if (LX_DOCUMENT_ROOT != '/' && ($pos = strpos($url, LX_DOCUMENT_ROOT)) !== false)
 			$url = substr($url, $pos + strlen(LX_DOCUMENT_ROOT));
+			
+		self::$request = $url;
 
 		if ((preg_match('#^/views/(.*)\.(xsl|xml)$#', $url)
 			&& file_exists($filename = LX_APPLICATION_ROOT . '/src' . $url))
@@ -159,7 +164,7 @@ class LX
 		}
 		else
 		{
-			Dispatcher::get()->dispatchHTTPRequest($url, $get, $post);
+			Dispatcher::get()->dispatchHTTPRequest($url);
 		}
 	}
 }
