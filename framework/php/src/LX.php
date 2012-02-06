@@ -21,6 +21,7 @@ class LX
 											'/bin/models');
 
 	static private $extensionToMime       = array('css'   => 'text/css',
+                                                'js'	  => 'application/x-javascript',
                                                 'xsl'   => 'text/xsl',
                                                 'swf'   => 'application/x-shockwave-flash');
 
