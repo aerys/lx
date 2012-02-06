@@ -59,11 +59,17 @@
     -->
   <xsl:template match="lx:error">
     <div class="error">
-      <em>ERROR: </em>
+      <strong>ERROR: </strong>
       <xsl:value-of select="message"/>
-      <pre>
-	<xsl:value-of select="trace"/>
-      </pre>
+      <table>
+        <xsl:for-each select="trace/*">
+        <tr><td>
+          <code>
+            <xsl:value-of select="node()"/>
+          </code>
+        </td></tr>
+        </xsl:for-each>
+      </table>
     </div>
   </xsl:template>
 
