@@ -12,6 +12,8 @@
 		xmlns:lx.html="http://lx.aerys.in/html"
                 exclude-result-prefixes="lx.html">
 
+  <xsl:include href="lx-html-common.xsl" />
+
   <xsl:output method="html"
 	      version="4.0"
 	      omit-xml-declaration="yes"
@@ -73,7 +75,5 @@
         </body>
       </html>
     </xsl:template>
-
-    <xsl:include href="lx-html-common.xsl" />
 
 </xsl:stylesheet>

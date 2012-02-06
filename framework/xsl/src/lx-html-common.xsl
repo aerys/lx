@@ -12,8 +12,8 @@
 		xmlns:lx.html="http://lx.aerys.in/html">
 
   <xsl:output method="html"
-	    omit-xml-declaration="yes"
-	    indent="yes" />
+              omit-xml-declaration="yes"
+              indent="yes" />
 
   <xsl:template name="lx.html:detect-client-xsl-support">
     <xsl:if test="not($LX_RESPONSE/lx:request/@clientXslSupport)">
@@ -62,7 +62,9 @@
       <em>ERROR: </em>
       <xsl:value-of select="message"/>
       <pre>
-	<xsl:value-of select="trace"/>
+        <xsl:for-each select="trace/frame">
+          <xsl:value-of select="concat(., $LX_LF)"/>
+        </xsl:for-each>
       </pre>
     </div>
   </xsl:template>
@@ -84,7 +86,7 @@
           <xsl:apply-templates select="$script"/>
         </xsl:when>
         <xsl:when test="$script != ''">
-        	<xsl:value-of select="$script"/>
+          <xsl:value-of select="$script"/>
         </xsl:when>
         <xsl:when test="$name">
           <xsl:attribute name="src">
@@ -92,6 +94,8 @@
             <xsl:value-of select="$name"/>
             <xsl:text>.js</xsl:text>
           </xsl:attribute>
+
+          <xsl:apply-templates select="@*[name()!='name']"/>
         </xsl:when>
       </xsl:choose>
     </script>

@@ -230,11 +230,18 @@
   </xsl:template>
 
   <xsl:template match="/lx:layout//@* | /lx:template//@*">
-    <xsl:attribute name="{name()}">
-      <xsl:apply-templates select="." mode="lx:value-of">
-        <xsl:with-param name="root" select="/ | . | $LX_RESPONSE | $LX_TEMPLATE"/>
-      </xsl:apply-templates>
-    </xsl:attribute>
+    <xsl:choose>
+      <xsl:when test="namespace-uri() = 'http://lx.aerys.in'">
+        <xsl:attribute name="{local-name()}">
+          <xsl:apply-templates select="." mode="lx:value-of">
+            <xsl:with-param name="root" select="/ | . | $LX_RESPONSE | $LX_TEMPLATE"/>
+          </xsl:apply-templates>
+        </xsl:attribute>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:copy />
+      </xsl:otherwise>
+    </xsl:choose>
   </xsl:template>
 
   <xsl:template match="@*" mode="lx:value-of"
@@ -519,13 +526,13 @@
   <xsl:template match="lx:include">
     <xsl:apply-templates select="document(@href)"/>
   </xsl:template>
-  
+
   <xsl:template match="text()" priority="10">
   	<xsl:if test="string-length(normalize-space(.))">
   		<xsl:value-of select="."/>
   	</xsl:if>
   </xsl:template>
-  
+
   <xsl:template match="lx:attribute">
   	<xsl:attribute name="{@name}">
   		<xsl:apply-templates select="node()"/>
