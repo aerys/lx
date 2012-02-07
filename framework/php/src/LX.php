@@ -5,25 +5,31 @@ class LX
 	static private $dispatcher		= NULL;
 	static private $response		  = NULL;
 	static private $request       = NULL;
-	static private $directories		= array('/',
-											'/database',
-											'/database/mysql',
-											'/exception',
-											'/filter',
-                                            '/xml',
-											'/response');
+	
+	static private $directories		            = array('/',
+                              											'/database',
+                              											'/database/mysql',
+                              											'/exception',
+                              											'/filter',
+                              											'/xml',
+                              											'/response');
 
-	static private $app_directories	= array('/src',
-											'/src/models',
-											'/src/controllers',
-											'/src/filters',
-											'/bin',
-											'/bin/models');
+	static private $appDirectories	          = array('/src',
+                              											'/src/models',
+                              											'/src/controllers',
+                              											'/src/filters',
+                              											'/bin',
+                              											'/bin/models');
 
-	static private $extensionToMime       = array('css'   => 'text/css',
-                                                'js'	  => 'application/x-javascript',
-                                                'xsl'   => 'text/xsl',
-                                                'swf'   => 'application/x-shockwave-flash');
+	static private $extensionToMime           = array('css'   => 'text/css',
+      																							'js'	  => 'application/x-javascript',
+      																							'xsl'   => 'text/xsl',
+      																							'swf'   => 'application/x-shockwave-flash');
+
+	static private $defaultPublicDirectories  = array('/styles/',
+																									  '/images/',
+																									  '/javascript/',
+																									  '/files/');
 
 	static public function setResponse($my_response)	{self::$response = $my_response;}
 	static public function getResponse()			{return (self::$response);}
@@ -58,8 +64,8 @@ class LX
 		{
 			if ($url[0] != '/')
 				$url = '/' . $url;
-                        if (LX_DOCUMENT_ROOT != '/')
-                          $url = LX_DOCUMENT_ROOT . $url;
+												if (LX_DOCUMENT_ROOT != '/')
+													$url = LX_DOCUMENT_ROOT . $url;
 
 			$url = 'http://' . LX_HOST . $url;
 		}
@@ -98,7 +104,7 @@ class LX
 			}
 		}
 
-		foreach (self::$app_directories as $directory)
+		foreach (self::$appDirectories as $directory)
 		{
 			$filename = LX_APPLICATION_ROOT . $directory . '/' . $class_name . '.php';
 
@@ -119,7 +125,7 @@ class LX
 
 	static public function addApplicationDirectory($directory)
 	{
-		self::$app_directories[] = $directory;
+		self::$appDirectories[] = $directory;
 	}
 
 	static public function dispatchHTTPRequest($url, $get = null, $post = null)
@@ -129,7 +135,7 @@ class LX
 			$url = substr($url, 0, $pos);
 		if (LX_DOCUMENT_ROOT != '/' && ($pos = strpos($url, LX_DOCUMENT_ROOT)) !== false)
 			$url = substr($url, $pos + strlen(LX_DOCUMENT_ROOT));
-			
+
 		self::$request = $url;
 
 		if ((preg_match('#^/views/(.*)\.(xsl|xml)$#', $url)
@@ -164,6 +170,15 @@ class LX
 		}
 		else
 		{
+			foreach (self::$defaultPublicDirectories as $directory)
+			{
+				if (substr($url, 0, strlen($directory)) === $directory)
+				{
+					header('HTTP/1.0 404 Not Found');
+					exit();
+				}
+			}
+
 			Dispatcher::get()->dispatchHTTPRequest($url);
 		}
 	}
