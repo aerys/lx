@@ -11,10 +11,6 @@
 		xmlns:lx="http://lx.aerys.in"
 		xmlns:lx.html="http://lx.aerys.in/html">
 
-  <xsl:output method="html"
-              omit-xml-declaration="yes"
-              indent="yes" />
-
   <xsl:template name="lx.html:detect-client-xsl-support">
     <xsl:if test="not($LX_RESPONSE/lx:request/@clientXslSupport)">
       <xsl:variable name="script">

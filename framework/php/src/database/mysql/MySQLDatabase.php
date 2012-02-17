@@ -6,7 +6,7 @@ class MySQLDatabase extends AbstractDatabase
   protected $user		= '';
   protected $password		= '';
   protected $database		= '';
-  protected $encoding		= '';
+  protected $encoding		= 'utf8';
   protected $isConnected	= false;
 
   protected $mysqli		= NULL;
