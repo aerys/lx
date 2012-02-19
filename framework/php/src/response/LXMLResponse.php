@@ -22,14 +22,13 @@ class LXMLResponse extends XMLResponse
     $file = 'templates/' . $this->template . '.xsl';
 
     if (!file_exists($dir .'/' . $file))
-	$file = 'lx-view.xsl';
+      $file = 'lx-view.xsl';
 
     $xml = new DOMDocument();
     $xml->loadXML($this->document->saveXML());
 
     $stylesheet = new DOMDocument();
     $stylesheet->load($dir . $file);
-
     
     $xsl = new XSLT();
     $xsl->import($stylesheet);

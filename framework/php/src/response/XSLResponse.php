@@ -9,11 +9,11 @@ class XSLResponse extends XMLResponse
     $file = '/templates/' . $this->template . '.xsl';
 
     if (!file_exists(LX_APPLICATION_ROOT . '/src/views/' . $this->view .'/' . $file))
-	$file = '/lx-view.xsl';
+      $file = '/lx-view.xsl';
 
     $pAttr = 'type="text/xsl" href="' . $dir . $file . '"';
     $xslNode = $this->document->createProcessingInstruction('xml-stylesheet',
-							    $pAttr);
+                  $pAttr);
 
     $this->document->insertBefore($xslNode, $this->rootNode);
 
